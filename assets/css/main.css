@@ -2,21 +2,20 @@
     float: left;
     width: 33.33%;
     text-align: center;
-    height: 25px;
+    height: 20px;
 }
 
 .col2 {
     float: left;
     width: 50%;
     text-align: center;
-    height: 25px;
+    height: 20px;
 }
 
 .col1 {
     float: left;
-    width: 100%;
     text-align: center;
-    height: 25px;
+    height: 20px;
 }
 
 .row:after {
