@@ -1,0 +1,20 @@
+.col_buttons_3 {
+    float: left;
+    width: 33.33%;
+    text-align: center;
+    height: 25px;
+}
+
+.col_buttons_2 {
+    float: left;
+    width: 50%;
+    text-align: center;
+    height: 25px;
+}
+
+.row_buttons:after {
+    content: "";
+    display: table;
+    clear: both;
+    padding: 5px;
+}
