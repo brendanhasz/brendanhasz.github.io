@@ -19,14 +19,20 @@
         
         <img src="/assets/img/mymug.png" alt="Me" />
         
-        <p style="vertical-align: middle;"> {{site.position}} </p>
-
-        <p style="vertical-align: middle;">
-          <a href="{{ site.school_url }}">
-            <img src="/assets/img/school_icon.png" height="16" width="16" style="vertical-align: middle;">  
-            <span style="vertical-align: middle;"> {{ site.school_name }} </span>
+        <div class="row">
+            <div class="col1"> 
+              <span style="vertical-align: middle;"> {{ site.position }} </span>
+            </div>
+        </div>
+        
+        <div class="row">
+          <a href="{{ site.company_url }}">
+            <div class="col1"> 
+              <img src="/assets/img/company_icon.png" height="16" width="16" style="vertical-align: middle;">  
+              <span style="vertical-align: middle;"> {{ site.company_name }} </span>
+            </div>
           </a>
-        </p>
+        </div>
         
         <div class="row">
           <a href="{{ site.place_url }}">
@@ -36,7 +42,7 @@
             </div>
           </a>
         </div>
-
+        
         <div class="row">
           <a href="{{ site.github_url }}">
             <div class="col3"> 
