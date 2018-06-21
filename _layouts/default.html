@@ -18,39 +18,61 @@
         <h1><a href="{{ "/" | absolute_url }}">{{ site.name }}</a></h1>
         
         <img src="/assets/img/mymug.png" alt="Me" />
-
-        <p>PhD Student in Neuroscience</p>
         
-        <div class="row_buttons">
+        <div class="row">
+          <div class="col1"> 
+            <p> {{site.position}} </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <a href="{{ site.school_url }}">
+            <div class="col1"> 
+              <img src="/assets/img/school_icon.png" height="16" width="16" style="vertical-align: middle;">  
+              <span style="vertical-align: middle;"> {{ site.school_name }} </span>
+            </div>
+          </a>
+        </div>
+
+        <div class="row">
+          <a href="{{ site.place_url }}">
+            <div class="col1"> 
+              <img src="/assets/img/place_icon.png" height="16" width="16" style="vertical-align: middle;">  
+              <span style="vertical-align: middle;"> {{ site.place_name }} </span>
+            </div>
+          </a>
+        </div>
+
+        <div class="row">
           <a href="{{ site.github_url }}">
-            <div class="col_buttons_3"> 
+            <div class="col3"> 
               <img src="/assets/img/github_icon.png" height="16" width="16" style="vertical-align: middle;"> 
               <span style="vertical-align: middle;"> Github </span>
             </div>
           </a>
           <a href="{{ site.kaggle_url }}">
-            <div class="col_buttons_3"> 
+            <div class="col3"> 
               <img src="/assets/img/kaggle_icon.png" height="16" width="16" style="vertical-align: middle;">  
               <span style="vertical-align: middle;"> Kaggle </span>
           </div>
           </a>
           <a href="{{ site.linkedin_url }}">
-            <div class="col_buttons_3">
+            <div class="col3">
               <img src="/assets/img/linkedin_icon.png" height="16" width="16" style="vertical-align: middle;">  
               <span style="vertical-align: middle;"> LinkedIn </span>
             </div>
           </a>
         </div>
 
-        <div class="row_buttons">
+        <div class="row">
           <a href="{{ site.email_url }}">
-            <div class="col_buttons_2"> 
+            <div class="col2"> 
               <img src="/assets/img/email_icon.png" height="16" width="16" style="vertical-align: middle;">  
               <span style="vertical-align: middle;"> Email </span>
             </div>
           </a>
           <a href="{{ site.cv_url }}">
-            <div class="col_buttons_2"> 
+            <div class="col2"> 
               <img src="/assets/img/cv_icon.png" height="16" width="16" style="vertical-align: middle;">  
               <span style="vertical-align: middle;"> CV </span>
             </div>
@@ -64,9 +86,12 @@
 
       </section>
       <footer>
-        <p><small>Hosted on GitHub Pages &mdash; 
-           Powered by <a href="https://jekyllrb.com/">Jekyll</a> &mdash; 
-           Theme by <a href="https://github.com/orderedlist">orderedlist</a></small>
+        <p>
+          <small>
+            Hosted on GitHub Pages <br />
+            Powered by <a href="https://jekyllrb.com/">Jekyll</a> <br />
+            Theme by <a href="https://github.com/orderedlist">orderedlist</a>
+          </small>
          </p>
       </footer>
     </div>

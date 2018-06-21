@@ -1,18 +1,25 @@
-.col_buttons_3 {
+.col3 {
     float: left;
     width: 33.33%;
     text-align: center;
     height: 25px;
 }
 
-.col_buttons_2 {
+.col2 {
     float: left;
     width: 50%;
     text-align: center;
     height: 25px;
 }
 
-.row_buttons:after {
+.col1 {
+    float: left;
+    width: 50%;
+    text-align: center;
+    height: 25px;
+}
+
+.row:after {
     content: "";
     display: table;
     clear: both;
