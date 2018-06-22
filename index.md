@@ -14,7 +14,7 @@ I'm also interested in data science and machine learning.
   <strong> <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a> </strong> <br />
   <span>{{ post.date | date_to_string }}</span>
   {% if post.description %} 
-    {{ post.description }} 
+    <p> {{ post.description }} </p>
   {% endif %}
   <br />
 {% endfor %}
