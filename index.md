@@ -12,8 +12,8 @@ I'm also interested in data science and machine learning.
 
 <ul class="posts">
   {% for post in site.posts %}
-    ### <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-    <span>{{ post.date | date_to_string }}</span>
+    <h3> <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a> </h3>
+    <span>{{ post.date | date_to_string }}</span> <br />
     {% if post.description %}
       <p> {{ post.description }} </p>
     {% endif %}
