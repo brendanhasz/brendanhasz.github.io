@@ -13,6 +13,9 @@ layout: default
     {% if post.description %} 
       <p> {{ post.description }} </p>
     {% endif %}
+    {% if post.img_url %} 
+      <img src="{{ post.img_url }}" class="center_img">
+    {% endif %}
     <br />
   {% endfor %}
 
