@@ -35,13 +35,12 @@
 }
 
 .button_container {
-  margin: 10px auto;
   position: relative;
   text-align:center;
 }
 
 .button_link {
-  height: 30px;
+  height: 50px;
   width: 100px;
   display: inline-block;
   margin: 10px;
