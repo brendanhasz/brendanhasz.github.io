@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: "Multilevel Bayesian Correlations"
 date: 2018-06-27
 github_url: https://github.com/brendanhasz/bayesian-correlation
