@@ -1,0 +1,21 @@
+---
+layout: default
+---
+<h1>{{ page.title }}</h1>
+<p class="meta">{{ page.date | date_to_string }}</p>
+
+<ul class="downloads">
+  {% if page.github_url %}
+    <li><a href="{{ page.github_url }}">View On <strong>Github</strong></a></li>
+  {% endif %}
+  {% if page.kaggle_url %}
+    <li><a href="{{ page.kaggle_url }}">View On <strong>Kaggle</strong></a></li>
+  {% endif %}
+  {% if page.zip_url %}
+    <li><a href="{{ site.zip_url }}">Download <strong>ZIP File</strong></a></li>
+  {% endif %}
+</ul>
+
+<div class="post">
+  {{ content }}
+</div>
