@@ -6,7 +6,7 @@ description: "Fitting Bayesian models of the correlation between two variables t
 github_url: https://github.com/brendanhasz/bayesian-correlation
 kaggle_url: https://www.kaggle.com/brendanhasz/multilevel-bayesian-correlations
 zip_url: /assets/zips/multilevel-bayesian-correlations.zip
-img_url: https://media1.tenor.com/images/b2190afe666915580adb0890260362d1/tenor.gif?itemid=4895431
+TODO_img_url: https://media1.tenor.com/images/b2190afe666915580adb0890260362d1/tenor.gif?itemid=4895431
 ---
 
 Working on it!
