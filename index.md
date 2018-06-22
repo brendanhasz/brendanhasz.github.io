@@ -10,13 +10,11 @@ I'm also interested in data science and machine learning.
 
 ## Posts
 
-<ul class="posts">
-  {% for post in site.posts %}
-    <h3> <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a> </h3>
-    <span>{{ post.date | date_to_string }}</span> <br />
-    {% if post.description %}
-      <p> {{ post.description }} </p>
-    {% endif %}
-    <br />
-  {% endfor %}
-</ul>
+{% for post in site.posts %}
+  <h3> <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a> </h3>
+  <span>{{ post.date | date_to_string }}</span> <br />
+  {% if post.description %}
+    <p> {{ post.description }} </p>
+  {% endif %}
+  <br />
+{% endfor %}
