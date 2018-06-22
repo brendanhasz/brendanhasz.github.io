@@ -12,9 +12,9 @@ I'm also interested in data science and machine learning.
 
 {% for post in site.posts %}
   <strong> <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a> </strong> <br />
-  <span>{{ post.date | date_to_string }}</span> <br />
-  {% if post.description %}
-    <span> {{ post.description }} </span>
+  <span>{{ post.date | date_to_string }}</span>
+  {% if post.description %} 
+    {{ post.description }} 
   {% endif %}
   <br />
 {% endfor %}
