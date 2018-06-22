@@ -33,3 +33,21 @@
     width: 60%;
     padding-bottom: 10px;
 }
+
+.button_container {
+  margin: 10px auto;
+  position: relative;
+  text-align:center;
+}
+
+.button_link {
+  height: 30px;
+  width: 100px;
+  display: inline-block;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+.button_link:hover {
+  background: #e7e7e7;
+}
