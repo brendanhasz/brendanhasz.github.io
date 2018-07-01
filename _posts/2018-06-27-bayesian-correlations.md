@@ -47,18 +47,18 @@ Nchains = 4   #number of MCMC chains
 <a class="anchor" id="pearson-correlation"></a>
 ## Pearson Correlation
 
-A Pearson correlation is probably the most well-known correlation, and measures how correlated two variables are (e.g. \\( X_1 \\) and \\( X_2 \\) ).  The statistic we get from a Pearson correlation is the Pearson correlation coefficient (\\( \rho \\) ), which is the ratio of the true covariance of the two variables to their expected covariance if they were perfectly correlated:
+A Pearson correlation is probably the most well-known correlation, and measures how correlated two variables are (e.g. \( X_1 \) and \( X_2 \) ).  The statistic we get from a Pearson correlation is the Pearson correlation coefficient (\( \rho \) ), which is the ratio of the true covariance of the two variables to their expected covariance if they were perfectly correlated:
 
 { % raw %}
-$$
+\[
 \rho_{X_1,X_2} = \frac{\text{cov}(X_1,X_2)}{\sigma_{X_1} \sigma_{X_2}}
-$$
+\]
 { % endraw %}
 
 where
-* \\(\text{cov}(X_1, X_2)\\) is the covariance between \\(X_1\\) and \\(X_2\\)
-* \\(\sigma_{X_1}\\) is the standard deviation of \\(X_1\\), and 
-* \\(\sigma_{X_2}\\) is the standard deviation of \\(X_2\\)
+* \(\text{cov}(X_1, X_2)\) is the covariance between \(X_1\) and \(X_2\)
+* \(\sigma_{X_1}\) is the standard deviation of \(X_1\), and 
+* \(\sigma_{X_2}\) is the standard deviation of \(X_2\)
 
 This coefficient ranges between 1 (when the two variables are perfectly positively correlated) and -1 (when they are perfectly negatively correlated), and a coefficient value of 0 means that there is no correlation.
 
