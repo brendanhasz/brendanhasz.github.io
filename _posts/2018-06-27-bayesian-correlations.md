@@ -47,18 +47,18 @@ Nchains = 4   #number of MCMC chains
 <a class="anchor" id="pearson-correlation"></a>
 ## Pearson Correlation
 
-A Pearson correlation is probably the most well-known correlation, and measures how correlated two variables are (e.g. \( X_1 \) and \( X_2 \) ).  The statistic we get from a Pearson correlation is the Pearson correlation coefficient (\( \rho \) ), which is the ratio of the true covariance of the two variables to their expected covariance if they were perfectly correlated:
+A Pearson correlation is probably the most well-known correlation, and measures how correlated two variables are (e.g. \\( X_1 \\) and \\( X_2 \\) ).  The statistic we get from a Pearson correlation is the Pearson correlation coefficient (\\( \rho \\) ), which is the ratio of the true covariance of the two variables to their expected covariance if they were perfectly correlated:
 
 { % raw %}
-\[
+\\[
 \rho_{X_1,X_2} = \frac{\text{cov}(X_1,X_2)}{\sigma_{X_1} \sigma_{X_2}}
-\]
+\\]
 { % endraw %}
 
 where
-* \(\text{cov}(X_1, X_2)\) is the covariance between \(X_1\) and \(X_2\)
-* \(\sigma_{X_1}\) is the standard deviation of \(X_1\), and 
-* \(\sigma_{X_2}\) is the standard deviation of \(X_2\)
+* \\(\text{cov}(X_1, X_2)\\) is the covariance between \\(X_1\\) and \\(X_2\\)
+* \\(\sigma_{X_1}\\) is the standard deviation of \\(X_1\\), and 
+* \\(\sigma_{X_2}\\) is the standard deviation of \\(X_2\\)
 
 This coefficient ranges between 1 (when the two variables are perfectly positively correlated) and -1 (when they are perfectly negatively correlated), and a coefficient value of 0 means that there is no correlation.
 
@@ -104,7 +104,6 @@ To get that probability distribution, we can perform a Bayesian correlation.  Ba
 
 A univariate (1D) normal distribution is defined by its mean and variance.  But a bivariate normal distribution is defined by its mean *vector* \\(\mu\\) (i.e. the mean in each dimension ) and its covariance matrix (the covariance between each pair of dimensions).  The covariance matrix for a bivariate normal distribution is just a 2x2 matrix, and people usually use the symbol \\(\Sigma\\) to refer to it (not to be confused with the same symbol which is used for a sum!).  The diagonal elements of the matrix are just the variance of the data in each dimension, and the non-diagonal elements are the covariance between dimensions:
 
-{ % raw %}
 $$
 \Sigma = 
 \begin{bmatrix}
@@ -112,33 +111,27 @@ $$
     \text{cov}(X_1,X_2) & \text{cov}(X_2,X_2) 
 \end{bmatrix}
 $$
-{ % raw %}
 
-again where $\text{cov}(A, B)$ is the covariance between $A$ and $B$ (and the variance if $A$ and $B$ are the same).  Then the probability value of that distribution at any point in the 2D space can be computed by:
+again where $\text{cov}(A, B)$ is the covariance between \\(A\\) and \\(B\\) (and the variance if \\(A\\) and \\(B\\) are the same).  Then the probability value of that distribution at any point in the 2D space can be computed by:
 
-{ % raw %}
 $$
 \mathcal{N}(x,\mu,\Sigma) = \frac{\text{exp}(-\frac{1}{2} (x-\mu)^T \Sigma^{-1} (x-\mu))}{\sqrt{(2 \pi)^2 | \Sigma |}}
 $$
-{ % raw %}
 
-where $x$ is a two-element vector corresponding to the point in 2D space for which we're getting the probability value of the distribution.
+where \\(x\\) is a two-element vector corresponding to the point in 2D space for which we're getting the probability value of the distribution.
 
 When the covariance is more positive, the distribution is stretched out in a positive direction, and when it is more negative, the distribution is stretched in the negative direction:
 
 ![Different rho values](/assets/img/bayesian-correlation/rho-covariance.svg)
 
-Notice that the Pearson correlation coefficient ($\rho$) also tells us how stretched out the normal distribution is - and in which direction!  This is because the Pearson correlation coefficient is defined by the covariance values (relative to the variances).  If we rearrange the equation for $\rho$ from before to this:
+Notice that the Pearson correlation coefficient (\\(\rho\\)) also tells us how stretched out the normal distribution is - and in which direction!  This is because the Pearson correlation coefficient is defined by the covariance values (relative to the variances).  If we rearrange the equation for \\(\rho\\) from before to this:
 
-{ % raw %}
 $$
 \text{cov}(X_1,X_2) = \rho_{X_1,X_2} \sigma_{X_1} \sigma_{X_2}
 $$
-{ % raw %}
 
-then we can re-define the covariance matrix using only the variances ($\sigma_{X_1}$ and $\sigma_{X_2}$) and $\rho$:
+then we can re-define the covariance matrix using only the variances (\\(\sigma_{X_1}\\) and \\(\sigma_{X_2}\\)) and \\(\rho\\):
 
-{ % raw %}
 $$
 \Sigma = 
 \begin{bmatrix}
@@ -146,21 +139,20 @@ $$
     \rho ~ \sigma_{X_1} \sigma_{X_2} & \sigma_{X_2} \sigma_{X_2} 
 \end{bmatrix}
 $$
-{ % raw %}
 
-(This also depends on the fact that the variance is equal to the square of the standard deviation, i.e. $\text{cov}(X_1,X_1) = \sigma_{X_1} \sigma_{X_1}$)
+(This also depends on the fact that the variance is equal to the square of the standard deviation, i.e. \\(\text{cov}(X_1,X_1) = \sigma_{X_1} \sigma_{X_1}\\))
 
-Now that we know how to compute $\rho$ from a normal distribution (and vice-versa), we can fit a normal distribution to our data in a Bayesian way.  I've been describing the problem as if we first fit a normal distribution, and then compute $\rho$ from that distribution.  However with Bayesian models, it's usually useful to think of things the other way around: *given* a certain value of $\rho$, we'll compute what the normal distribution should be, and then we'll compute the likelihood that our data came from that distribution.  That way we can test different values of $\rho$ and see how likely or unlikely they are to fit our data!
+Now that we know how to compute $\rho$ from a normal distribution (and vice-versa), we can fit a normal distribution to our data in a Bayesian way.  I've been describing the problem as if we first fit a normal distribution, and then compute \\(\rho\\) from that distribution.  However with Bayesian models, it's usually useful to think of things the other way around: *given* a certain value of \\(\rho\\), we'll compute what the normal distribution should be, and then we'll compute the likelihood that our data came from that distribution.  That way we can test different values of \\(\rho\\) and see how likely or unlikely they are to fit our data!
 
 We're going to use [Stan](http://mc-stan.org/) for defining and fitting our Bayesian model.  Stan is a platform for Bayesian modeling, which lets you use a relatively simple programming language to define your Bayesian model.  Stan then fits your model to your data, returning the posterior probability distribution(s) for your parameter(s) of interest.  The code for a Stan model consists of 3 main blocks (and we're going to also use 1 additional optional block).
 
 First is the "data" block, where we will define what data our model takes as input.  
 
-Second is the "parameters" block, where we will define what parameters our model uses.  In our case the model's parameters are $\rho$ (the Pearson correlation coefficient), $\mu$ (the vector of means in each dimension for the normal distribution), and $\sigma$ (the vector of standard deviations in each dimension).
+Second is the "parameters" block, where we will define what parameters our model uses.  In our case the model's parameters are \\(\rho\\) (the Pearson correlation coefficient), \\(\mu\\) (the vector of means in each dimension for the normal distribution), and \\(\sigma\\) (the vector of standard deviations in each dimension).
 
-The third (optional) block that we'll use is the "transformed parameters" block.  We'll use this block to compute the covariance matrix from $\rho$ and $\sigma$, as described above.
+The third (optional) block that we'll use is the "transformed parameters" block.  We'll use this block to compute the covariance matrix from \\(\rho\\) and \\(\sigma\\), as described above.
 
-Finally, the last block is the "model" block.  Here we'll define how to compute the probability of the data given the parameters.  As described above, we're just modeling our datapoints as being drawn from a normal distribution (which is defined by $\rho$, $\mu$, and $\sigma$).  Stan provides a simple syntax for modeling the likelihood that certain datapoints were drawn from a distribution: `data ~ distribution(parameters)`.
+Finally, the last block is the "model" block.  Here we'll define how to compute the probability of the data given the parameters.  As described above, we're just modeling our datapoints as being drawn from a normal distribution (which is defined by \\(\rho\\), \\(\mu\\), and \\(\sigma\\)).  Stan provides a simple syntax for modeling the likelihood that certain datapoints were drawn from a distribution: `data ~ distribution(parameters)`.
 
 Let's define the Stan code, compile the model, and fit it to our data.
 
@@ -228,7 +220,7 @@ print(fit)
     lp__   -59.99    0.07   1.83 -64.36 -60.84 -59.61 -58.71 -57.67    748   1.01
     
 
-But getting the 95% confidence intervals is something we could also do with frequentist statistics.  Let's get the full posterior distributions and plot those full distributions.  We'll plot the posterior distribution for $\rho$, and also the distributions for $\mu$ and $\sigma$, just to make sure our model isn't doing anything crazy.
+But getting the 95% confidence intervals is something we could also do with frequentist statistics.  Let's get the full posterior distributions and plot those full distributions.  We'll plot the posterior distribution for \\(\rho\\), and also the distributions for \\(\mu\\) and \\(\sigma\\), just to make sure our model isn't doing anything crazy.
 
 
 ```python
@@ -279,7 +271,7 @@ plt.show()
 ![svg](/assets/img/bayesian-correlation/output_19_0.svg)
 
 
-The distribution for $\rho$ above showed that there's a very high probability of a correlation between our two variables!   If we had uncorrelated data, the posterior distribution for $\rho$ would be centered around 0, like this:
+The distribution for $\rho$ above showed that there's a very high probability of a correlation between our two variables!   If we had uncorrelated data, the posterior distribution for \\(\rho\\) would be centered around 0, like this:
 
 
 ```python
