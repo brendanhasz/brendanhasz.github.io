@@ -11,4 +11,4 @@ TODO_img_url: https://media1.tenor.com/images/b2190afe666915580adb0890260362d1/t
 
 Working on it!
 
-Here's the [github project page](https://github.com/brendanhasz/bayesian-correlation) in the meantime.
+[Check it out on Kaggle](https://www.kaggle.com/brendanhasz/multilevel-bayesian-correlations) in the meantime
