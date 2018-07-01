@@ -1,4 +1,5 @@
 theme: jekyll-theme-minimal
+markdown: kramdown
 name: Brendan Hasz
 position: PhD Student in Neuroscience
 github_url: https://github.com/brendanhasz

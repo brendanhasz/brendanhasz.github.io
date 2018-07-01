@@ -47,16 +47,18 @@ Nchains = 4   #number of MCMC chains
 <a class="anchor" id="pearson-correlation"></a>
 ## Pearson Correlation
 
-A Pearson correlation is probably the most well-known correlation, and measures how correlated two variables are (e.g. $X_1$ and $X_2$).  The statistic we get from a Pearson correlation is the Pearson correlation coefficient ($\rho$), which is the ratio of the true covariance of the two variables to their expected covariance if they were perfectly correlated:
+A Pearson correlation is probably the most well-known correlation, and measures how correlated two variables are (e.g. \\( X_1 \\) and \\( X_2 \\) ).  The statistic we get from a Pearson correlation is the Pearson correlation coefficient (\\( \rho \\) ), which is the ratio of the true covariance of the two variables to their expected covariance if they were perfectly correlated:
 
+{ % raw %}
 $$
 \rho_{X_1,X_2} = \frac{\text{cov}(X_1,X_2)}{\sigma_{X_1} \sigma_{X_2}}
 $$
+{ % endraw %}
 
 where
-* $\text{cov}(X_1, X_2)$ is the covariance between $X_1$ and $X_2$
-* $\sigma_{X_1}$ is the standard deviation of $X_1$, and 
-* $\sigma_{X_2}$ is the standard deviation of $X_2$
+* \\(\text{cov}(X_1, X_2)\\) is the covariance between \\(X_1\\) and \\(X_2\\)
+* \\(\sigma_{X_1}\\) is the standard deviation of \\(X_1\\), and 
+* \\(\sigma_{X_2}\\) is the standard deviation of \\(X_2\\)
 
 This coefficient ranges between 1 (when the two variables are perfectly positively correlated) and -1 (when they are perfectly negatively correlated), and a coefficient value of 0 means that there is no correlation.
 
@@ -82,7 +84,7 @@ plt.show()
 ![svg](/assets/img/bayesian-correlation/output_6_0.svg)
 
 
-We can compute the maximum likelihood estimate of $\rho$ (that is, the correlation coefficient value which is most likely) by using the equation above.  The `scipy.stats` package also provides a function for computing $\rho$, along with a p-value which tells us the probability of getting that value for $\rho$ if there were no correlation at all.  (Note that $\rho$ is "rho", not to be confused with the p from "p-value")
+We can compute the maximum likelihood estimate of \\( \rho \\) (that is, the correlation coefficient value which is most likely) by using the equation above.  The `scipy.stats` package also provides a function for computing \\(\rho\\), along with a p-value which tells us the probability of getting that value for \\(\rho\\) if there were no correlation at all.  (Note that \\(\rho\\) is "rho", not to be confused with the p from "p-value")
 
 
 ```python
@@ -94,14 +96,15 @@ print('Correlation coefficient: %0.3g ( p = %0.3g )' % (rho, pval))
     Correlation coefficient: 0.986 ( p = 1.69e-15 )
     
 
-But what if we want to know the probability of seeing *any* value of $\rho$?  If we could compute a probability distribution over the possible values $\rho$ could take, then we would be able to make inferences as to the value of $\rho$.  What I mean by "inferences" is statements such as "there's a 95% probability that the value of $\rho$ is between 0.3 and 0.6".  Using frequentist statistics (which gave us the p-value above), we can only make claims like "assuming there is no correlation, the probability of observing our data is such-and-such."  Having a full probability distribution over the values of $\rho$ would give us a more explicit way of expressing how uncertain we are about the value of $\rho$, and also would let us understand how likely different effect sizes are.
+But what if we want to know the probability of seeing *any* value of \\(\rho\\)?  If we could compute a probability distribution over the possible values \\(\rho\\) could take, then we would be able to make inferences as to the value of \\(\rho\\).  What I mean by "inferences" is statements such as "there's a 95% probability that the value of \\(\rho\\) is between 0.3 and 0.6".  Using frequentist statistics (which gave us the p-value above), we can only make claims like "assuming there is no correlation, the probability of observing our data is such-and-such."  Having a full probability distribution over the values of \\(\rho\\) would give us a more explicit way of expressing how uncertain we are about the value of \\(\rho\\), and also would let us understand how likely different effect sizes are.
 
-To get that probability distribution, we can perform a Bayesian correlation.  Basically what we'll be doing is "fitting" a bivariate (2D) normal distribution to our points, and then computing $\rho$ from the covariance of that normal distribution. 
+To get that probability distribution, we can perform a Bayesian correlation.  Basically what we'll be doing is "fitting" a bivariate (2D) normal distribution to our points, and then computing \\(\rho\\) from the covariance of that normal distribution. 
 
 ![Fitting a normal distribution](/assets/img/bayesian-correlation/fitting-normal-distribution.svg)
 
-A univariate (1D) normal distribution is defined by its mean and variance.  But a bivariate normal distribution is defined by its mean *vector* $\mu$ (i.e. the mean in each dimension ) and its covariance matrix (the covariance between each pair of dimensions).  The covariance matrix for a bivariate normal distribution is just a 2x2 matrix, and people usually use the symbol $\Sigma$ to refer to it (not to be confused with the same symbol which is used for a sum!).  The diagonal elements of the matrix are just the variance of the data in each dimension, and the non-diagonal elements are the covariance between dimensions:
+A univariate (1D) normal distribution is defined by its mean and variance.  But a bivariate normal distribution is defined by its mean *vector* \\(\mu\\) (i.e. the mean in each dimension ) and its covariance matrix (the covariance between each pair of dimensions).  The covariance matrix for a bivariate normal distribution is just a 2x2 matrix, and people usually use the symbol \\(\Sigma\\) to refer to it (not to be confused with the same symbol which is used for a sum!).  The diagonal elements of the matrix are just the variance of the data in each dimension, and the non-diagonal elements are the covariance between dimensions:
 
+{ % raw %}
 $$
 \Sigma = 
 \begin{bmatrix}
@@ -109,12 +112,15 @@ $$
     \text{cov}(X_1,X_2) & \text{cov}(X_2,X_2) 
 \end{bmatrix}
 $$
+{ % raw %}
 
 again where $\text{cov}(A, B)$ is the covariance between $A$ and $B$ (and the variance if $A$ and $B$ are the same).  Then the probability value of that distribution at any point in the 2D space can be computed by:
 
+{ % raw %}
 $$
 \mathcal{N}(x,\mu,\Sigma) = \frac{\text{exp}(-\frac{1}{2} (x-\mu)^T \Sigma^{-1} (x-\mu))}{\sqrt{(2 \pi)^2 | \Sigma |}}
 $$
+{ % raw %}
 
 where $x$ is a two-element vector corresponding to the point in 2D space for which we're getting the probability value of the distribution.
 
@@ -124,12 +130,15 @@ When the covariance is more positive, the distribution is stretched out in a pos
 
 Notice that the Pearson correlation coefficient ($\rho$) also tells us how stretched out the normal distribution is - and in which direction!  This is because the Pearson correlation coefficient is defined by the covariance values (relative to the variances).  If we rearrange the equation for $\rho$ from before to this:
 
+{ % raw %}
 $$
 \text{cov}(X_1,X_2) = \rho_{X_1,X_2} \sigma_{X_1} \sigma_{X_2}
 $$
+{ % raw %}
 
 then we can re-define the covariance matrix using only the variances ($\sigma_{X_1}$ and $\sigma_{X_2}$) and $\rho$:
 
+{ % raw %}
 $$
 \Sigma = 
 \begin{bmatrix}
@@ -137,6 +146,7 @@ $$
     \rho ~ \sigma_{X_1} \sigma_{X_2} & \sigma_{X_2} \sigma_{X_2} 
 \end{bmatrix}
 $$
+{ % raw %}
 
 (This also depends on the fact that the variance is equal to the square of the standard deviation, i.e. $\text{cov}(X_1,X_1) = \sigma_{X_1} \sigma_{X_1}$)
 
