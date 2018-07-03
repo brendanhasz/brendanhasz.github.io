@@ -49,11 +49,9 @@ Nchains = 4   #number of MCMC chains
 
 A Pearson correlation is probably the most well-known correlation, and measures how correlated two variables are (e.g. \\( X_1 \\) and \\( X_2 \\) ).  The statistic we get from a Pearson correlation is the Pearson correlation coefficient (\\( \rho \\) ), which is the ratio of the true covariance of the two variables to their expected covariance if they were perfectly correlated:
 
-{ % raw %}
-\\[
+$$
 \rho_{X_1,X_2} = \frac{\text{cov}(X_1,X_2)}{\sigma_{X_1} \sigma_{X_2}}
-\\]
-{ % endraw %}
+$$
 
 where
 * \\(\text{cov}(X_1, X_2)\\) is the covariance between \\(X_1\\) and \\(X_2\\)
@@ -112,7 +110,7 @@ $$
 \end{bmatrix}
 $$
 
-again where $\text{cov}(A, B)$ is the covariance between \\(A\\) and \\(B\\) (and the variance if \\(A\\) and \\(B\\) are the same).  Then the probability value of that distribution at any point in the 2D space can be computed by:
+again where \\(\text{cov}(A, B)\\) is the covariance between \\(A\\) and \\(B\\) (and the variance if \\(A\\) and \\(B\\) are the same).  Then the probability value of that distribution at any point in the 2D space can be computed by:
 
 $$
 \mathcal{N}(x,\mu,\Sigma) = \frac{\text{exp}(-\frac{1}{2} (x-\mu)^T \Sigma^{-1} (x-\mu))}{\sqrt{(2 \pi)^2 | \Sigma |}}
@@ -142,7 +140,7 @@ $$
 
 (This also depends on the fact that the variance is equal to the square of the standard deviation, i.e. \\(\text{cov}(X_1,X_1) = \sigma_{X_1} \sigma_{X_1}\\))
 
-Now that we know how to compute $\rho$ from a normal distribution (and vice-versa), we can fit a normal distribution to our data in a Bayesian way.  I've been describing the problem as if we first fit a normal distribution, and then compute \\(\rho\\) from that distribution.  However with Bayesian models, it's usually useful to think of things the other way around: *given* a certain value of \\(\rho\\), we'll compute what the normal distribution should be, and then we'll compute the likelihood that our data came from that distribution.  That way we can test different values of \\(\rho\\) and see how likely or unlikely they are to fit our data!
+Now that we know how to compute \\( \rho \\) from a normal distribution (and vice-versa), we can fit a normal distribution to our data in a Bayesian way.  I've been describing the problem as if we first fit a normal distribution, and then compute \\(\rho\\) from that distribution.  However with Bayesian models, it's usually useful to think of things the other way around: *given* a certain value of \\(\rho\\), we'll compute what the normal distribution should be, and then we'll compute the likelihood that our data came from that distribution.  That way we can test different values of \\(\rho\\) and see how likely or unlikely they are to fit our data!
 
 We're going to use [Stan](http://mc-stan.org/) for defining and fitting our Bayesian model.  Stan is a platform for Bayesian modeling, which lets you use a relatively simple programming language to define your Bayesian model.  Stan then fits your model to your data, returning the posterior probability distribution(s) for your parameter(s) of interest.  The code for a Stan model consists of 3 main blocks (and we're going to also use 1 additional optional block).
 
@@ -262,7 +260,7 @@ plt.figure()
 sb.kdeplot(samples['sig'][:,0], samples['sig'][:,1], 
            n_levels=5, cbar=True)
 plt.xlabel(r'$X_1$ Std Dev')
-plt.ylabel(r'$X_2$ Std Dev')
+plt.ylabel(r'$X_$ Std Dev')
 plt.title('Posterior Joint Distribution of the Variances')
 plt.show()
 ```
@@ -271,7 +269,7 @@ plt.show()
 ![svg](/assets/img/bayesian-correlation/output_19_0.svg)
 
 
-The distribution for $\rho$ above showed that there's a very high probability of a correlation between our two variables!   If we had uncorrelated data, the posterior distribution for \\(\rho\\) would be centered around 0, like this:
+The distribution for \\( \rho \\) above showed that there's a very high probability of a correlation between our two variables!   If we had uncorrelated data, the posterior distribution for \\(\rho\\) would be centered around 0, like this:
 
 
 ```python
@@ -316,17 +314,17 @@ plt.show()
 <a class="anchor" id="multilevel-correlation"></a>
 ## Multilevel Correlation
 
-Sometimes, we want to compute the correlation between two variables, but have multiple measurements per group or individual.  For example, suppose we wanted to correlate companies' feedback scores of product $A$ with their scores of product $B$, but these companies were split into distinct groups, such as their industry (e.g. "agricultural", "manufacturing", "scientific", "construction", etc).  In this case we want to see if there is a correlation between the variables we care about, but we also want to account for differences between groups.  If we don't account for those differences, sometimes we can get the wrong result, for example in certain cases of [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox).
+Sometimes, we want to compute the correlation between two variables, but have multiple measurements per group or individual.  For example, suppose we wanted to correlate companies' feedback scores of product \\( A \\) with their scores of product \\( B \\), but these companies were split into distinct groups, such as their industry (e.g. "agricultural", "manufacturing", "scientific", "construction", etc).  In this case we want to see if there is a correlation between the variables we care about, but we also want to account for differences between groups.  If we don't account for those differences, sometimes we can get the wrong result, for example in certain cases of [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox).
 
-In a regression the way to handle this is to use a [multilevel model](https://en.wikipedia.org/wiki/Multilevel_model) (aka a "hierarchical model"), where each individual or group has their own coefficient.  But, these coefficients aren't completely independent - we model them as being drawn from a normal distribution (usually).  This way, different individuals or groups can have different coefficients, but the further their value is from the population mean, the less likely that parameter value is.  We can take a similar approach with correlations.  We'll allow the $\rho$ parameter to vary across individuals or groups, but not in a completely independent way.
+In a regression the way to handle this is to use a [multilevel model](https://en.wikipedia.org/wiki/Multilevel_model) (aka a "hierarchical model"), where each individual or group has their own coefficient.  But, these coefficients aren't completely independent - we model them as being drawn from a normal distribution (usually).  This way, different individuals or groups can have different coefficients, but the further their value is from the population mean, the less likely that parameter value is.  We can take a similar approach with correlations.  We'll allow the \\( \rho \\) parameter to vary across individuals or groups, but not in a completely independent way.
 
-"Multilevel" models are called as such because there can literally be multiple levels to the model.  Normally, one has data points, and models those data points as being drawn from some distribution which has some parameters of interest.  This was the case in the above example of a Bayesian Pearson's correlation - we modeled the data as being drawn from a multivariate normal distribution with parameters $\mu$, $\sigma$, and $\rho$.  However, now we have a different $\rho$ parameter for each individual.  The data for that individual is drawn from the normal distribution defined by *their* $\rho$ parameter - that's the first "level".  
+"Multilevel" models are called as such because there can literally be multiple levels to the model.  Normally, one has data points, and models those data points as being drawn from some distribution which has some parameters of interest.  This was the case in the above example of a Bayesian Pearson's correlation - we modeled the data as being drawn from a multivariate normal distribution with parameters \\( \mu \\), \\( \sigma \\), and \\( \rho \\).  However, now we have a different \\( \rho \\) parameter for each individual.  The data for that individual is drawn from the normal distribution defined by *their* \\( \rho \\) parameter - that's the first "level".  
 
-But now we also have a second level: each individual's $\rho$ parameter is drawn from a population distribution.  Each $\rho_i$ is drawn from a normal distribution with mean $\mu_{\rho}$ and standard deviation $\sigma_{\rho}$.  Now $\mu_{\rho}$ is the parameter we really care about: what is the likelihood that there is truly a correlation between our two variables - across the population! 
+But now we also have a second level: each individual's \\( \rho \\) parameter is drawn from a population distribution.  Each \\( \rho_i \\) is drawn from a normal distribution with mean \\( \mu_{\rho} \\) and standard deviation \\( \sigma_{\rho} \\).  Now \\( \mu_{\rho} \\) is the parameter we really care about: what is the likelihood that there is truly a correlation between our two variables - across the population! 
 
 ![A multilevel model](/assets/img/bayesian-correlation/multilevel-model.svg)
 
-(Note that for a correlation, we might actually want to use a different distribution to model the population distribution for $\rho$, but let's just use a normal distribution here for simplicity.  See the [Simplifications appendix](#simplifications))
+(Note that for a correlation, we might actually want to use a different distribution to model the population distribution for \\( \rho \\), but let's just use a normal distribution here for simplicity.  See the [Simplifications appendix](#simplifications))
 
 In theory we could even add a third level or more, if there were such a grouping structure in our data.  For example, if we were correlating engine lifetime with the frequency of oil changes, we would have one datapoint per car - but those cars could be grouped by their model, and furthermore those models could be grouped by their make!  In this case we could have separate population mean parameters for each model, but then those parameters could be drawn from a larger normal distribution representing the distribution over a specific make, and all the make's mean parameters could be drawn from a larger normal distribution representing the distribution over all makes.  For simplicity we're only going to work with two-level models here.
 
@@ -358,7 +356,7 @@ plt.show()
 ![svg](/assets/img/bayesian-correlation/output_25_0.svg)
 
 
-Each color in the above plot represents datapoints from different individuals or groups.  Datapoints of the same color are from the same individual or group.  Notice that if one pools the data across all groups, there is a strong positive correlation between $X_1$ and $X_2$.  However, if we take each group individually, two groups show a positive correlation, two show a negative correlation, and one shows no correlation!
+Each color in the above plot represents datapoints from different individuals or groups.  Datapoints of the same color are from the same individual or group.  Notice that if one pools the data across all groups, there is a strong positive correlation between \\( X_1 \\) and \\( X_2 \\).  However, if we take each group individually, two groups show a positive correlation, two show a negative correlation, and one shows no correlation!
 
 
 ```python
@@ -404,9 +402,9 @@ plt.show()
 ![svg](/assets/img/bayesian-correlation/output_29_1.svg)
 
 
-Now we'll define a Bayesian model in Stan which has two levels as described above.  In the first level, we'll model each datapoint as being drawn from the distribution corresponding to its individual (or group).  In the second level, we'll model each individual's $\rho$ parameter as being drawn from a population distribution.
+Now we'll define a Bayesian model in Stan which has two levels as described above.  In the first level, we'll model each datapoint as being drawn from the distribution corresponding to its individual (or group).  In the second level, we'll model each individual's \\( \rho \\) parameter as being drawn from a population distribution.
 
-(One might want to also model per-subject $\mu$ parameters as being drawn from population distributions, but for the sake of simplicity we're going to skip that here.  See the [Simplifications appendix](#simplifications))
+(One might want to also model per-subject \\( \mu \\) parameters as being drawn from population distributions, but for the sake of simplicity we're going to skip that here.  See the [Simplifications appendix](#simplifications))
 
 
 ```python
@@ -717,7 +715,7 @@ plt.show()
 
 We can replace the normal distributions in our Bayesian model with t-distributions to ensure that outliers don't have such a huge effect on our estimates.  Let's replace the multivariate normal distribution in the first level of our model with a multivariate t-distribution.  That way, if an individual has datapoints which are outliers, it won't affect our estimate of that individual's parameter as much.
 
-In the second level of our Bayesian model, we could also also replace the population normal distribution with a t-distribution.  That way, if any of the *individuals* are an outlier, our estimate of the population distribution won't be overly skewed by that single individual.  For example, if all individuals showed a small positive correlation, but one individual showed a strong negative correlation, using a t-distribution would allow our model to let that individual's $\rho$ be negative, while still maintaining a positive estimate of $\rho$ across the population.  However, we'll keep using a normal distribution for now for simplicity (but see the [Simplifications appendix](#simplifications) for more details).
+In the second level of our Bayesian model, we could also also replace the population normal distribution with a t-distribution.  That way, if any of the *individuals* are an outlier, our estimate of the population distribution won't be overly skewed by that single individual.  For example, if all individuals showed a small positive correlation, but one individual showed a strong negative correlation, using a t-distribution would allow our model to let that individual's \\( \rho \\) be negative, while still maintaining a positive estimate of \\( \rho \\) across the population.  However, we'll keep using a normal distribution for now for simplicity (but see the [Simplifications appendix](#simplifications) for more details).
 
 Let's create a multilevel Bayesian correlation model in Stan which uses a t-distribution at the lowest level instead of a normal distribution.  This will allow for estimates which are more robust (to outliers).  The only change we'll make here is to switch `normal(...)` to `multi_student_t(1,...)`.
 
@@ -1038,7 +1036,7 @@ model_rml = pystan.StanModel(model_code=RobustCorrelation)
 ```
     
 
-There's a few empty values in the expenditures and performance index columns, so we'll just exclude schools which are missing those measurements from our analysis.  We'll also want to normalize our data (so the mean of each column is 0 and the standard deviation 1).  Then we'll fit our correlation model to the data, and look at the resulting posterior distribution for $\mu_\rho$.
+There's a few empty values in the expenditures and performance index columns, so we'll just exclude schools which are missing those measurements from our analysis.  We'll also want to normalize our data (so the mean of each column is 0 and the standard deviation 1).  Then we'll fit our correlation model to the data, and look at the resulting posterior distribution for \\( \mu_\rho \\).
 
 
 ```python
@@ -1071,7 +1069,7 @@ plt.show()
 ![svg](/assets/img/bayesian-correlation/output_83_0.svg)
 
 
-Most of the posterior distribution for $\mu_\rho$ is above zero - this means that there's some evidence that across the entire state of Massachusetts, on average, there is a positive correlation between the amount of money spent per student and the performance of those students.  But we're still pretty uncertain about that result.  There's a good amount of the posterior for $\mu_\rho$ which is less than zero.  To compute more precisely how certain we are, we can get the percentage of MCMC samples which are above zero.
+Most of the posterior distribution for \\( \mu_\rho \\) is above zero - this means that there's some evidence that across the entire state of Massachusetts, on average, there is a positive correlation between the amount of money spent per student and the performance of those students.  But we're still pretty uncertain about that result.  There's a good amount of the posterior for \\( \mu_\rho \\) which is less than zero.  To compute more precisely how certain we are, we can get the percentage of MCMC samples which are above zero.
 
 
 ```python
@@ -1084,7 +1082,7 @@ print("%0.2g%% of posterior is >0" %
 
 This allows us to say: given our model's assumptions (i.e., the distributions we use and the model structure), there is about an 88% chance that there's a positive correlation between how much a school spends per student, and the performance and progress of students at that school.
 
-Getting the full posterior distribution also allows us to make inferences about specific effect sizes. For example, if we wanted to know how likely it was that there was a correlation with $\rho>0.1$, we just get the percentage of MCMC samples which are greater than 0.1.
+Getting the full posterior distribution also allows us to make inferences about specific effect sizes. For example, if we wanted to know how likely it was that there was a correlation with \\( \rho>0.1 \\), we just get the percentage of MCMC samples which are greater than 0.1.
 
 ```python
 print("%0.2g%% of posterior is >0.1" % 
@@ -1123,14 +1121,14 @@ The models above were a bit simplified so as not to distract from the main idea 
 
 ### Population distribution for the means
 
-Our model included only a population distribution for the correlation coefficient ($\rho$), but not for the means ($\mu$)!   With a more complete model, especially if we're modeling many individuals/groups with not many datapoints per individual/group, we should model each individual's mean as being drawn from a population distribution.  We could use a multivariate t-distribution to model the population distribution of means in a robust way.  That way, given less information about an individual, we'll assume the mean of their data lies closer to the population mean, but with more datapoints from that individual, their mean will more closely reflect the actual mean of their datapoints.
+Our model included only a population distribution for the correlation coefficient (\\( \rho \\)), but not for the means (\\( \mu \\))!   With a more complete model, especially if we're modeling many individuals/groups with not many datapoints per individual/group, we should model each individual's mean as being drawn from a population distribution.  We could use a multivariate t-distribution to model the population distribution of means in a robust way.  That way, given less information about an individual, we'll assume the mean of their data lies closer to the population mean, but with more datapoints from that individual, their mean will more closely reflect the actual mean of their datapoints.
 
 ![Means of per-individual distributions are drawn from a population distribution](/assets/img/bayesian-correlation/population-mean-distribution.svg)
 
 
 ### Degrees of freedom parameter for the t-distributions
 
-In addition to parameters which control the mean variance, t-distributions have an additional parameter, $\nu$, which controls the degrees of freedom of the distribution.  Lower values of $\nu$ give more heavy-tailed distributions, where higher values of $\nu$ yield distributions which are closer to the shape of a normal distribution, with lighter tails.
+In addition to parameters which control the mean variance, t-distributions have an additional parameter, \\( \nu \\), which controls the degrees of freedom of the distribution.  Lower values of \\( \nu \\) give more heavy-tailed distributions, where higher values of \\( \nu \\) yield distributions which are closer to the shape of a normal distribution, with lighter tails.
 
 
 ```python
@@ -1156,14 +1154,14 @@ plt.show()
 
 
 
-In the models above, we just set $\nu=1$ for all distributions, but we could leave the parameter as a free parameter and allow it to take whichever value best explains our data.  So we would have one $\nu_p$ parameter for the population mean t-distribution, and each individual would have their own $\nu_i$ parameter for that individual's t-distribution.  To constrain the individual $\nu_i$s, we could add a "second level" and model those values as being drawn from a population distribution (e.g. a [gamma distribution](https://en.wikipedia.org/wiki/Gamma_distribution)).
+In the models above, we just set \\( \nu=1 \\) for all distributions, but we could leave the parameter as a free parameter and allow it to take whichever value best explains our data.  So we would have one \\( \nu_p \\) parameter for the population mean t-distribution, and each individual would have their own \\( \nu_i \\) parameter for that individual's t-distribution.  To constrain the individual \\( \nu_i \\)s, we could add a "second level" and model those values as being drawn from a population distribution (e.g. a [gamma distribution](https://en.wikipedia.org/wiki/Gamma_distribution)).
 
 
-### Beta distribution for population $\rho$ distribution
+### Beta distribution for population \\( \rho \\) distribution
 
-Another simplification is using a normal distribution as the population distribution for the per-subject $\rho$s.  A normal distribution is unbounded - that is, it takes values which range from $-\infty$ to $\infty$.  On the other hand, the value of $\rho$ only ranges from $-1$ to $1$! Since it's impossible for $\rho$ to take values outside that range, we should use a distribution which can only take values between $-1$ and $1$.  For this we could use a [beta distribution](https://en.wikipedia.org/wiki/Beta_distribution), but we'd want to scale it to take values between $-1$ and $1$ (a vanilla beta distribution takes values between $0$ and $1$).  
+Another simplification is using a normal distribution as the population distribution for the per-subject \\( \rho \\)s.  A normal distribution is unbounded - that is, it takes values which range from \\( -\infty \\) to \\( \infty \\).  On the other hand, the value of \\( \rho \\) only ranges from \\( -1 \\) to \\( 1 \\)! Since it's impossible for \\( \rho \\) to take values outside that range, we should use a distribution which can only take values between \\( -1 \\) and \\( 1 \\).  For this we could use a [beta distribution](https://en.wikipedia.org/wiki/Beta_distribution), but we'd want to scale it to take values between \\( -1 \\) and \\( 1 \\) (a vanilla beta distribution takes values between \\( 0 \\) and \\( 1 \\)).  
 
-In Stan, we would want to use mean and variance parameters for this population $\rho$ distribution so that we could see the posterior distribution of the mean of *that* distribution.  But beta distributions in stan are parameterized by $\alpha$ and $\beta$ parameters, so in the transformed parameters block we would have to compute the $\alpha$ and $\beta$ parameters of the beta distribution from the mean and variance.
+In Stan, we would want to use mean and variance parameters for this population \\( \rho \\) distribution so that we could see the posterior distribution of the mean of *that* distribution.  But beta distributions in stan are parameterized by \\( \alpha \\) and \\( \beta \\) parameters, so in the transformed parameters block we would have to compute the \\( \alpha \\) and \\( \beta \\) parameters of the beta distribution from the mean and variance.
 
 
 ### Priors!
