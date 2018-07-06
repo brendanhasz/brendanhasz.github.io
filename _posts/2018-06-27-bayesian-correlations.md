@@ -670,7 +670,7 @@ In a multilevel model, we allow the population distribution to act as a [prior](
 
 The key here is that we're estimating each individual's parameters using the population distribution as a prior, while *at the same time* estimating the population distribution from the individuals' parameters!
 
-[![AT THE SAME TIME!!!](https://media1.tenor.com/images/b2190afe666915580adb0890260362d1/tenor.gif?itemid=4895431)](https://tenor.com/view/mind-blown-bill-nye-science-guy-explosions-incredible-gif-4895431)
+<img src="https://media1.tenor.com/images/b2190afe666915580adb0890260362d1/tenor.gif?itemid=4895431" alt="AT THE SAME TIME!!!" class="center_img" >
 
 Next, we'll see how we can tweak our correlation to deal with outliers (via robust correlations).
 
