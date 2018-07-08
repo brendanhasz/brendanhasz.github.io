@@ -1,4 +1,3 @@
-
 ---
 layout: post
 title: "Fatal Police Shootings EDA"
@@ -32,7 +31,7 @@ sns.set()
 
 
 ```python
-PK = pd.read_csv('../input/fatal-police-shootings-data.csv', encoding='latin1')
+PK = pd.read_csv('fatal-police-shootings-data.csv', encoding='latin1')
 ```
 
 
@@ -252,15 +251,14 @@ PK.sample(n=10)
 
     
 
-Let's look at the distributions of these killings across the US.  We'll use [Bokeh](https://bokeh.pydata.org/en/latest/) to plot the number of killings in each city as a circle, where the area of the circle corresponds to the number of people shot by police in that city.  We'll use [OpenStreetMap Nominatim](https://wiki.openstreetmap.org/wiki/Nominatim) to geocode the locations of each city.
+Let's look at the distribution of these killings across the US.  We'll use [Bokeh](https://bokeh.pydata.org/en/latest/) to plot the number of killings in each city as a circle, where the area of the circle corresponds to the number of people shot by police in that city.  We'll use [OpenStreetMap Nominatim](https://wiki.openstreetmap.org/wiki/Nominatim) to geocode the locations of each city.
 
 
 ```python
 # Import bokeh components
 from bokeh.plotting import figure, show
 from bokeh.io import output_notebook
-from bokeh.models import ColumnDataSource, Circle, HoverTool, ColorBar, LinearColorMapper
-from bokeh.palettes import Viridis256
+from bokeh.models import ColumnDataSource, Circle, HoverTool
 from bokeh.tile_providers import CARTODBPOSITRON_RETINA
 output_notebook()
 
@@ -319,7 +317,7 @@ show(p)
 ```
 
 
-# map to go here
+<iframe src="/assets/img/police-shootings/police-shootings-map.html"></iframe>
 
 
 The Post is [only recording killings where the individual killed was shot by police](https://github.com/washingtonpost/data-police-shootings/blob/master/README.md).  Therefore, all the people killed by police in the dataset were shot, but around 6% were also tasered.
