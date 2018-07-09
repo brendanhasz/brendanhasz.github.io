@@ -7,6 +7,7 @@ github_url: https://github.com/brendanhasz/police-shootings-eda
 kaggle_url: https://www.kaggle.com/brendanhasz/police-shootings-eda
 zip_url: /assets/zips/police-shootings-eda.zip
 img_url: /assets/img/police-shootings/output_33_0.svg
+tags: [eda, python, bokeh]
 ---
 
 The Washington Post maintains a [database of fatal police shootings in the US](https://github.com/washingtonpost/data-police-shootings) since 2015.  We'll take a quick look at the data, and also analyze how biased shootings are by state or race.
@@ -1088,7 +1089,7 @@ plt.show()
 ![svg](/assets/img/police-shootings/output_38_0.svg)
 
 
-Unfortunately it doesn't look like there is a decrease in the frequency of shootings.
+Unfortunately it doesn't look like there is a decrease in the frequency of shootings.  (Note that the data used for this analysis is as of early July 2018)
 
 We can also look at the number of killings as a function of the day of the week.
 
