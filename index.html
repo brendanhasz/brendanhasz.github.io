@@ -9,8 +9,7 @@ layout: default
 
   {% for post in site.posts %}
     <strong> <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a> </strong> <br />
-    <span>{{ post.date | date_to_string }}</span> &ndash
-    {{ post.tags | array_to_sentence_string }}
+    <span>{{ post.date | date_to_string }} &ndash; {{ post.tags | array_to_sentence_string }}</span>
     {% if post.description %} 
       <p> {{ post.description }} </p>
     {% endif %}
