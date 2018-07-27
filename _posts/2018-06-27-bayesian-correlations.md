@@ -194,7 +194,8 @@ data = {'N' : X.shape[0], #number of datapoints
         'X' : X}          #the data
 
 # Fit the model
-fit = model_pc.sampling(data=data, iter=Niters, chains=Nchains, n_jobs=Nchains)
+fit = model_pc.sampling(data=data, iter=Niters, 
+                        chains=Nchains, n_jobs=Nchains)
 ```
     
 
@@ -206,17 +207,17 @@ Now that we've fit the model, we can take a look at the estimated parameter valu
 print(fit)
 ```
     
-             mean se_mean     sd   2.5%    25%    50%    75%  97.5%  n_eff   Rhat
-    mu[0]   10.07    0.05    1.5    7.1   9.14  10.07  11.02   13.1    907    1.0
-    mu[1]   10.22    0.05   1.53   7.14   9.28   10.2  11.17  13.26    892    1.0
-    sig[0]   6.55    0.05   1.17   4.73   5.74   6.43    7.2   9.22    614   1.01
-    sig[1]   6.69    0.05   1.19    4.8   5.85   6.54   7.36   9.38    632   1.01
-    rho      0.98  3.4e-4   0.01   0.95   0.98   0.98   0.99   0.99    925    1.0
-    C[0,0]  44.29     0.7  16.75  22.35  32.93  41.35  51.91  85.08    566   1.01
-    C[1,0]  44.42    0.71   17.0  22.21  32.95  41.37  52.05  85.95    566   1.01
-    C[0,1]  44.42    0.71   17.0  22.21  32.95  41.37  52.05  85.95    566   1.01
-    C[1,1]  46.15    0.73  17.57  23.07  34.21  42.81  54.23   88.0    577   1.01
-    lp__   -59.99    0.07   1.83 -64.36 -60.84 -59.61 -58.71 -57.67    748   1.01
+             mean se_mean     sd   2.5%    50%  97.5%  n_eff   Rhat
+    mu[0]   10.07    0.05    1.5    7.1  10.07   13.1    907    1.0
+    mu[1]   10.22    0.05   1.53   7.14   10.2  13.26    892    1.0
+    sig[0]   6.55    0.05   1.17   4.73   6.43   9.22    614   1.01
+    sig[1]   6.69    0.05   1.19    4.8   6.54   9.38    632   1.01
+    rho      0.98  3.4e-4   0.01   0.95   0.98   0.99    925    1.0
+    C[0,0]  44.29     0.7  16.75  22.35  41.35  85.08    566   1.01
+    C[1,0]  44.42    0.71   17.0  22.21  41.37  85.95    566   1.01
+    C[0,1]  44.42    0.71   17.0  22.21  41.37  85.95    566   1.01
+    C[1,1]  46.15    0.73  17.57  23.07  42.81   88.0    577   1.01
+    lp__   -59.99    0.07   1.83 -64.36 -59.61 -57.67    748   1.01
     
 
 But getting the 95% confidence intervals is something we could also do with frequentist statistics.  Let's get the full posterior distributions and plot those full distributions.  We'll plot the posterior distribution for \\(\rho\\), and also the distributions for \\(\mu\\) and \\(\sigma\\), just to make sure our model isn't doing anything crazy.
@@ -240,7 +241,7 @@ plt.show()
 
 
 ```python
-# Plot the posterior joint distribution for the means of the gaussian
+# Plot posterior for the means of the gaussian
 plt.figure()
 sb.kdeplot(samples['mu'][:,0], samples['mu'][:,1], 
            shade=True, shade_lowest=False, cbar=True)
@@ -297,7 +298,8 @@ plt.show()
 # Fit the Stan model
 data = {'N' : X.shape[0], #number of datapoints
         'X' : X} #the data
-fit = model_pc.sampling(data=data, iter=Niters, chains=Nchains, n_jobs=Nchains)
+fit = model_pc.sampling(data=data, iter=Niters, 
+                        chains=Nchains, n_jobs=Nchains)
 samples = fit.extract()
 
 # Plot the posterior distribution for the correlation coefficient
@@ -363,10 +365,11 @@ Each color in the above plot represents datapoints from different individuals or
 ```python
 # Compute Frequentist estimates of the correlation
 rho, pval = pearsonr(X[:,0], X[:,1])
-print('Pooled correlation coefficient: %0.3g ( p = %0.3g )' % (rho, pval))
+print('Pooled correlation coefficient: %0.3g ( p = %0.3g )' 
+      % (rho, pval))
 for iS in range(Ns):
     rho, pval = pearsonr(X[iS*N:iS*N+N,0], X[iS*N:iS*N+N,1])
-    print('Individual %d\'s correlation coefficient: %0.3g ( p = %0.3g )' 
+    print('Individual %d\'s corr coeff: %0.3g ( p = %0.3g )' 
           % ((iS+1), rho, pval))
 ```
 
@@ -387,7 +390,8 @@ data = {'N' : X.shape[0], #number of datapoints
         'X' : X}          #the data
 
 # Fit the model
-fit = model_pc.sampling(data=data, iter=Niters, chains=Nchains, n_jobs=Nchains)
+fit = model_pc.sampling(data=data, iter=Niters, 
+                        chains=Nchains, n_jobs=Nchains)
 
 # Get the MCMC samples (draws from the posterior distribution)
 samples = fit.extract()
@@ -421,7 +425,7 @@ data {
 
 parameters {
     vector[2] mu[Ni];               //per-individual mean
-    vector<lower=0>[2] sig[Ni];     //per-individual std dev of each variable
+    vector<lower=0>[2] sig[Ni];     //per-individual std dev
     real<lower=-1,upper=1> rho[Ni]; //per-individual Pearson's rho
     real<lower=-1,upper=1> mu_rho;  //mean of population rhos
     real<lower=0> sig_rho;          //std dev of population rhos
@@ -441,7 +445,7 @@ model {
     // Each individual rho is drawn from population distribution
     rho ~ normal(mu_rho, sig_rho);
     
-    // Each individual datapoint is drawn from its individual's distribution
+    // Each datapoint is drawn from its individual's distribution
     for (i in 1:N) {
         X[i] ~ multi_normal(mu[I[i]], C[I[i]]);
     }
@@ -458,7 +462,8 @@ data = {'N' : X.shape[0],        #number of datapoints
         'X' : X}                 #the datapoints
 
 # Fit the model
-fit = model_ml.sampling(data=data, iter=Niters, chains=Nchains, n_jobs=Nchains)
+fit = model_ml.sampling(data=data, iter=Niters, 
+                        chains=Nchains, n_jobs=Nchains)
 
 # Get the MCMC samples (draws from the posterior distribution)
 samples = fit.extract()
@@ -491,7 +496,7 @@ But that's not to say that *none* of the individuals or groups show a correlatio
 plt.figure()
 for iS in range(Ns):
     sb.kdeplot(samples['rho'][:,iS], shade=True)
-plt.title('Per-Individual Posterior Probability Distributions of Rho')
+plt.title('Per-Individual Posterior Distributions of Rho')
 plt.xlabel(r'$X_1$')
 plt.ylabel(r'$X_2$')
 plt.show()
@@ -554,10 +559,11 @@ Using frequentist statistics (without random effects, at least), we would see no
 ```python
 # Compute Frequentist estimates of the correlation
 rho, pval = pearsonr(X[:,0], X[:,1])
-print('Pooled correlation coefficient: %0.3g ( p = %0.3g )' % (rho, pval))
+print('Pooled correlation coefficient: %0.3g ( p = %0.3g )' 
+      % (rho, pval))
 for iS in range(Ns):
     rho, pval = pearsonr(X[iS*N:iS*N+N,0], X[iS*N:iS*N+N,1])
-    print('Individual %d\'s correlation coefficient: %0.3g ( p = %0.3g )'
+    print('Individual %d\'s corr coeff: %0.3g ( p = %0.3g )'
           % (iS+1, rho, pval))
 ```
 
@@ -578,7 +584,8 @@ data = {'N' : X.shape[0], #number of datapoints
         'X' : X} #the data
 
 # Fit the non-multilevel model
-fit = model_pc.sampling(data=data, iter=Niters, chains=Nchains, n_jobs=Nchains)
+fit = model_pc.sampling(data=data, iter=Niters, 
+                        chains=Nchains, n_jobs=Nchains)
 
 # Get the MCMC samples (draws from the posterior distribution)
 samples = fit.extract()
@@ -606,7 +613,8 @@ data = {'N' : X.shape[0], #number of datapoints
         'X' : X} #the datapoints
 
 # Fit the multilevel model
-fit = model_ml.sampling(data=data, iter=Niters, chains=Nchains, n_jobs=Nchains)
+fit = model_ml.sampling(data=data, iter=Niters, 
+                        chains=Nchains, n_jobs=Nchains)
 
 # Get the MCMC samples (draws from the posterior distribution)
 samples = fit.extract()
@@ -631,7 +639,7 @@ An additional advantage of the multilevel model is that information from the pop
 plt.figure()
 for iS in range(Ns):
     sb.kdeplot(samples['rho'][:,iS])
-plt.title('Per-Individual Posterior Probability Distributions of Rho')
+plt.title('Per-Individual Posterior Distributions of Rho')
 plt.xlabel('Pearson Correlation Coefficient')
 plt.ylabel('Posterior Probability')
 plt.title('Multilevel Model Per-Individual Estimates of Rho')
@@ -738,7 +746,7 @@ data {
 
 parameters {
     vector[2] mu[Ni];               //per-individual mean
-    vector<lower=0>[2] sig[Ni];     //per-individual std dev of each variable
+    vector<lower=0>[2] sig[Ni];     //per-individual std dev
     real<lower=-1,upper=1> rho[Ni]; //per-individual Pearson's rho
     real<lower=-1,upper=1> mu_rho;  //mean of population rhos
     real<lower=0> sig_rho;          //std dev of population rhos
@@ -758,7 +766,7 @@ model {
     // Each individual rho is drawn from population distribution
     rho ~ normal(mu_rho, sig_rho);
 
-    // Each individual datapoint is drawn from its individual's distribution
+    // Each datapoint is drawn from its individual's distribution
     for (i in 1:N) {
         X[i] ~ multi_student_t(1, mu[I[i]], C[I[i]]);
     }
@@ -829,7 +837,7 @@ plt.show()
 plt.figure()
 for iS in range(Ns):
     sb.kdeplot(samples['rho'][:,iS])
-plt.title('Per-Individual Posterior Probability Distributions of Rho')
+plt.title('Per-Individual Posterior Distributions of Rho')
 plt.xlabel('Pearson Correlation Coefficient')
 plt.ylabel('Posterior Probability')
 plt.title('Robust Per-Individual Estimates of Rho')
@@ -853,10 +861,11 @@ data = {'N' : X.shape[0], #number of datapoints
         'Ni': len(np.unique(I)), #number of individuals
         'I' : I, #subject of each datapoint
         'X' : X} #the datapoints
-fit = model_ml.sampling(data=data, iter=Niters, chains=Nchains, n_jobs=Nchains)
+fit = model_ml.sampling(data=data, iter=Niters, 
+                        chains=Nchains, n_jobs=Nchains)
 samples = fit.extract()
 
-# Plot the posterior distribution for the population correlation coefficient
+# Plot posterior for the population correlation coefficient
 plt.figure()
 sb.distplot(samples['mu_rho'])
 plt.title('NON-Robust Estimate of Rho across the Population')
@@ -868,7 +877,7 @@ plt.show()
 plt.figure()
 for iS in range(Ns):
     sb.kdeplot(samples['rho'][:,iS])
-plt.title('Per-Individual Posterior Probability Distributions of Rho')
+plt.title('Per-Individual Posterior Distributions of Rho')
 plt.xlabel('Pearson Correlation Coefficient')
 plt.ylabel('Posterior Probability')
 plt.title('NON-Robust Per-Individual Estimates of Rho')
@@ -903,18 +912,17 @@ Note that to answer the *causal* question "does increased funding *cause* an inc
 ```python
 # Load Massachusetts Public School data
 df = pd.read_csv('../input/MA_Public_Schools_2017.csv')
-```
 
-
-```python
 # Plot distribution of Expenditures per Pupil
 costs = df['Average Expenditures per Pupil']
 sb.distplot(costs.dropna())
 plt.show()
 
 # Print the number of empty entries for this column
-print('Number of nan Expenditures', costs.isnull().sum())
-print('Percent nan Expenditures', 100*costs.isnull().sum()/df.shape[0])
+print('Number of nan Expenditures', 
+      costs.isnull().sum())
+print('Percent nan Expenditures', 
+      100*costs.isnull().sum()/df.shape[0])
 ```
 
 
@@ -948,7 +956,8 @@ print('Percent nan PPI', 100*ppi.isnull().sum()/df.shape[0])
 
 ```python
 # Group schools by 1st 3 digits of zip code
-df['ZipGroup'], _ = pd.factorize(df['Zip'].apply(lambda x: ("%05d" % x)[:3]))
+df['ZipGroup'], _ = pd.factorize(df['Zip']
+                                 .apply(lambda x: ("%05d"%x)[:3]))
 df['ZipGroup'] = df['ZipGroup'] + 1 #start indexing at 1
 
 # Plot the number of schools per zip group
@@ -986,7 +995,8 @@ It looks like there *might* be a correlation there - especially given the perfor
 # Compute poooled correlation w/ frequentist pval
 k = ~np.isnan(costs) & ~np.isnan(ppi)
 rho, pval = pearsonr(costs[k], ppi[k])
-print('Pooled correlation coefficient: %0.3g ( p = %0.3g )' % (rho, pval))
+print('Pooled correlation coefficient: %0.3g ( p = %0.3g )'
+      % (rho, pval))
 ```
 
     Pooled correlation coefficient: 0.061 ( p = 0.0171 )
@@ -998,7 +1008,7 @@ We'll cheat a bit here and define a new model which is the same as our previous 
 
 
 ```python
-#STAN code string for a robust two-level Pearson correlation with priors!
+#STAN code string for a robust two-level Pearson correlation
 RobustCorrelation = """
 data {
     int<lower=0> N;    //number of datapoints
@@ -1029,7 +1039,7 @@ model {
     // Each individual rho is drawn from population distribution
     rho ~ normal(mu_rho, sig_rho);
 
-    // Each individual datapoint is drawn from its individual's distribution
+    // Each  datapoint is drawn from its individual's distribution
     for (i in 1:N) {
         X[i] ~ multi_student_t(1, mu, C[I[i]]);
     }
@@ -1045,7 +1055,7 @@ There's a few empty values in the expenditures and performance index columns, so
 
 
 ```python
-# Only keep schools which have both expenditures and performance data
+# Only keep schools w/ both expenditures and performance data
 datacols = ['Average Expenditures per Pupil',
             'Progress and Performance Index (PPI) - All Students']
 sdf = df.dropna(subset=datacols)
@@ -1092,7 +1102,8 @@ Getting the full posterior distribution also allows us to make inferences about 
 
 ```python
 print("%0.2g%% of posterior is >0.1" % 
-      (100*np.sum(samples['mu_rho']>0.1)/samples['mu_rho'].shape[0]))
+      (100*np.sum(samples['mu_rho']>0.1)
+       /samples['mu_rho'].shape[0]))
 ```
 
     30% of posterior is >0.1
@@ -1106,7 +1117,7 @@ But, those numbers are across the entire state of Massachusetts. What if you are
 plt.figure()
 for iS in range(len(sdf['ZipGroup'].unique())):
     sb.kdeplot(samples['rho'][:,iS])
-plt.title('Posterior Probability Distributions of Rho for each ZIP group')
+plt.title('Posterior Distributions of Rho for each ZIP group')
 plt.xlabel('Pearson Correlation Coefficient')
 plt.ylabel('Posterior Probability')
 plt.title('Robust Per-Group Estimates of Rho')
