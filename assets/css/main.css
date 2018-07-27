@@ -52,14 +52,14 @@
 }
 
 section {
-  max-width:600px;
+  width:600px;
 }
 
 .wrapper {
   width:960px;
 }
 
-@media print, screen and (max-width: 1060px) {
+@media print, screen and (max-width: 1160px) {
 
   div.wrapper {
     width:auto;
