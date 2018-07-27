@@ -52,6 +52,9 @@
 }
 
 section {
-  width:800px;
+  width:700px;
 }
 
+.wrapper {
+  width:1060px;
+}
