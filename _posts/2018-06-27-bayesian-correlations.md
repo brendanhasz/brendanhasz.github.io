@@ -256,7 +256,7 @@ plt.show()
 
 
 ```python
-# Plot the posterior joint distribution for the standard deviations of the gaussian
+# Plot posterior for the std devs of the gaussian
 plt.figure()
 sb.kdeplot(samples['sig'][:,0], samples['sig'][:,1], 
            n_levels=5, cbar=True)
@@ -333,7 +333,7 @@ Let's generate some dummy data where we know there is *no correlation* across th
 
 
 ```python
-# Create and plot dummy data w/ pooled correlation but no population correlation
+# Create and plot dummy data w/ pooled corr but no pop corr
 N = 10
 Ns = 5
 X = np.zeros((N*Ns,2))
@@ -366,7 +366,8 @@ rho, pval = pearsonr(X[:,0], X[:,1])
 print('Pooled correlation coefficient: %0.3g ( p = %0.3g )' % (rho, pval))
 for iS in range(Ns):
     rho, pval = pearsonr(X[iS*N:iS*N+N,0], X[iS*N:iS*N+N,1])
-    print('Individual %d\'s correlation coefficient: %0.3g ( p = %0.3g )' % ((iS+1), rho, pval))
+    print('Individual %d\'s correlation coefficient: %0.3g ( p = %0.3g )' 
+          % ((iS+1), rho, pval))
 ```
 
     Pooled correlation coefficient: 0.881 ( p = 3.49e-17 )
@@ -509,7 +510,7 @@ for iS in range(Ns):
     sb.kdeplot(samples['mu'][:,iS,0], samples['mu'][:,iS,1], 
                shade=True, shade_lowest=False, cmap=cmaps[iS])
     plt.plot(X[iS*N:iS*N+N,0], X[iS*N:iS*N+N,1], '.')
-plt.title('Per-Individual Joint Posterior Probability Distributions of the Means')
+plt.title('Per-Individual Joint Posterior of the Means')
 plt.xlabel(r'$X_1$')
 plt.ylabel(r'$X_2$')
 plt.show()
@@ -523,7 +524,7 @@ What about when there *is* a positive correlation at the population level, but i
 
 
 ```python
-# Create and plot dummy data w/ no pooled correlation but a population correlation
+# Create and plot dummy data w/ no pooled corr but pop corr
 N = 3
 Ns = 5
 X = np.zeros((N*Ns,2))
@@ -556,7 +557,8 @@ rho, pval = pearsonr(X[:,0], X[:,1])
 print('Pooled correlation coefficient: %0.3g ( p = %0.3g )' % (rho, pval))
 for iS in range(Ns):
     rho, pval = pearsonr(X[iS*N:iS*N+N,0], X[iS*N:iS*N+N,1])
-    print('Individual %d\'s correlation coefficient: %0.3g ( p = %0.3g )' % (iS+1, rho, pval))
+    print('Individual %d\'s correlation coefficient: %0.3g ( p = %0.3g )'
+          % (iS+1, rho, pval))
 ```
 
     Pooled correlation coefficient: 0.095 ( p = 0.736 )
@@ -650,7 +652,8 @@ for iS in range(Ns):
     tX = X[iS*N:iS*N+N,:] #data for this subject
     data = {'N' : tX.shape[0],
             'X' : tX}
-    fit = model_pc.sampling(data=data, iter=Niters, chains=Nchains, n_jobs=Nchains)
+    fit = model_pc.sampling(data=data, iter=Niters, 
+                            chains=Nchains, n_jobs=Nchains)
     samples = fit.extract()
     sb.kdeplot(samples['rho'])
 plt.xlabel('Pearson Correlation Coefficient')
@@ -771,7 +774,7 @@ Let's create some dummy data where we *know* there's a correlation at the popula
 
 
 ```python
-# Create and plot dummy data w/ no pooled correlation but a population correlation
+# Create and plot dummy data w/ no pooled corr but a pop corr
 N = 5
 Ns = 5
 X = np.zeros((N*Ns,2))
@@ -810,10 +813,11 @@ data = {'N' : X.shape[0], #number of datapoints
         'Ni': len(np.unique(I)), #number of individuals
         'I' : I, #subject of each datapoint
         'X' : X} #the datapoints
-fit = model_rml.sampling(data=data, iter=Niters, chains=Nchains, n_jobs=Nchains)
+fit = model_rml.sampling(data=data, iter=Niters, 
+                         chains=Nchains, n_jobs=Nchains)
 samples = fit.extract()
 
-# Plot the posterior distribution for the population correlation coefficient
+# Plot the posterior for the population correlation coefficient
 plt.figure()
 sb.distplot(samples['mu_rho'])
 plt.title('Robust Estimate of Rho across the Population')
@@ -1054,13 +1058,14 @@ data = {'N' : sdf.shape[0], #number of schools
         'Ni': len(sdf['ZipGroup'].unique()), #number of zip groups
         'I' : sdf['ZipGroup'], #zip group index of each school
         'X' : sdf[datacols].values} #the datapoints
-fit = model_rml.sampling(data=data, iter=Niters, chains=Nchains, n_jobs=Nchains)
+fit = model_rml.sampling(data=data, iter=Niters, 
+                         chains=Nchains, n_jobs=Nchains)
 samples = fit.extract()
 
-# Plot the posterior distribution for the across-group mean correlation coefficient
+# Plot posterior for the across-group mean correlation coefficient
 plt.figure()
 sb.distplot(samples['mu_rho'])
-plt.title(r'Robust Estimate of $\mu_\rho$ across the entire state of Massachusetts')
+plt.title(r'Robust Estimate of $\mu_\rho$ across Massachusetts')
 plt.xlabel('Group Mean Pearson Correlation Coefficient')
 plt.ylabel('Posterior Probability')
 plt.show()
