@@ -32,7 +32,8 @@ sns.set()
 
 
 ```python
-PK = pd.read_csv('fatal-police-shootings-data.csv', encoding='latin1')
+PK = pd.read_csv('fatal-police-shootings-data.csv', 
+                 encoding='latin1')
 ```
 
 
@@ -266,7 +267,7 @@ output_notebook()
 # Functions to convert lat and lon to Mercator coords
 def lat_to_mercY(lat):
     """Convert Latitude to Mercator Y"""
-    return np.log(np.tan(np.pi / 4 + np.radians(lat) / 2)) * 6378137.0
+    return np.log(np.tan(np.pi/4+np.radians(lat)/2))*6378137.0
 
 def lon_to_mercX(lon):
     """Convert Longitude to Mercator X"""
@@ -276,10 +277,10 @@ def lon_to_mercX(lon):
 PK['citystate'] = PK.city.astype(str)+' '+PK.state.astype(str)
 PKc = PK.citystate.value_counts().to_frame()
 
-# Look up latitude and longitude of each city using OSM geocoding
+# Look up latitude + longitude of cities w/ OSM geocoding
 cities = [c.replace(' ', '%20') for c in PKc.index.tolist()]
-Surl = 'http://nominatim.openstreetmap.org/search/' #search part of url
-Furl = '%20USA?format=json' #format part of url
+Surl = 'http://nominatim.openstreetmap.org/search/'
+Furl = '%20USA?format=json'
 X = []
 Y = []
 for c in cities:
@@ -288,7 +289,7 @@ for c in cities:
             data = json.loads(url.read().decode())
         X.append(float(data[0]['lon']))
         Y.append(float(data[0]['lat']))
-    except (IndexError, UnicodeEncodeError): #could not geocode this city
+    except (IndexError, UnicodeEncodeError): #couldn't geocode city
         X.append(np.nan)
         Y.append(np.nan)
 
@@ -307,7 +308,8 @@ tooltips=[('People shot', "@num_shot"),
 
 # Plot the points
 p = figure(plot_width=800, plot_height=500, 
-           x_range=(-7300000, -14500000), y_range=(2500000,7000000),
+           x_range=(-7300000, -14500000), 
+           y_range=(2500000,7000000),
            title='Police Shootings by City', 
            active_scroll="wheel_zoom", tooltips=tooltips)
 p.add_tile(CARTODBPOSITRON_RETINA) #set background map
@@ -330,7 +332,8 @@ plt.title('Manner of death')
 for p in ax.patches:
     x = p.get_bbox().get_points()[:,0]
     y = p.get_bbox().get_points()[1,1]
-    ax.annotate('{:.2g}%'.format(100.*y/len(PK)), (x.mean(), y), ha='center', va='bottom')
+    ax.annotate('{:.2g}%'.format(100.*y/len(PK)), 
+                (x.mean(), y), ha='center', va='bottom')
 plt.show()
 ```
 
@@ -733,7 +736,8 @@ ax = sns.countplot(x = "gender", data = PK,
 for p in ax.patches:
     x = p.get_bbox().get_points()[:,0]
     y = p.get_bbox().get_points()[1,1]
-    ax.annotate('{:.2g}%'.format(100.*y/len(PK)), (x.mean(), y), ha='center', va='bottom')
+    ax.annotate('{:.2g}%'.format(100.*y/len(PK)), 
+                (x.mean(), y), ha='center', va='bottom')
 plt.title('Police Killings by Gender')
 plt.show()
 ```
@@ -749,7 +753,7 @@ First let's define a function which will return a dataframe with the actual perc
 
 ```python
 def ActualVsPopulation(df, pop, group):
-    """Get dataframe with actual per-group percentage vs population group percentage"""
+    """Get actual per-group % vs population group % """
     d = {group: [], 'type': [], 'percent': []}
     tot_pop = float(sum(pop.values()))
     for g in df[group].dropna().unique(): #for each group
@@ -757,11 +761,13 @@ def ActualVsPopulation(df, pop, group):
         # Actual percentages
         d[group].append(g)
         d['type'].append('Killings')
-        d['percent'].append(100*df[df[group]==g].id.count()/df.id.count())
+        d['percent'].append(100
+                            * df[df[group]==g].id.count()
+                            / df.id.count())
 
-        # Percentages if statistic followed population distribution
+        # Percentages if statistic followed pop distribution
         d[group].append(g)
-        d['type'].append('Population') #based on population percentage
+        d['type'].append('Population') #based on pop %age
         d['percent'].append(100*pop[g]/tot_pop)
         
     return pd.DataFrame(data=d)
@@ -772,10 +778,13 @@ Now we can see the actual killings distribution versus the population distributi
 
 ```python
 # Plot percent police killings by gender vs population percentages
-pop_g = {'M': 49.2, 'F': 50.8} #percent population by gender https://www.census.gov/quickfacts/fact/table/US
+# Data from: https://www.census.gov/quickfacts/fact/table/US
+pop_g = {'M': 49.2, 'F': 50.8} #percent population by gender 
 df = ActualVsPopulation(PK, pop_g, 'gender')
-sns.barplot(x="gender", y="percent", hue="type", data=df, palette=["r", "C0"])
-plt.title('Actual Police Killings vs Population Distribution (by Gender)')
+sns.barplot(x="gender", y="percent", hue="type", 
+            data=df, palette=["r", "C0"])
+plt.title('Actual Police Killings vs Population Distribution' +
+          ' (by Gender)')
 plt.show()
 ```
 
@@ -793,7 +802,8 @@ ax = sns.countplot(x="race", data=PK,
 for p in ax.patches:
     x = p.get_bbox().get_points()[:,0]
     y = p.get_bbox().get_points()[1,1]
-    ax.annotate('{:.2g}%'.format(100.*y/len(PK)), (x.mean(), y), ha='center', va='bottom')
+    ax.annotate('{:.2g}%'.format(100.*y/len(PK)), 
+                (x.mean(), y), ha='center', va='bottom')
 plt.title('Police Killings by Race')
 plt.show()
 ```
