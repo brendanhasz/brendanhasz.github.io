@@ -817,16 +817,19 @@ How does this match up to the population distribution?
 
 ```python
 # Plot percent police killings by race vs population percentages
-pop_r = {'W': 60.7, # white - % population by race https://www.census.gov/quickfacts/fact/table/US
+# Data from: https://www.census.gov/quickfacts/fact/table/US
+pop_r = {'W': 60.7, # white - % population by race 
          'B': 13.4, # black or african american
          'H': 18.1, # hispanic or latino
          'A': 5.8,  # asian
          'N': 1.5,  # american indian, alaska native, naitive hawaiian, and other pacific islander
          'O': 0.5}  # other
 df = ActualVsPopulation(PK, pop_r, 'race')
+order = PK.race.value_counts().index, palette=["r", "C0"]
 sns.barplot(x="race", y="percent", hue="type", data=df,
-            order = PK.race.value_counts().index, palette=["r", "C0"])
-plt.title('Actual Police Killings vs Population Distribution (by Race)')
+            order = order)
+plt.title('Actual Police Killings vs Population Distribution' +
+          ' (by Race)')
 plt.show()
 ```
 
@@ -912,10 +915,12 @@ pop_s ={'AL': 4874747,
 
 # Plot percent police killings by state vs population percentages
 df = ActualVsPopulation(PK, pop_s, 'state')
+order = PK.state.value_counts().index, palette=["r", "C0"]
 plt.figure(figsize=(6, 13))
 sns.barplot(y="state", x="percent", hue="type", data=df,
-            order = PK.state.value_counts().index, palette=["r", "C0"])
-plt.title('Actual Police Killings vs Population Distribution (by State)')
+            order = order)
+plt.title('Actual Police Killings vs Population Distribution' +
+          ' (by State)')
 plt.show()
 ```
 
@@ -1002,12 +1007,14 @@ Let's plot that metric for each state, to see which states have less police kill
 
 
 ```python
+# National average rate of police shootings per person
+natl_rate = PK.shape[0]/sum(pop_s.values()) 
+
 # Compute the cumulative Poisson distribution value for each state
-natl_rate = PK.shape[0]/sum(pop_s.values()) #national average rate of police shootings per person
 cum_poisson_vals = [] #to store cumulative poisson values
 for state in pop_s.keys():
-    lam = natl_rate*pop_s[state] #num shootings for this state if rate matched national avg (lambda)
-    k = PK[PK.state==state].shape[0] #actual number of shootings in this state
+    lam = natl_rate*pop_s[state] #shootings if matched avg (lambda)
+    k = PK[PK.state==state].shape[0] #actual number of shootings
     cum_poisson_vals.append(poisson.cdf(k, lam))
 
 # Plot cumulative Poisson distribution values
@@ -1022,11 +1029,13 @@ ax.set_yticks(y)
 ax.set_yticklabels(EK.state)
 ax.invert_yaxis()
 plt.plot([0.5, 0.5], [y[0]-1, y[-1]+1], 'k', linewidth=2)
-plt.title('Police Shootings: Cumulative Probability\ngiven national average, by State')
+plt.title('Police Shootings: Cumulative Probability\n' +
+          'given national average, by State')
 plt.ylabel('State')
 plt.xlabel('Cumulative Poisson Probability')
 plt.text(0.505, y[0]-1.5, 
-         r'Less shootings \\( \leftarrow \\) \\( \rightarrow \\) More shootings',
+         (r'Less shootings \\( \leftarrow \\)' + 
+          r'\\( \rightarrow \\) More shootings'),
          horizontalalignment='center', color='gray')
 plt.show()
 ```
@@ -1044,8 +1053,8 @@ We can plot the same statistic per race to see how racially biased police shooti
 # Compute the cumulative Poisson distribution value for each race
 cum_poisson_vals = []
 for race in pop_r.keys():
-    lam = PK.shape[0]*pop_r[race]/100 #num shootings of people of this race if killings were random (lambda)
-    k = PK[PK.race==race].shape[0] #actual number of shootings of people of this race
+    lam = PK.shape[0]*pop_r[race]/100 #shootings if matched avg
+    k = PK[PK.race==race].shape[0] #actual number of shootings
     cum_poisson_vals.append(poisson.cdf(k, lam))
 
 # Plot cumulative Poisson distribution values
@@ -1060,11 +1069,13 @@ ax = plt.gca()
 ax.set_yticks(y)
 ax.set_yticklabels(EK.race)
 ax.invert_yaxis()
-plt.title('Police Shootings: Cumulative Probability\ngiven national average, by Race')
+plt.title('Police Shootings: Cumulative Probability\n' +
+          'given national average, by Race')
 plt.ylabel('Race')
 plt.xlabel('Cumulative Poisson Probability')
 plt.text(0.506, y[0]-0.75, 
-         r'Less shootings \\( \leftarrow \\) \\( \rightarrow \\) More shootings',
+         (r'Less shootings \\( \leftarrow \\)' + 
+          r'\\( \rightarrow \\) More shootings'),
          horizontalalignment='center', color='gray')
 plt.show()
 ```
@@ -1089,8 +1100,9 @@ And now we can see how the shooting frequency has changed over time:
 ```python
 # Plot shootings by month
 plt.figure(figsize=(5,8))
-sns.countplot(y=PK.date.dt.strftime('%Y %m %B'), 
-              order=sorted(PK.date.dt.strftime('%Y %m %B').unique()))
+order = sorted(PK.date.dt.strftime('%Y %m %B').unique())
+sns.countplot(y = PK.date.dt.strftime('%Y %m %B'), 
+              order = order)
 plt.title('Police Killings By Month since start of dataset')
 plt.show()
 ```
@@ -1107,7 +1119,8 @@ We can also look at the number of killings as a function of the day of the week.
 ```python
 # Plot shootings by day of week
 dow_map={0:'M', 1:'T', 2:'W', 3:'Th', 4:'F', 5:'Sa', 6:'Su'}
-sns.countplot(x=PK.date.dt.dayofweek.map(dow_map), order=dow_map.values())
+sns.countplot(x=PK.date.dt.dayofweek.map(dow_map), 
+              order=dow_map.values())
 plt.title('Police Killings By Day of Week')
 plt.show()
 ```
@@ -1127,8 +1140,10 @@ ax = sns.countplot(x='signs_of_mental_illness', data=PK)
 for p in ax.patches:
     x = p.get_bbox().get_points()[:,0]
     y = p.get_bbox().get_points()[1,1]
-    ax.annotate('{:.2g}%'.format(100.*y/len(PK)), (x.mean(), y), ha='center', va='bottom')
-plt.title('Individuals showing signs of mental illness\nwhen shot by police')
+    ax.annotate('{:.2g}%'.format(100.*y/len(PK)), 
+                (x.mean(), y), ha='center', va='bottom')
+plt.title('Individuals showing signs of mental illness\n'+
+          'when shot by police')
 plt.show()
 ```
 
@@ -1145,7 +1160,8 @@ ax = sns.countplot(x='flee', data=PK)
 for p in ax.patches:
     x = p.get_bbox().get_points()[:,0]
     y = p.get_bbox().get_points()[1,1]
-    ax.annotate('{:.2g}%'.format(100.*y/len(PK)), (x.mean(), y), ha='center', va='bottom')
+    ax.annotate('{:.2g}%'.format(100.*y/len(PK)), 
+                (x.mean(), y), ha='center', va='bottom')
 plt.title('Method of fleeing\nwhen shot by police')
 plt.show()
 ```
@@ -1163,8 +1179,10 @@ ax = sns.countplot(x='body_camera', data=PK)
 for p in ax.patches:
     x = p.get_bbox().get_points()[:,0]
     y = p.get_bbox().get_points()[1,1]
-    ax.annotate('{:.2g}%'.format(100.*y/len(PK)), (x.mean(), y), ha='center', va='bottom')
-plt.title('Whether an officer was wearing a body camera \nat the time of the shooting')
+    ax.annotate('{:.2g}%'.format(100.*y/len(PK)), 
+                (x.mean(), y), ha='center', va='bottom')
+plt.title('Whether an officer was wearing a body camera'+
+          '\nat the time of the shooting')
 plt.show()
 ```
 
@@ -1181,10 +1199,12 @@ pcPK = PK.groupby('state').agg({'body_camera': 'mean'})
 
 # Plot percent shootings w/ body camera by state
 plt.figure(figsize=(6, 13))
-sns.barplot(y=pcPK.index, 
-            x=100.*pcPK.values.flatten(),
-            order=pcPK.body_camera.sort_values(ascending=False).index)
-plt.title('Percent of Police Killings\nwith body camera, by State')
+order = pcPK.body_camera.sort_values(ascending=False).index
+sns.barplot(y = pcPK.index, 
+            x = 100.*pcPK.values.flatten(),
+            order = order)
+plt.title('Percent of Police Killings\n' + 
+          'with body camera, by State')
 plt.xlabel('Percent of Shootings with body camera')
 plt.xlim([0, 100])
 plt.show()
