@@ -419,7 +419,7 @@ plt.show()
 ```
 
 
-![svg](output_11_0.svg)
+![svg](/assets/img/nice-ride-eda/output_11_0.svg)
 
 
 
@@ -579,7 +579,7 @@ plt.show()
 ```
 
 
-![svg](output_20_0.svg)
+![svg](/assets/img/nice-ride-eda/output_20_0.svg)
 
 
 It looks like 15 is the standard station size, but with additional 4-dock add-ons (since there's also a bunch of stations with 19 docks, then less with 23, etc).  If the docks are most available/cheapest with 15-plus-increments-of-4 docks, then we'll have to take that into consideration later on, when we try to optimize the number of docks at each station.
@@ -644,7 +644,7 @@ plt.show()
 ```
 
 
-![svg](output_26_0.svg)
+![svg](/assets/img/nice-ride-eda/output_26_0.svg)
 
 
 And the number of trips which *end* at each station?
@@ -661,7 +661,7 @@ plt.show()
 ```
 
 
-![svg](output_28_0.svg)
+![svg](/assets/img/nice-ride-eda/output_28_0.svg)
 
 
 Nice Ride MN has to re-distribute bikes from stations which have extra bikes to stations which don't have enough.  Stations which have more rides ending at that station than starting there will end up with extra bikes, and Nice Ride will have to re-distribute those extra bikes to the stations which are more empty!  What does this distribution look like? That is, which stations have more rides ending at that station than starting there, or vice versa? 
@@ -689,7 +689,7 @@ plt.show()
     
 
 
-![svg](output_30_1.svg)
+![svg](/assets/img/nice-ride-eda/output_30_1.svg)
 
 
 Luckily most stations have about as many rides ending there as starting from that station.  However, there are definitely a few stations which are imbalanced!  That is, there are some stations which have more *inbound* rides than *outbound* rides, or vice-versa.  But which ones are those?
@@ -794,7 +794,7 @@ plt.show()
 ```
 
 
-![svg](output_34_0.svg)
+![svg](/assets/img/nice-ride-eda/output_34_0.svg)
 
 
 There's not a really good match between the number of docks at each station and the overall difference in demand.  But don't go telling Nice Ride to re-allocate their docks just yet!  Keep in mind that we were looking at the *overall* difference in demand - but that difference in demand probably changes over time.  For example, some stations may have more outbound trips in the morning and more inbound trips in the evening, or vice-versa.
@@ -872,11 +872,11 @@ plt.show()
 ```
 
 
-![svg](output_38_0.svg)
+![svg](/assets/img/nice-ride-eda/output_38_0.svg)
 
 
 
-![svg](output_38_1.svg)
+![svg](/assets/img/nice-ride-eda/output_38_1.svg)
 
 
 This station sees a large volume of both inbound and outbound rentals over the course of a day.  But the balance between inbound and outbound trips isn't constant - it changes with time!  At around 8am, there are more people ending their rentals at the station, probably people who are commuting to work.  But at the end of the day, around 5p, people are usually *starting* their rentals from that station, probably for their commute home.
@@ -914,11 +914,11 @@ plt.show()
 ```
 
 
-![svg](output_40_0.svg)
+![svg](/assets/img/nice-ride-eda/output_40_0.svg)
 
 
 
-![svg](output_40_1.svg)
+![svg](/assets/img/nice-ride-eda/output_40_1.svg)
 
 
 Here the pattern is the opposite - more trips depart from the station in the morning and end there in the afternoon.  There's also a lot more inbound trips late into the evening.  That's probably students from the Univeristy of Minnesota coming home.
@@ -1077,11 +1077,11 @@ plt.show()
 ```
 
 
-![svg](output_46_0.svg)
+![svg](/assets/img/nice-ride-eda/output_46_0.svg)
 
 
 
-![svg](output_46_1.svg)
+![svg](/assets/img/nice-ride-eda/output_46_1.svg)
 
 
 Looking at the cumulative demand difference makes it obvious that a lot of bikes are being taken away from this station during the morning, and then brought back in the evening.  So if Nice Ride doesn't re-distribute bikes to this station, there will be a lot fewer bikes here between 9a and 4p than there are at night.
@@ -1114,7 +1114,7 @@ plt.show()
 ```
 
 
-![svg](output_48_0.svg)
+![svg](/assets/img/nice-ride-eda/output_48_0.svg)
 
 
 From this plot we can see which stations have the largest imbalances of incoming to outbound rides (stations with dark red or blue), the direction of that imbalance (red=more bikes, blue=less bikes), and at what time during the day that imbalance is the worst.  
@@ -1132,17 +1132,17 @@ $$
 
 where 
 
-- $L(N_0)$ is the loss of starting with N_0 docks at the beginning of the day
-- $D_t$ is the demand difference at time $t$ (inbound rides minus outbound rides)
-- $C_t$ is the cumulative demand difference ($C_t = \int_0^t D_x ~ dx$)
-- $N_d$ is the number of docks at the station
-- $\alpha$ is a parameter which controls how bad it is for a station to be full vs being empty
+- \\( L(N_0) \\) is the loss of starting with N_0 docks at the beginning of the day
+- \\( D_t \\) is the demand difference at time \\( t \\) (inbound rides minus outbound rides)
+- \\( C_t \\) is the cumulative demand difference (\\( C_t = \int_0^t D_x ~ dx \\))
+- \\( N_d \\) is the number of docks at the station
+- \\( \alpha \\) is a parameter which controls how bad it is for a station to be full vs being empty
 
-Let's look at each part of that overly-complicated equation.  The integral in the loss equation sums over all the hours of a day (but you could use a finer time bin if you wanted to).  The first half of what's inside the integral ($\alpha \max(0, D_t) \exp ( N_0 + C(t) - N_d )$) is a value which will be large when the station is close to being full and there are more inbound rides than outbound rides.  $\max(0, D_t)$ is just the difference in demand, but only when it's positive (and 0 when it's negative).  $N_0 + C(t) - N_d$ is the (negative of the) expected number of *empty docks* left at the station.  That way, when the expected number of empty docks at the station is very low, $\exp ( N_0 + C_t - N_d )$ will be very high, and vice-versa.  So, when the expected number of empty docks at the station is low *and* the number of inbound trips is high, the value of $\max(0, D_t) \exp ( N_0 + C_t - N_d )$ will be large.
+Let's look at each part of that overly-complicated equation.  The integral in the loss equation sums over all the hours of a day (but you could use a finer time bin if you wanted to).  The first half of what's inside the integral (\\( \alpha \max(0, D_t) \exp ( N_0 + C(t) - N_d ) \\)) is a value which will be large when the station is close to being full and there are more inbound rides than outbound rides.  \\( \max(0, D_t) \\) is just the difference in demand, but only when it's positive (and 0 when it's negative).  \\( N_0 + C(t) - N_d \\) is the (negative of the) expected number of *empty docks* left at the station.  That way, when the expected number of empty docks at the station is very low, \\( \exp ( N_0 + C_t - N_d ) \\) will be very high, and vice-versa.  So, when the expected number of empty docks at the station is low *and* the number of inbound trips is high, the value of \\( \max(0, D_t) \exp ( N_0 + C_t - N_d ) \\) will be large.
 
-But we also want to penalize having an empty station when people want to rent bikes!  The second half of what's in the integral ($- (1-\alpha) \min(0, D_t) \exp ( - N_0 - C_t )$) is a value which will be large when the station is close to being empty and there are more outbound rides than inbound rides.  $\min(0, D_t)$ is the difference in demand, but only when it's negative (and 0 when it's positive).  $(- N_0 - C_t)$ is the (negative of the) expected number of bikes left at the station.  That way, when the expected number of bikes available at a station is low, $\exp ( - N_0 - C_t )$ will be very high, and vice-versa.  So when the expected number of available bikes at the station is low *and* the number of outbound trips his high, the value of $- \min(0, D_t) \exp ( - N_0 - C_t )$ will be large.
+But we also want to penalize having an empty station when people want to rent bikes!  The second half of what's in the integral (\\( - (1-\alpha) \min(0, D_t) \exp ( - N_0 - C_t ) \\)) is a value which will be large when the station is close to being empty and there are more outbound rides than inbound rides.  \\( \min(0, D_t) \\) is the difference in demand, but only when it's negative (and 0 when it's positive).  \\( (- N_0 - C_t) \\) is the (negative of the) expected number of bikes left at the station.  That way, when the expected number of bikes available at a station is low, \\( \exp ( - N_0 - C_t ) \\) will be very high, and vice-versa.  So when the expected number of available bikes at the station is low *and* the number of outbound trips his high, the value of \\( - \min(0, D_t) \exp ( - N_0 - C_t ) \\) will be large.
 
-The $\alpha$ parameter controls how bad it is to have stations fill up with bikes compared to running out of bikes, and should take values between 0 and 1.  If $\alpha<0.5$, that means we consider it "more bad" when the station is empty but there are people wanting to rent from that station than when it is full and people are wanting to end their rides there.  I'm going to set $\alpha=0.3$, because to me it seems slightly worse to have a station be empty when someone wants to rent a bike than to have a station be full where someone wants to return a bike.  Either way the customer is pissed, but if the station they want to rent from is empty, they probably won't end up renting a bike, and Nice Ride will miss out on revenue.  If the station they want to return their bike to is full, they'll just have to find another station and return it there.
+The \\( \alpha \\) parameter controls how bad it is to have stations fill up with bikes compared to running out of bikes, and should take values between 0 and 1.  If \\( \alpha<0.5 \\), that means we consider it "more bad" when the station is empty but there are people wanting to rent from that station than when it is full and people are wanting to end their rides there.  I'm going to set \\( \alpha=0.3 \\), because to me it seems slightly worse to have a station be empty when someone wants to rent a bike than to have a station be full where someone wants to return a bike.  Either way the customer is pissed, but if the station they want to rent from is empty, they probably won't end up renting a bike, and Nice Ride will miss out on revenue.  If the station they want to return their bike to is full, they'll just have to find another station and return it there.
 
 (Keep in mind that optimizing this jerry-built loss function won't technically give us the "optimal" number of initial bikes.  To get that we would want to build a predictive model and run a full cost-benefit analysis.  More on that later.)
 
@@ -1200,7 +1200,7 @@ plt.show()
 ```
 
 
-![svg](output_52_0.svg)
+![svg](/assets/img/nice-ride-eda/output_52_0.svg)
 
 
 These values are a good first estimation at a target number of bikes for Nice Ride to have at each station at the end of the day.  However, keep in mind that Nice Ride's employees are re-distributing bikes throughout the day (and not all at once at midnight!).  An even more useful analysis would be to determine when Nice Ride employees should re-distribute bikes, and from/to which stations.  We won't do that here, but I hope to do that analysis in a future post.
@@ -1234,7 +1234,7 @@ plt.show()
 ```
 
 
-![svg](output_54_0.svg)
+![svg](/assets/img/nice-ride-eda/output_54_0.svg)
 
 
 The larger that demand range value is, the more docks the station should have in order to buffer that fluxuation in the number of bikes at the station.
@@ -1280,7 +1280,7 @@ plt.show()
 ```
 
 
-![svg](output_56_0.svg)
+![svg](/assets/img/nice-ride-eda/output_56_0.svg)
 
 
 There's not a great match between the number of docks and the demand range.  Ideally, those two distributions would look similar.  But it's not an awful match, either - notice how the stations with the lowest demand range usually have the smallest number of docks, and stations with the highest demand range usually have the most docks.
@@ -1314,7 +1314,7 @@ flow = (
 )
 ```
 
-What does the distribution of trips look like?  We can visualize this information as a matrix, where each row corresponds to trips *from* a given station, and each column corresponds to trips *to* a given station.  So the value in row $i$, column $j$, is the number of trips from station number $i$ to station number $j$.
+What does the distribution of trips look like?  We can visualize this information as a matrix, where each row corresponds to trips *from* a given station, and each column corresponds to trips *to* a given station.  So the value in row \\( i \\), column \\( j \\), is the number of trips from station number \\( i \\) to station number \\( j \\).
 
 
 ```python
@@ -1335,7 +1335,7 @@ plt.show()
 ```
 
 
-![svg](output_61_0.svg)
+![svg](/assets/img/nice-ride-eda/output_61_0.svg)
 
 
 There's a clear diagonal line across the plot - this indicates that many trips end at the same station at which they started, because the diagonal corresponds to where the row number is the same as the column number (the start station is the same as the end station).
@@ -1359,7 +1359,7 @@ plt.show()
 ```
 
 
-![svg](output_63_0.svg)
+![svg](/assets/img/nice-ride-eda/output_63_0.svg)
 
 
 Nope - most trips don't actually return to the station they started from.  But how popular is the most popular destination from each station relative to coming back to that station?
@@ -1384,7 +1384,7 @@ plt.show()
 ```
 
 
-![svg](output_65_0.svg)
+![svg](/assets/img/nice-ride-eda/output_65_0.svg)
 
 
 Coming back to the same station is the most popular trip, although there are nearly as many trips as to a second-most-popular station.
@@ -1419,7 +1419,7 @@ plt.show()
 ```
 
 
-![svg](output_67_0.svg)
+![svg](/assets/img/nice-ride-eda/output_67_0.svg)
 
 
 
@@ -1459,7 +1459,7 @@ plt.show()
     
 
 
-![svg](output_68_1.svg)
+![svg](/assets/img/nice-ride-eda/output_68_1.svg)
 
 
 The flow patterns between stations are somewhat clustered.  Stations in St. Paul see more traffic between themselves than to stations in Minneapolis (the cluster on the upper left in the matrix plot and the green cluster at the bottom in the dendrogram).  Stations on the University of Minnesota campus see lots of traffic between themselves (the cluster on the middle in the matrix plot), and stations in downtown Minneapolis see mostly traffic between themselves (large cluster in the lower-right).  However, these clusters aren't completely distinct, and there is obviously a lot of traffic even between stations not in the same "cluster", especially across Minneapolis.
@@ -1613,7 +1613,7 @@ plt.show()
 ```
 
 
-![svg](output_76_0.svg)
+![svg](/assets/img/nice-ride-eda/output_76_0.svg)
 
 
 <a id='ride-season'></a>
@@ -1646,7 +1646,7 @@ plt.show()
 ```
 
 
-![svg](output_80_0.svg)
+![svg](/assets/img/nice-ride-eda/output_80_0.svg)
 
 
 The most popular month to rent is July, though there are still a lot of rentals in non-prime months - there are still almost half as many rentals in April and October as in July.
@@ -1665,7 +1665,7 @@ plt.show()
 ```
 
 
-![svg](output_82_0.svg)
+![svg](/assets/img/nice-ride-eda/output_82_0.svg)
 
 
 
@@ -1689,7 +1689,7 @@ plt.show()
 ```
 
 
-![svg](output_83_0.svg)
+![svg](/assets/img/nice-ride-eda/output_83_0.svg)
 
 
 Like the plot by months, we can see that the number of rentals ramps up and then down again over the course of the summer, with peak rentals on the week leading up to the 4th of July.  There's also a clear increase in the number of rentals on holiday weekends.
@@ -1710,7 +1710,7 @@ plt.show()
 ```
 
 
-![svg](output_85_0.svg)
+![svg](/assets/img/nice-ride-eda/output_85_0.svg)
 
 
 Indeed it looks like there are more rentals on the weekends (and Fridays) than during weekdays, though not by all that much.
@@ -1754,7 +1754,7 @@ plt.show()
 ```
 
 
-![svg](output_90_0.svg)
+![svg](/assets/img/nice-ride-eda/output_90_0.svg)
 
 
 
@@ -1769,7 +1769,7 @@ plt.show()
 ```
 
 
-![svg](output_91_0.svg)
+![svg](/assets/img/nice-ride-eda/output_91_0.svg)
 
 
 How does the temperature correlate with the number of rides in a day?  We'll plot the number of rides per day against the daily high temperature (which probably more closely reflects the temperature during most rides than the daily low temperature). 
@@ -1806,7 +1806,7 @@ plt.show()
 ```
 
 
-![svg](output_94_0.svg)
+![svg](/assets/img/nice-ride-eda/output_94_0.svg)
 
 
 It definitely looks like people ride more often when it's warmer.  Though the peak riding temperature may be around 75-80 degrees, because the number of rides per day appear to peter off when temperatures get into the 90's.
@@ -1827,7 +1827,7 @@ plt.show()
 ```
 
 
-![svg](output_96_0.svg)
+![svg](/assets/img/nice-ride-eda/output_96_0.svg)
 
 
 Precipitation didn't have as large an effect on the number of rentals as one might expect.  Even on days with two inches of rain, there are only about 1/3rd less rentals than average.  This could be due to the possibility that, even on days with a large amount of precipitation, it may not have been raining *all* day.  Rentals could still be happening at their normal rates for the part of the day without rain.
@@ -1854,7 +1854,7 @@ plt.show()
 ```
 
 
-![svg](output_98_0.svg)
+![svg](/assets/img/nice-ride-eda/output_98_0.svg)
 
 
 There may be a small correlation between the temperature and ride duration, but if so the effect isn't very large.
@@ -1878,7 +1878,7 @@ plt.show()
 ```
 
 
-![svg](output_100_0.svg)
+![svg](/assets/img/nice-ride-eda/output_100_0.svg)
 
 
 There may be a negative correlation between precipitation and ride duration, but again, if there is one it's very small.  This is more obvious when comparing ride durations on days where there was rain to days where there wasn't any.  The vertical bars in the plot below represent 95% confidence intervals on the mean.
@@ -1894,7 +1894,7 @@ plt.show()
 ```
 
 
-![svg](output_102_0.svg)
+![svg](/assets/img/nice-ride-eda/output_102_0.svg)
 
 
 Overall, it looks like temperature is strongly correlated with the number of rentals in a day, while precipitation is negatively correlated with the number of rides, but neither have a large effect on ride durations.  This could be because when it's raining or overly cold, customers decide not to ride *at all* instead of riding for shorter amounts of time.
@@ -1971,7 +1971,7 @@ print(olsfit.summary())
     [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
     
 
-Our model definitely captured an effect of the weather.  In the summary table above, the `coef` column contains the coefficients for the variables in the leftmost column.  The coefficient for temperature was $\approx 39.9$, meaning that for every 10 degree increase in the temperature, Nice Ride can expect $\approx 400$ more rides per day!  But not *exactly* 400 more rides.  The two rightmost columns show the 95% confidence interval, which show that the model is 95% sure the temperature coefficient is between 33.6 and 46.2.  So the model is very sure that the number of rides per day *increases* with temperature (because the 95% confidence interval is completely above 0), but there is uncertainty as to the exactly how strong that relationship is.
+Our model definitely captured an effect of the weather.  In the summary table above, the `coef` column contains the coefficients for the variables in the leftmost column.  The coefficient for temperature was \\( \approx 39.9 \\), meaning that for every 10 degree increase in the temperature, Nice Ride can expect \\( \approx 400 \\) more rides per day!  But not *exactly* 400 more rides.  The two rightmost columns show the 95% confidence interval, which show that the model is 95% sure the temperature coefficient is between 33.6 and 46.2.  So the model is very sure that the number of rides per day *increases* with temperature (because the 95% confidence interval is completely above 0), but there is uncertainty as to the exactly how strong that relationship is.
 
 Similarly the coefficient for precipitation is significantly negative, meaning more precipitation means less rides per day.  This makes sense and matches up with our weather analysis from before.
 
@@ -2009,11 +2009,11 @@ plt.show()
 ```
 
 
-![svg](output_107_0.svg)
+![svg](/assets/img/nice-ride-eda/output_107_0.svg)
 
 
 
-![svg](output_107_1.svg)
+![svg](/assets/img/nice-ride-eda/output_107_1.svg)
 
 
 It actually looks like rides peter off towards the end of fall, even after taking into account the weather.  This may be because people think of fall as being "not biking season" and so are less likely to rent bikes.  If Nice Ride had continued their season, there likely would have continued to be very few rides per day, even if the weather was nice.  For 2017 at least, it seems Nice Ride made the right choice to end their season when they did.
@@ -2039,7 +2039,7 @@ plt.show()
 ```
 
 
-![svg](output_110_0.svg)
+![svg](/assets/img/nice-ride-eda/output_110_0.svg)
 
 
 Is there a difference between the ride patterns of members and non-members?  Rides by members were much more common during weekdays, while non-member activity peaked on the weekends:
@@ -2060,7 +2060,7 @@ plt.show()
 ```
 
 
-![svg](output_112_0.svg)
+![svg](/assets/img/nice-ride-eda/output_112_0.svg)
 
 
 This probably indicates that members more often used bike rentals for commuting, while non-members used bike rentals for recreation on the weekends.  This becomes more obvious when we look at rentals by members and non-members as a function of the hour of the day.
@@ -2078,7 +2078,7 @@ plt.show()
 ```
 
 
-![svg](output_114_0.svg)
+![svg](/assets/img/nice-ride-eda/output_114_0.svg)
 
 
 For members, there was a clear increase in traffic around the morning rush hour, lunch, and evening rush hour, while non-members showed a less specific activity pattern which started in the late morning and ended in the evening.
@@ -2098,7 +2098,7 @@ plt.show()
 ```
 
 
-![svg](output_116_0.svg)
+![svg](/assets/img/nice-ride-eda/output_116_0.svg)
 
 
 Members also had shorter trips on average than non-members.  Most member rentals lasted around 10 minutes, while most non-member trips lasted between 10 and 30 minutes.
@@ -2117,7 +2117,7 @@ plt.show()
 ```
 
 
-![svg](output_118_0.svg)
+![svg](/assets/img/nice-ride-eda/output_118_0.svg)
 
 
 Are there certain stations at which members are more likely to start or end their rentals than non-members?  Let's plot the distribution of rides from and to each station for members as compared to non-members
@@ -2170,7 +2170,7 @@ plt.show()
 ```
 
 
-![svg](output_120_0.svg)
+![svg](/assets/img/nice-ride-eda/output_120_0.svg)
 
 
 There are definitely some stations which have different usage by members as compared to non-members.  For example, the station at Lake Street & Knox Ave sees far more use by non-members, while the station at Washington Ave SE & Union Street sees far more use by members than non-members.  But, it's a bit hard to see any systematic differences in the plot above.
@@ -2218,8 +2218,8 @@ plt.yticks(locs, tuple([s.get_text()[:20] for s in labels]))
 plt.tick_params(axis='y', labelsize=5)
 plt.ylim([201.5, -2])
 plt.text(-6, -1, 
-         (r'More Members $\leftarrow$' + 
-          r'$\rightarrow$ More Casual'),
+         (r'More Members \\( \leftarrow \\)' + 
+          r'\\( \rightarrow \\) More Casual'),
          horizontalalignment='center', 
          color='gray', size=10)
 plt.title('Trips FROM')
@@ -2233,8 +2233,8 @@ sns.barplot(x='Percent Difference',
 plt.yticks([])
 plt.ylim([201.5, -2])
 plt.text(-6, -1, 
-         (r'More Members $\leftarrow$' + 
-          r'$\rightarrow$ More Casual'),
+         (r'More Members \\( \leftarrow \\)' + 
+          r'\\( \rightarrow \\) More Casual'),
          horizontalalignment='center', 
          color='gray', size=10)
 plt.title('Trips TO')
@@ -2242,7 +2242,7 @@ plt.show()
 ```
 
 
-![svg](output_122_0.svg)
+![svg](/assets/img/nice-ride-eda/output_122_0.svg)
 
 
 From the plot above, we can clearly see that while some stations are used more by members and others more by casual users, stations tend to be either member- or casual-user-dominated both in terms of outbound and inbound trips.  That is, stations which have more members than casual users starting their trips at that station are more likely to also have more members than casual users ending their trips there, and vice-versa.  There are a few exceptions, of course (for example the station at Dale street and Grand Ave has more member trips which begin at that station but more casual user trips which end at that station).
