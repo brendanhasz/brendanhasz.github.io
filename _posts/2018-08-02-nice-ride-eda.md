@@ -546,17 +546,8 @@ p, _ = MapPoints(stations.Latitude, stations.Longitude,
 show(p)
 ```
 
-
-
-
-
-
-
-
-  <div class="bk-root" id="276340f7-1cf3-4ff2-89df-cb3da7a5745c"></div>
-
-
-
+<iframe src="/assets/img/nice-ride-eda/station-locations-map.html" height="400" style="border:none;width:100%;"></iframe>
+<a href="/assets/img/nice-ride-eda/station-locations-map.html" target="_blank">Full screen map</a>
 
 
 Looks like most of the stations are scattered around Minneapolis, but there's also a cluster in downtown St. Paul, and several stations along University Ave and Grand Ave, which connect Minneapolis and St. Paul.
