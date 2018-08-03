@@ -1,5 +1,12 @@
-
-# Nice Ride Bike Share - Exploratory Data Analysis
+---
+layout: post
+title: "Nice Ride Bike Share EDA"
+date: 2018-08-02
+description: "Exploratory data analysis of Nice Ride MN bike share's system data for 2017."
+github_url: https://github.com/brendanhasz/nice-ride
+kaggle_url: https://www.kaggle.com/brendanhasz/nice-ride-mn-eda
+tags: [eda, python, bokeh]
+---
 
 Bicycle ride-sharing systems have become increasingly popular in major cities.  They allow people to enjoy biking around the city without investing in buying a bike for themselves, by providing affordable bike rentals.  Here in the twin cities (Minneapolis/St. Paul, MN) we have the bike-sharing nonprofit [Nice Ride MN](https://www.niceridemn.org/).  Customers can rent bikes at stations, each of which has docks for several bikes, and are scattered throughout the cities.  Customers can then bike around, and return their bike at any other station (providing there's an empty dock for it).  
 
@@ -2309,5 +2316,3 @@ But how can all this information be used to help Nice Ride's business?  Here are
 **It might be worth building a model to suggest how and when to more optimally re-distribute bikes.**  We worked out the cumulative demand at each station over the course of the day using the number of inbound and outbound trips on average over the entire year.  However, one could instead build a model which uses the season, day of the week, time relative to certain holidays, the weather, etc, to forecast how many bikes will be available at each station at a given point in time in the future, and also how many inbound and outbound rides would occur as long as there were enough docks or bikes.  From that information, Nice Ride could optimize how many bikes to move between stations, and when!  This could both cut down on how many re-distribution employees they require, and also help alleviate the need to optimally distribute docks among their stations.
 
 **Advertising for memberships will probably be most effective in the downtown and U of M areas.**  We found that members were far more likely than non-members to start and end rides at stations near downtown and the University of Minnesota.  Assuming that advertisements are more likely to be effective on potential customers who behave similarly to current customers (an assumption which may or may not be valid...), then Nice Ride should target any advertising for memberships at stations near downtown and the U of M, because that is where most current members are starting and ending their trips.  Therefore, non-members with member-like riding patterns (for example, a non-member who often commutes to work using Nice Ride) will see the advertisements and may be more likely to sign up for memberships.  However, in order to truly evaluate what advertisements and which placements are the most effective, Nice Ride will want to run a controlled advertisement experiment.
-
-Hope you found this interesting and useful!
