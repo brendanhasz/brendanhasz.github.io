@@ -51,7 +51,7 @@ sns.set()
 from bokeh.plotting import figure, show
 from bokeh.io import output_notebook
 from bokeh.models import ColumnDataSource, Circle, HoverTool, \
-  ColorBar, LinearColorMapper, LogColorMapper, CustomJS, Slider
+    ColorBar, LinearColorMapper, LogColorMapper, CustomJS, Slider
 from bokeh.palettes import Viridis256, brewer
 from bokeh.tile_providers import CARTODBPOSITRON_RETINA
 from bokeh.models.widgets import Panel, Tabs
@@ -715,16 +715,8 @@ show(Tabs(tabs=[tab1, tab2, tab3]))
 ```
 
 
-
-
-
-
-
-
-  <div class="bk-root" id="fb8b71d2-e909-4249-b359-0a84b92965b7"></div>
-
-
-
+<iframe src="/assets/img/nice-ride-eda/demand-difference.html" height="400" style="border:none;width:100%;"></iframe>
+<a href="/assets/img/nice-ride-eda/demand-difference.html" target="_blank">Full screen map</a>
 
 
 In the "Difference" tab, we can immediately identify some problem stations.  There are some stations at which far more people are ending their trips than starting them (e.g. the station at Lake St & Knox Ave, at the northeast corner of Bde Maka Ska, or the Minnehaha Park station).  There are also stations at which far more people are *starting* their trips than ending them (e.g. the stations at Coffman Union and Wiley Hall on the Univeristy of Minnesota campus).  But the majority of stations have about as many inbound as outbound rides (e.g. the two stations by Como Lake, which you can barely see on the differences map!).  
@@ -993,16 +985,8 @@ show(Tabs(tabs=[tab3, tab1, tab2]))
 ```
 
 
-
-
-
-
-
-
-  <div class="bk-root" id="3b77cd8f-b73e-4dd2-89e1-c6d4e677d0e2"></div>
-
-
-
+<iframe src="/assets/img/nice-ride-eda/demand-over-time.html" height="400" style="border:none;width:100%;"></iframe>
+<a href="/assets/img/nice-ride-eda/demand-over-time.html" target="_blank">Full screen map</a>
 
 
 There's a pretty obvious commuter trend: stations downtown and at the Univeristy of Minnesota have more incoming rides during the morning rush hour (~7-8am), while residential areas surrounding downtown have more outbound rides.  During the evening commute however (~4-5pm), stations downtown and at the U of M are depleted and there is an influx of rides to stations in surrounding residential areas.
@@ -1541,21 +1525,12 @@ p.add_layout(color_bar, 'right')
 
 # Show plot
 p.title.text = 'Flow between stations'
-p.plot_width = 800 
-p.plot_height = 500
 show(p)
 ```
 
 
-
-
-
-
-
-
-  <div class="bk-root" id="3a5a7318-90cb-4590-bdc2-2c86e6907ab7"></div>
-
-
+<iframe src="/assets/img/nice-ride-eda/flow.html" height="400" style="border:none;width:100%;"></iframe>
+<a href="/assets/img/nice-ride-eda/flow.html" target="_blank">Full screen map</a>
 
 
 
@@ -2286,16 +2261,8 @@ show(Tabs(tabs=[tab1, tab2]))
 ```
 
 
-
-
-
-
-
-
-  <div class="bk-root" id="25a8a0db-6821-40ef-ad2b-c6f91c4e23f0"></div>
-
-
-
+<iframe src="/assets/img/nice-ride-eda/memberships-map.html" height="400" style="border:none;width:100%;"></iframe>
+<a href="/assets/img/nice-ride-eda/memberships-map.html" target="_blank">Full screen map</a>
 
 
 We can see from the map that stations downtown see more use by members than non-members, whereas stations near parks or far from downtown (e.g. by the lakes west of Minneapolis, down by Fort Snelling, Lake Como, etc) see more use by non-members than members.
