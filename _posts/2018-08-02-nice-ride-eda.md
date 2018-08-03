@@ -50,7 +50,8 @@ sns.set()
 # Bokeh settings
 from bokeh.plotting import figure, show
 from bokeh.io import output_notebook
-from bokeh.models import ColumnDataSource, Circle, HoverTool, ColorBar, LinearColorMapper, LogColorMapper, CustomJS, Slider
+from bokeh.models import ColumnDataSource, Circle, HoverTool, \
+  ColorBar, LinearColorMapper, LogColorMapper, CustomJS, Slider
 from bokeh.palettes import Viridis256, brewer
 from bokeh.tile_providers import CARTODBPOSITRON_RETINA
 from bokeh.models.widgets import Panel, Tabs
@@ -59,13 +60,6 @@ fig_height = 500
 fig_width = 800
 output_notebook()
 ```
-
-
-
-    <div class="bk-root">
-        <a href="https://bokeh.pydata.org" target="_blank" class="bk-logo bk-logo-small bk-logo-notebook"></a>
-        <span id="66ae79a3-e615-44a1-835a-dc3d0216646e">Loading BokehJS ...</span>
-    </div>
 
 
 
@@ -78,16 +72,9 @@ First, let's load the data and take a look at the data to see if it needs any cl
 
 ```python
 # Load data
-stations = pd.read_csv('../input/Nice_Ride_2017_Station_Locations.csv')
-trips = pd.read_csv('../input/Nice_ride_trip_history_2017_season.csv')
-```
+stations = pd.read_csv('Nice_Ride_2017_Station_Locations.csv')
+trips = pd.read_csv('Nice_ride_trip_history_2017_season.csv')
 
-    /opt/conda/lib/python3.6/site-packages/IPython/core/interactiveshell.py:2698: DtypeWarning: Columns (2,5) have mixed types. Specify dtype option on import or set low_memory=False.
-      interactivity=interactivity, compiler=compiler, result=result)
-    
-
-
-```python
 # Show some of the stations data
 stations.sample(n=5)
 ```
@@ -171,7 +158,8 @@ stations.sample(n=5)
 ```python
 # Print info about each column
 for col in stations:
-    print('\n',col,'\nNulls:',stations[col].isnull().sum(),'\n',stations[col].describe())
+    print('\n',col,'\nNulls:',stations[col].isnull().sum())
+    print('\n',stations[col].describe())
 ```
 
     
@@ -335,7 +323,8 @@ trips.sample(n=5)
 ```python
 # Print info about each column
 for col in trips:
-    print('\n',col,'\nNulls:',trips[col].isnull().sum(),'\n',trips[col].describe())
+    print('\n',col,'\nNulls:',trips[col].isnull().sum())
+    print('\n',trips[col].describe())
 ```
 
     
@@ -601,16 +590,8 @@ show(p)
 ```
 
 
-
-
-
-
-
-
-  <div class="bk-root" id="88ae5581-e510-4180-aa92-9d34bc42f1f4"></div>
-
-
-
+<iframe src="/assets/img/nice-ride-eda/num-docks-map.html" height="400" style="border:none;width:100%;"></iframe>
+<a href="/assets/img/nice-ride-eda/num-docks-map.html" target="_blank">Full screen map</a>
 
 
 <a id='station-demand'></a>
@@ -621,9 +602,10 @@ Let's also take a look at the demand at each station.  What I mean by that is th
 
 ```python
 # Count incoming and outgoing trips for each station
-demand_df = pd.DataFrame({'Outbound trips': trips.groupby('Start station').size(),
-                          'Inbound trips': trips.groupby('End station').size()
-                      })
+demand_df = pd.DataFrame({
+    'Outbound trips': trips.groupby('Start station').size(),
+    'Inbound trips': trips.groupby('End station').size()
+})
 demand_df['Name'] = demand_df.index
 sdf = stations.merge(demand_df, on='Name')
 ```
@@ -670,8 +652,8 @@ Nice Ride MN has to re-distribute bikes from stations which have extra bikes to 
 sdf['demand_diff'] = sdf['Inbound trips']-sdf['Outbound trips']
 
 # Sanity / valid data check
-print('Number of outbound trips: %d' % (sdf['Outbound trips'].sum()))
-print('Number of inbound trips: %d' % (sdf['Inbound trips'].sum()))
+print('Number of outbound trips: %d'%(sdf['Outbound trips'].sum()))
+print('Number of inbound trips: %d'%(sdf['Inbound trips'].sum()))
 
 # Plot histogram of difference in demand
 plt.figure()
@@ -724,7 +706,7 @@ p3, _ = MapPoints(sdf.Latitude, sdf.Longitude,
                   tooltips=tooltips, color=sdf['demand_diff'],
                   size=1*np.sqrt(np.abs(sdf['demand_diff'])/np.pi),
                   title="Inbound - Outbound Trips",
-                  palette=brewer['Spectral'][11], #divergent palette
+                  palette=brewer['Spectral'][11],
                   symmetric_color=True, #centered @ 0
                   height=fig_height, width=fig_width)
 tab3 = Panel(child=p3, title="Difference")
@@ -758,10 +740,10 @@ Stations which have a good balance of the number of rides coming in to the numbe
 
 
 ```python
-# Compute the ABSOLUTE difference between #incoming and #outgoing trips
+# Compute the ABSOLUTE diff between #incoming and #outgoing trips
 sdf['abs_diff'] = sdf['demand_diff'].abs()
 
-# Distributions of docks and absolute demand difference across stations
+# Distributions of docks + abs demand diff across stations
 sdf['Docks'] = sdf['Total docks']/sdf['Total docks'].sum()
 sdf['DemandDiff'] = sdf['abs_diff']/sdf['abs_diff'].sum()
 
@@ -777,12 +759,16 @@ tidied = (
        .set_index('Name')
        .stack()
        .reset_index()
-       .rename(columns={'level_1': 'Distribution', 0: 'Proportion'})
+       .rename(columns={'level_1':'Distribution', 0:'Proportion'})
 )
 
 # Show the distributions
 plt.figure(figsize=(4.5, 35))
-station_list = sdf.sort_values('DemandDiff', ascending=False)['Name'].tolist()
+station_list = (
+    sdf
+    .sort_values('DemandDiff', ascending=False)['Name']
+    .tolist()
+)
 sns.barplot(y='Name', x='Proportion', hue='Distribution', 
             data=tidied, order=station_list)
 plt.title('Proportion Docks vs Demand Difference')
@@ -827,10 +813,15 @@ trips_h = ( #num trips in and out by hour for each station
       .fillna(value=0)
       .sort_values(['Station name', 'Hour'])
 )
-trips_h['Difference'] = trips_h['Inbound trips'] - trips_h['Outbound trips']
+trips_h['Difference'] = (trips_h['Inbound trips'] 
+                         - trips_h['Outbound trips'])
 
 # Pivot to get Nstations-by-Nhours arrays for in, out, and diff
-trips_hp = trips_h.pivot(index='Station name', columns='Hour').fillna(value=0)
+trips_hp = (
+    trips_h
+    .pivot(index='Station name', columns='Hour')
+    .fillna(value=0)
+)
 
 # Normalize by number of days in the season
 ndays = (max(trips['Start date'])-min(trips['Start date'])).days
@@ -1107,7 +1098,8 @@ plt.xlabel('Hour')
 plt.xticks(np.arange(0, 24, 6))
 plt.yticks(np.arange(cdiff.shape[0]),
            tuple([s[:15] for s in cdiff.index.tolist()]))
-plt.title('Average Number of Bikes at each station\nrelative to start of day')
+plt.title('Average Number of Bikes at each station\n' +
+          'relative to start of day')
 plt.show()
 ```
 
@@ -1157,7 +1149,7 @@ alpha = 0.3
 
 # Compute optimal initial number of bikes
 for s in OptBikes.index: #for each station,
-    Nd = stations.loc[stations.Name==s, 'Total docks'].values[0] #num docks @ this station
+    Nd = stations.loc[stations.Name==s, 'Total docks'].values[0]
     bL = np.inf #best loss so far 
     bB = Nd/2   #best #bikes for that loss
     for N0 in range(Nd+1): #for each possible initial # of bikes,
@@ -1267,7 +1259,11 @@ tidified = (
 
 # Show the distributions
 plt.figure(figsize=(4.5, 35))
-station_list = range_vs_docks.sort_values('Range', ascending=False).index.tolist()
+station_list = (
+    range_vs_docks
+    .sort_values('Range', ascending=False)
+    .index.tolist()
+)
 sns.barplot(y='Name', x='Proportion', hue='Distribution', 
             data=tidified, order=station_list)
 plt.title('Proportion Docks vs Demand Range')
@@ -1452,10 +1448,6 @@ plt.title('Number of trips to and from each station'+
 plt.show()
 ```
 
-    /opt/conda/lib/python3.6/site-packages/ipykernel_launcher.py:7: RuntimeWarning: divide by zero encountered in log10
-      import sys
-    
-
 
 ![svg](/assets/img/nice-ride-eda/output_68_1.svg)
 
@@ -1575,7 +1567,8 @@ How long did rentals of Nice Ride's bikes usually last? There were an oddly larg
 
 ```python
 # Show number of trips longer than 24hrs
-Ntd = np.count_nonzero(trips['Total duration (Seconds)']>(24*60*60))
+Nsd = 24*60*60 #number of seconds in a day
+Ntd = np.count_nonzero(trips['Total duration (Seconds)']>Nsd)
 print("Number of trips longer than 24 hours: %d ( %0.2g %% )"
       % (Ntd, 100*Ntd/float(len(trips))))
 ```
@@ -1669,7 +1662,8 @@ plt.show()
 
 ```python
 # Plot number of rides per day of the year
-trips.groupby(trips['Start date'].dt.dayofyear)['Start date'].count().plot()
+gt = trips.groupby(trips['Start date'].dt.dayofyear)['Start date']
+gt.count().plot()
 plt.xlabel('Day of the year')
 plt.ylabel('Number of rentals')
 plt.title('Number of rentals by day of the year in 2017')
@@ -1835,7 +1829,11 @@ Temperatures were highly correlated with the number of rides in a given day, but
 
 ```python
 # Get max temp on the day of each rental
-max_temps = weather.loc[trips['Start date'].dt.dayofyear, 'TMAX'].values
+max_temps = (
+    weather
+    .loc[trips['Start date'].dt.dayofyear, 'TMAX']
+    .values
+)
 
 # Get trip durations
 trip_durs = trips['Total duration (Seconds)'].values
@@ -1862,7 +1860,11 @@ What about precipitation - does precipitation negatively correlate with ride dur
 
 ```python
 # Get precipitation on the day of each rental
-precip = weather.loc[trips['Start date'].dt.dayofyear, 'PRCP'].values
+precip = (
+    weather
+    .loc[trips['Start date'].dt.dayofyear, 'PRCP']
+    .values
+)
 
 # Plot max temp vs ride duration
 sns.set_style("white")
@@ -1929,7 +1931,7 @@ df = df.loc[~np.isnan(df.Trips), :]
 df.reset_index(inplace=True, drop=True)
 
 # Fit the linear regression model
-olsfit = smf.ols('Trips ~ Temp + log(Precip) + C(Day)', data=df).fit()
+olsfit = smf.ols('Trips~Temp+log(Precip)+C(Day)', data=df).fit()
 
 # Show a summary of the fit
 print(olsfit.summary())
@@ -1964,9 +1966,6 @@ print(olsfit.summary())
     Skew:                          -0.002   Prob(JB):                       0.0508
     Kurtosis:                       3.812   Cond. No.                         551.
     ==============================================================================
-    
-    Warnings:
-    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
     
 
 Our model definitely captured an effect of the weather.  In the summary table above, the `coef` column contains the coefficients for the variables in the leftmost column.  The coefficient for temperature was \\( \approx 39.9 \\), meaning that for every 10 degree increase in the temperature, Nice Ride can expect \\( \approx 400 \\) more rides per day!  But not *exactly* 400 more rides.  The two rightmost columns show the 95% confidence interval, which show that the model is 95% sure the temperature coefficient is between 33.6 and 46.2.  So the model is very sure that the number of rides per day *increases* with temperature (because the 95% confidence interval is completely above 0), but there is uncertainty as to the exactly how strong that relationship is.
@@ -2107,7 +2106,8 @@ Members also had shorter trips on average than non-members.  Most member rentals
 plt.figure()
 sns.violinplot(x='Total duration (Seconds)',
                y='Account type',
-               data=trips.loc[trips['Total duration (Seconds)']<6000,:])
+               data=(trips
+                     .loc[trips['Total duration (Seconds)']<6000,:]))
 plt.xticks([0,1800,3600,5400])
 plt.xlim([0,6000])
 plt.title('Ride durations\nMembers vs non-members')
@@ -2267,8 +2267,8 @@ tooltips = [("Station", pd_from['Start station']),
 # Outbound trips 
 p1, _ = MapPoints(lat, lon, tooltips=tooltips, 
                   color=pd_from['Percent Difference'],
-                  title="Difference between members and non-members",
-                  palette=brewer['Spectral'][11], #divergent palette
+                  title="Difference between members and casual",
+                  palette=brewer['Spectral'][11], 
                   symmetric_color=True, #centered @ 0
                   height=fig_height, width=fig_width)
 tab1 = Panel(child=p1, title="Outbound")
@@ -2276,8 +2276,8 @@ tab1 = Panel(child=p1, title="Outbound")
 # Inbound trips
 p2, _ = MapPoints(lat, lon, tooltips=tooltips, 
                   color=pd_to['Percent Difference'],
-                  title="Difference between members and non-members",
-                  palette=brewer['Spectral'][11], #divergent palette
+                  title="Difference between members and casual",
+                  palette=brewer['Spectral'][11], 
                   symmetric_color=True, #centered @ 0
                   height=fig_height, width=fig_width)
 tab2 = Panel(child=p2, title="Inbound")
