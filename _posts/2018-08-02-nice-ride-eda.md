@@ -1875,7 +1875,7 @@ plt.show()
 Overall, it looks like temperature is strongly correlated with the number of rentals in a day, while precipitation is negatively correlated with the number of rides, but neither have a large effect on ride durations.  This could be because when it's raining or overly cold, customers decide not to ride *at all* instead of riding for shorter amounts of time.
 
 <a id='dependence-on-season'></a> 
- ## Rental dependence on season
+## Rental dependence on season
  
 Now that we've loaded the weather data, we can get back to our question of whether there is a seasonal effect on the number of rides, independent from the effect of weather.  That is, if the weather was exactly the same, would we still see a change in the number of rides per day over the year?  
 
