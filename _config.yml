@@ -10,5 +10,14 @@ cv_url: /assets/files/BrendanHasz_CV.pdf
 company_name: University of Minnesota
 company_url: https://twin-cities.umn.edu/
 place_name: Minneapolis, MN
+title: Brendan Hasz
+description: Brendan Hasz Personal Blog
+url: https://brendanhasz.github.io/
+logo: /assets/img/headshot.jpg
+social:
+  links:
+    - http://www.linkedin.com/in/brendan-hasz
+    - https://github.com/brendanhasz
+    - https://www.kaggle.com/brendanhasz
 plugins:
   - jekyll-seo-tag
