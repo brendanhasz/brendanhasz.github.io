@@ -82,7 +82,7 @@ stations.sample(n=5)
 
 
 
-<div>
+<div class="scroll_box">
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
@@ -229,7 +229,7 @@ trips.sample(n=5)
 
 
 
-<div>
+<div class="scroll_box">
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
