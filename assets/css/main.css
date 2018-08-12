@@ -51,6 +51,8 @@
   background: #e7e7e7;
 }
 
+.scroll_box { overflow-x: scroll; }
+
 section {
   width:600px;
 }
