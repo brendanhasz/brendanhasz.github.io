@@ -42,7 +42,7 @@ PK.sample(n=10)
 ```
 
 
-<div>
+<div class="scroll_box">
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
@@ -378,7 +378,7 @@ PK[PK.age<16]
 
 
 
-<div>
+<div class="scroll_box">
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
