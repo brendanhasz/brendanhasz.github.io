@@ -1988,7 +1988,7 @@ plt.show()
 ![svg](/assets/img/nice-ride-eda/output_107_1.svg)
 
 
-It actually looks like rides peter off towards the end of fall, even after taking into account the weather.  This may be because people think of fall as being "not biking season" and so are less likely to rent bikes.  If Nice Ride had continued their season, there likely would have continued to be very few rides per day, even if the weather was nice.  For 2017 at least, it seems Nice Ride made the right choice to end their season when they did.
+It actually looks like rides peter out toward the end of fall, even after taking into account the weather.  This may be because people think of fall as being "not biking season" and so are less likely to rent bikes.  If Nice Ride had continued their season, there likely would have continued to be very few rides per day, even if the weather was nice.  For 2017 at least, it seems Nice Ride made the right choice to end their season when they did.
 
 A more reliable way to do this analysis would be to use data over multiple years.  Nice Ride provides their [historical system data](https://www.niceridemn.org/data/), which goes all the way back to 2010.  To really answer the question of whether there's a seasonal effect, one would want to analyse data from multiple years to see what happened during fall seasons where it *was* nice out late into the season.
 
