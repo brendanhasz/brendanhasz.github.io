@@ -5,6 +5,7 @@ date: 2018-08-02
 description: "Exploratory data analysis of Nice Ride MN bike share's system data for 2017."
 github_url: https://github.com/brendanhasz/nice-ride
 kaggle_url: https://www.kaggle.com/brendanhasz/nice-ride-mn-eda
+img_url: /assets/img/nice-ride-eda/demand-diff-gif.gif
 tags: [eda, python, bokeh]
 ---
 
