@@ -320,7 +320,8 @@ show(p)
 ```
 
 
-<iframe src="/assets/img/police-shootings/police-shootings-map.html" height="370" width="560" style="border:none;"></iframe>
+<iframe src="/assets/img/police-shootings/police-shootings-map.html" height="400" style="border:none;width:100%;"></iframe>
+<a href="/assets/img/police-shootings/police-shootings-map.html" target="_blank">Full screen map</a>
 
 The Post is [only recording killings where the individual killed was shot by police](https://github.com/washingtonpost/data-police-shootings/blob/master/README.md).  Therefore, all the people killed by police in the dataset were shot, but around 6% were also tasered.
 
