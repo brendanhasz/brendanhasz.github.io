@@ -130,7 +130,7 @@ From the [EC2 console](https://console.aws.amazon.com/ec2/), click the blue "Lau
 
 Select the AMI you want to use.  If you want to ensure you're using only AMIs you won't be charged for, select the "Free tier only" checkbox on the left.  We'll use the "Amazon Linux 2" AMI.
 
-Select the Instance Type you want and click the blue "Review and Launch" button.  For testing things out, you'll probably want to select the `t2.micro` instance type (which is free). 
+Select the Instance Type you want and click the blue "Review and Launch" button.  For testing things out, you'll probably want to select the `t2.micro` instance type (which is free).   However, for running Featuretools you'll want to select an instance type which has enough memory.  Here's a list of [AWS instance types](https://aws.amazon.com/ec2/instance-types/) and their [pricing](https://aws.amazon.com/ec2/pricing/on-demand/).
 
 TODO: but use the other one for actually running featuretools
 
