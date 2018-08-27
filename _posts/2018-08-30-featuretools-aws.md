@@ -25,7 +25,7 @@ What do I mean by "automated feature engineering" and how is it useful?  When bu
 
 Unfortunately, in most applications the data isn't quite as simple as just one table.  We'll likely have additional data stored in other tables!  To continue with the loan repayment prediction example, we could have a separate table which stores the monthly balances of applicants on their other loans, and another separate table with the credit card accounts for each applicant, and yet another table with the credit card activity for each of those accounts, and so on.  
 
-**TODO**: svg of table connections etc
+![Data table tree](C:\Users\brendan\Documents\Code\brendanhasz.github.io\_posts\DataframeTree.png)
 
 In order to build a predictive model, we need to "engineer" features from data in those secondary tables.  These engineered features can then be added to our main data table, which we can then use to train the predictive model.  For example, we could compute the number of credit card accounts for each applicant, and add that as a feature to our primary data table; we could compute the balance across each applicant's credit cards, and add that to the primary data table; we could also compute the balance to available credit ratio and add that as a feature; etc.
 
@@ -91,12 +91,12 @@ To secure your connection to your instance, you'll want to create a cryptographi
 2. In the panel on the left, in the "NETWORK & SECURITY" section, select "Key Pairs".
 3. In the upper-right, select the region (e.g. "US East (Ohio)" or "US West (Oregon)") for which you want to generate the key pair.  It's probably fine to leave it as is.  However, if you want to run an instance in different regions, you'll need to generate a new key pair for each region - key pairs are region-specific.
 4. Click the blue "Create Key Pair" button.
-5. Enter a name for your new key pair.  Amazon recommends using `<username>-key-pair-<region>`, where `<username>` is your IAM username (or some other name that you'll remember), and `<region>` is the AWS region you'll be connecting to (the region shown in the upper-right of the page).
+5. Enter a name for your new key pair.  I'll refer to the name you chose below as `<key-pair-name>`. Amazon recommends using `<username>-key-pair-<region>`, where `<username>` is your IAM username (or some other name that you'll remember), and `<region>` is the AWS region you'll be connecting to (the region shown in the upper-right of the page).
 
 The private key will be downloaded by your browser.  Open up a terminal and set user permissions for the file:
 
 ```bash
-chmod 400 key-pair-name.pem
+chmod 400 <key-pair-name>.pem
 ```
 
 If you're in Windows, you can either use PuTTY (see the "To prepare to connect to a Linux instance from Windows using PuTTY" section of [this page](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html)), or personally I'd reccomend using [cmder](http://cmder.net/), which comes with an SSH client and bash emulator which allows you to run that `chmod` command directly.
@@ -124,24 +124,128 @@ Finally, click the blue "Create" button to create the security group.
 
 ### 5) Launch an Instance
 
-**TODO**: say how to launch a free one (what instance that is), and how to launch the one we'll usee in this tut
+TODO: intro, what's an instance, instance types, etc
 
-### 6) Docker?
+From the [EC2 console](https://console.aws.amazon.com/ec2/), click the blue "Launch Instance" button.
 
-TODO: talk about how to build/load a docker image. Using ECS or command line, haven't decided which yet...
+Select the AMI you want to use.  If you want to ensure you're using only AMIs you won't be charged for, select the "Free tier only" checkbox on the left.  We'll use the "Amazon Linux 2" AMI.
 
-### 7) Upload Data to an AWS Instance
+Select the Instance Type you want and click the blue "Review and Launch" button.  For testing things out, you'll probably want to select the `t2.micro` instance type (which is free). 
 
-TODO: either scp or aws cli...
+TODO: but use the other one for actually running featuretools
 
-### 8) Connect to an AWS Instance and Run Code
+TODO: security group
 
-TODO: ssh and run the featuretools code
+TODO: key pair
 
-### 9) Download Data from an AWS Instance
+TODO: wait for security checks to pass
+
+
+
+### 6) Connect to an AWS Instance
+
+To connect to your AWS instance via SSH, run (in a terminal):
+
+```bash
+ssh -i <key-pair-name>.pem ec2-user@<publicDNS>
+```
+
+where `<publicDNS>` is the public DNS of your instance.  You can see the public DNS of your instance by going to the Instances page (in the EC2 console, in the panel on the left under "INSTANCES", click on "Instances"), and selecting the instance you want.  In the lower right of the page, in the "Description" tab, there will be a domain after "Public DNS (IPv4)", for example `ec2-99-999-99-99.us-east-2.compute.amazonaws.com`.  Use this as the `<publicDNS>` when logging in via SSH.
+
+### 7) Install Docker, Build, and Run a Container
+
+**TODO**: intro about why we want to use a docker container (reproducibility and speed!)
+
+This info available here: https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-basics.html
+
+```bash
+sudo yum update -y
+```
+
+Then to install docker:
+
+```bash
+sudo yum install -y docker
+```
+
+Then start the docker service:
+
+```bash
+sudo service docker start
+```
+
+Finally, set the user permissions so you don't have to type `sudo` before every command...
+
+```bash
+sudo usermod -a -G docker ec2-user
+```
+
+Log out and log back in again to your instance (type `exit` and then log back in with `ssh -i key-pair-name.pem ec2-user@<publicIP>`).
+
+Make sure docker has started up sucessfully with 
+
+```bash
+docker info
+```
+
+Now you can either create new docker image from scratch, or run one that's already been created.  To run a docker container from [Docker Hub](https://hub.docker.com/) (the docker equivalent of GitHub), run:
+
+```bash
+docker run -it <owner>/<image>
+```
+
+Where `<owner>` is the owner on Dockerhub of the image you want to run, and `<image>` is the image's name.  For example, to use [Kaggle's docker image for Python](https://hub.docker.com/r/kaggle/python/), run:
+
+```bash
+docker run -it kaggle/python
+```
+
+You can also create your own docker image.  To run automated feature engineering with featuretools and dask, we'll  only need pandas, dask, and featuretools (and their dependencies).  So, we can build a relatively simple Dockerfile:
+
+````dockerfile
+FROM ubuntu:latest
+
+RUN apt-get update
+RUN apt-get install -y python3 python3-pip
+
+RUN pip3 install numpy \
+    pandas \
+    featuretools \
+    "dask[complete"]
+````
+
+Save the above code to a file called `Dockerfile`.
+
+To build the docker image from that Dockerfile, run
+
+```bash
+docker build -t <image-name> - < Dockerfile
+```
+
+where `<image-name>` is the name you want to give your docker image (for example, `featuretools-dask`).
+
+Then to run that image that you built, run:
+
+```bash
+docker run -it <image-name>
+```
+
+Now you've been dropped into a bash shell running in your Docker container!
+
+**TODO**: though maybe should do via ECS...
+
+### 8) Upload Data to an AWS Instance
+
+**TODO**: either scp or aws cli...
+
+### 9) Run Automated Feature Engineering
+
+TODO: run the featuretools code
+
+### 10) Download Data from an AWS Instance
 
 TODO: again either scp or aws cli
 
-### 10) Shut Down an AWS Instance
+### 11) Shut Down an AWS Instance
 
 TODO
