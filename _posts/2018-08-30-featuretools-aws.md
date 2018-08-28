@@ -11,13 +11,7 @@ published: false
 
 **Outline**
 
-- [Featuretools and Automated Feature Engineering](#featuretools)
-- [Dask](#dask)
-- [Setting up an AWS EC2 Instance](#aws)
-
-
-
-<a id='featuretools'></a>
+[TOC]
 
 ## Featuretools and Automated Feature Engineering
 
@@ -37,7 +31,7 @@ With complicated (read: real-life) datasets, the number of features that we coul
 
 The downside of Featuretools is that is isn't generating features intelligently - it simply generates features by applying all the feature primitives to all the features in secondary datasets recursively.  This means that the number of features which are generated can be *huge*!  When dealing with large datasets, this will take both a lot of time and a lot of memory.  To alleviate this problem, we can use [Dask](http://dask.pydata.org/en/latest/) to parallelize the computation of the new features.
 
-<a id='featuretools'></a>
+<a id='dask'></a>
 
 ## Using Dask with Featuretools
 
@@ -47,7 +41,7 @@ Of course, maybe you don't have a cluster handy.  I don't!  Thankfully we can re
 
 
 
-<a id='featuretools'></a>
+<a id='aws'></a>
 
 ## Setting up an AWS EC2 Instance
 
@@ -99,7 +93,7 @@ The private key will be downloaded by your browser.  Open up a terminal and set 
 chmod 400 <key-pair-name>.pem
 ```
 
-If you're in Windows, you can either use PuTTY (see the "To prepare to connect to a Linux instance from Windows using PuTTY" section of [this page](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html)), or personally I'd reccomend using [cmder](http://cmder.net/), which comes with an SSH client and bash emulator which allows you to run that `chmod` command directly.
+If you're in Windows, you can either use PuTTY (see the "To prepare to connect to a Linux instance from Windows using PuTTY" section of [this page](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html)), or personally I'd recommend using [cmder](http://cmder.net/), which comes with an SSH client and bash emulator which allows you to run that `chmod` command directly.
 
 Save the private key file in a safe place, because you won't be able to download it again!  However, you can always create a new key pair when you launch an instance.
 
@@ -124,23 +118,41 @@ Finally, click the blue "Create" button to create the security group.
 
 ### 5) Launch an Instance
 
-TODO: intro, what's an instance, instance types, etc
+Now that we have things set up, we can launch our AWS virtual machine (called an "instance"). From the [EC2 console](https://console.aws.amazon.com/ec2/), click the blue "Launch Instance" button.
 
-From the [EC2 console](https://console.aws.amazon.com/ec2/), click the blue "Launch Instance" button.
+Select the Amazon Machine Image (AMI) you want to use.  If you want to ensure you're using only AMIs you won't be charged for, select the "Free tier only" checkbox on the left.  We'll use the "Amazon Linux 2" AMI.
 
-Select the AMI you want to use.  If you want to ensure you're using only AMIs you won't be charged for, select the "Free tier only" checkbox on the left.  We'll use the "Amazon Linux 2" AMI.
+Select the Instance Type you want and click the blue "Review and Launch" button.  For testing things out, you'll probably want to select the `t2.micro` instance type (which is free).   However, for running Featuretools you'll want to select an instance type which has enough memory.  Here's a list of [AWS instance types](https://aws.amazon.com/ec2/instance-types/) and their [pricing](https://aws.amazon.com/ec2/pricing/on-demand/).  To run Featuretools on the full dataset, we'll need far more memory than is available to a `t2.micro` instance, and so we'll use the `m5.4xlarge` instance type.
 
-Select the Instance Type you want and click the blue "Review and Launch" button.  For testing things out, you'll probably want to select the `t2.micro` instance type (which is free).   However, for running Featuretools you'll want to select an instance type which has enough memory.  Here's a list of [AWS instance types](https://aws.amazon.com/ec2/instance-types/) and their [pricing](https://aws.amazon.com/ec2/pricing/on-demand/).
+Note that the `m5.4xlarge` instance type is *not* free!  So don't launch an instance of that type just yet.  I'd suggest trying everything in this post out using the `t2.micro` instance first (which, again, is free), and then only once you know what you're doing going back and starting a paid instance.
 
-TODO: but use the other one for actually running featuretools
+Now we'll set our instance to belong to the security group we created earlier.  Under "Security Groups", click the "Edit security groups" link.
 
-TODO: security group
+Select the "Select an existing security group" radio button, and select the box next to the security group you created earlier.  
 
-TODO: key pair
+If you'll want to connect to your instance from a different IP address than you were using when you set up the security group, you'll have to either edit your security group, or create a new security group which allows connections from your new IP. 
 
-TODO: wait for security checks to pass
+To create a new security group,
 
+1. Select the "Create a new security group" radio button.
+2. Give your new security group a name, if you want.
+3. Enter the same three rules as above (Type=HTTP,Source=Anywhere; Type=HTTPS,Source=Anywhere; Type=SSH,Source=My IP) 
 
+Or, to edit an existing security group (you only have to do this if you're connecting from a different IP than you were when you set up the security group)
+
+1. Go back to the EC2 console and select "Security groups" from the panel on the left.
+2. Select the box next to the security group you want to change.
+3. Click the "Actions" button and select "Edit inbound rules".
+4. Change the "Source" of the SSH rule to be "My IP".
+5. Click the blue "Save" button.
+
+After you've selected a security group (or created a new one), click the blue "Review and Launch" button.
+
+Click the blue "Launch" button.
+
+Here you can either select to use the key pair you created earlier, or create a new one (for example if you don't have access to the key pair you created earlier).  To use the key pair you created earlier, select "Choose an existing key pair" from the drop-down, and then select the name of the key-pair you want to use from the second drop-down.  But if you want to create a new one, select "Create a new key pair" from the drop-down, then give it a name, and select "Download Key Pair", and repeat the `chmod` command from earlier on the downloaded file.
+
+Finally, click the acknowledgement checkbox and click the blue "Launch Instances" button.  From here you can click the blue "View Instances" button (or, from the EC2 console, go to "Instances" in the panel on the left).  From here you can see info about your instance which should now be up and running!
 
 ### 6) Connect to an AWS Instance
 
@@ -151,6 +163,8 @@ ssh -i <key-pair-name>.pem ec2-user@<publicDNS>
 ```
 
 where `<publicDNS>` is the public DNS of your instance.  You can see the public DNS of your instance by going to the Instances page (in the EC2 console, in the panel on the left under "INSTANCES", click on "Instances"), and selecting the instance you want.  In the lower right of the page, in the "Description" tab, there will be a domain after "Public DNS (IPv4)", for example `ec2-99-999-99-99.us-east-2.compute.amazonaws.com`.  Use this as the `<publicDNS>` when logging in via SSH.
+
+Again, if you're in windows, you'll have to use [Putty](https://www.putty.org/), [cmder](http://cmder.net/), or some other SSH client for windows.
 
 ### 7) Install Docker, Build, and Run a Container
 
@@ -182,7 +196,7 @@ sudo usermod -a -G docker ec2-user
 
 Log out and log back in again to your instance (type `exit` and then log back in with `ssh -i key-pair-name.pem ec2-user@<publicIP>`).
 
-Make sure docker has started up sucessfully with 
+Make sure docker has started up successfully by running the following command, which shows information about local or running docker images:
 
 ```bash
 docker info
@@ -194,7 +208,7 @@ Now you can either create new docker image from scratch, or run one that's alrea
 docker run -it <owner>/<image>
 ```
 
-Where `<owner>` is the owner on Dockerhub of the image you want to run, and `<image>` is the image's name.  For example, to use [Kaggle's docker image for Python](https://hub.docker.com/r/kaggle/python/), run:
+Where `<owner>` is the owner on Dockerhub of the image you want to run, and `<image>` is the image's name.  For example, to use [Kaggle's docker image for Python](https://hub.docker.com/r/kaggle/python/), run (though note that this won't work on a `t2.micro` instance because it doesn't have enough memory!):
 
 ```bash
 docker run -it kaggle/python
@@ -211,23 +225,41 @@ RUN apt-get install -y python3 python3-pip
 RUN pip3 install numpy \
     pandas \
     featuretools \
-    "dask[complete"]
+    "dask[complete]"
 ````
 
 Save the above code to a file called `Dockerfile`.
 
-To build the docker image from that Dockerfile, run
+To build the docker image from that Dockerfile (if it's the only file named `Dockerfile` in your current directory), run
 
 ```bash
-docker build -t <image-name> - < Dockerfile
+docker build -t <image-name> .
 ```
 
-where `<image-name>` is the name you want to give your docker image (for example, `featuretools-dask`).
+where `<image-name>` is the name you want to give your docker image (for example, `featuretools-dask`).  
+
+If you have multiple docker files with different file names in the same directory, you can build a specific one by piping that file into the build command:
+
+```bash
+docker build -t <image-name> - < <dockerfile-name>
+```
+
+where `<dockerfile-name>` is the filename of the dockerfile you want to build.
+
+**TODO**: how to push the image -> docker hub
+
+**TODO**: `docker images` to see all local images
 
 Then to run that image that you built, run:
 
 ```bash
 docker run -it <image-name>
+```
+
+Or, if you haven't built the image on this machine but you've pushed it to Docker Hub, run:
+
+```bash
+docker run -it <your-dockerhub-username>/<image-name>
 ```
 
 Now you've been dropped into a bash shell running in your Docker container!
@@ -236,7 +268,7 @@ Now you've been dropped into a bash shell running in your Docker container!
 
 ### 8) Upload Data to an AWS Instance
 
-**TODO**: either scp or aws cli...
+**TODO**: either scp or aws cli..., then copy to the docker container w/ `docker cp` (https://stackoverflow.com/questions/22907231/copying-files-from-host-to-docker-container)
 
 ### 9) Run Automated Feature Engineering
 
