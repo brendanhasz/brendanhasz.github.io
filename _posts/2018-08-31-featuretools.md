@@ -20,6 +20,8 @@ What do I mean by "automated feature engineering" and how is it useful?  When bu
 Unfortunately, in most applications the data isn't quite as simple as just one table.  We'll likely have additional data stored in other tables!  To continue with the loan repayment prediction example, we could have a separate table which stores the monthly balances of applicants on their other loans, and another separate table with the credit card accounts for each applicant, and yet another table with the credit card activity for each of those accounts, and so on.  
 
 ![Data table tree](C:\Users\brendan\Documents\Code\brendanhasz.github.io\_posts\DataframeTree.png)
+![Data table tree](/assets/img/featuretools/DataframeTree.svg)
+
 
 In order to build a predictive model, we need to "engineer" features from data in those secondary tables.  These engineered features can then be added to our main data table, which we can then use to train the predictive model.  For example, we could compute the number of credit card accounts for each applicant, and add that as a feature to our primary data table; we could compute the balance across each applicant's credit cards, and add that to the primary data table; we could also compute the balance to available credit ratio and add that as a feature; etc.
 
