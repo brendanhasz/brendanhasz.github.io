@@ -1109,7 +1109,7 @@ print("%0.2g%% of posterior is >0.1" %
     30% of posterior is >0.1
 
 
-But, those numbers are across the entire state of Massachusetts. What if you are a decision-maker in a specific district within Massachusetts? Because this is a multilevel model, we get estimates not only for the state-level correlation, but also for schools in each ZIP group. If we were a decision-maker in a given district, we would want to use the estimate relevant to our district instead of the state average. Notice that some ZIP groups have very strong evidence for a positive correlation, while other actually have significant evidence for a negative correlation!
+But, those numbers are across the entire state of Massachusetts. What if you are a decision-maker in a specific district within Massachusetts? Because this is a multilevel model, we get estimates not only for the state-level correlation, but also for schools in each ZIP group. If we were a decision-maker in a given district, we would want to use the estimate relevant to our district instead of the state average. Notice that some ZIP groups have very strong evidence for a positive correlation, while others actually show evidence for a negative correlation!
 
 
 ```python
