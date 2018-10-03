@@ -87,12 +87,12 @@
         <div class="small_header_box">
           <div style="margin:0 auto;width:270px;">
             <div style="float:left;width:70px">
-              <a href="https://brendanhasz.github.io//">
-                <img src="./test_page_files/headshot.jpg" alt="Me" height="60">
+              <a href="{{ "/" | absolute_url }}">
+                <img src="/assets/img/headshot.jpg" alt="Me" height="60">
               </a>
             </div>
             <div style="float:left;width:200px;position:relative;bottom:-15px;">
-              <h1><a href="https://brendanhasz.github.io//">Brendan Hasz</a></h1>
+              <h1><a href="{{ "/" | absolute_url }}">{{ site.name }}</a></h1>
             </div>
           </div>
         </div>
@@ -101,12 +101,12 @@
         <div class="small_header_box">
           <div style="position:relative;top:50%;transform:translateY(-50%);">
             <div>
-              <span> PhD Student in Neuroscience at </span>
+              <span> {{ site.position }} at </span>
             </div>
             <div>
-              <a href="https://twin-cities.umn.edu/">
-                  <img src="./test_page_files/company_icon.png" height="16" width="16" style="vertical-align: middle;">  
-                  <span style="vertical-align: middle;"> University of Minnesota </span>
+              <a href="{{ site.company_url }}">
+                  <img src="/assets/img/company_icon.png" height="16" width="16" style="vertical-align: middle;">  
+                  <span style="vertical-align: middle;"> {{ site.company_name }} </span>
               </a>
             </div>
           </div>
@@ -115,36 +115,36 @@
         <!-- Badges/links -->
         <div class="small_header_box">
                 <div class="row">
-                  <a href="https://github.com/brendanhasz">
+                  <a href="{{ site.github_url }}">
                     <div class="col3"> 
-                      <img src="./test_page_files/github_icon.png" height="16" width="16" style="vertical-align: middle;"> 
+                      <img src="/assets/img/github_icon.png" height="16" width="16" style="vertical-align: middle;"> 
                       <span style="vertical-align: middle;"> Github </span>
                     </div>
                   </a>
-                  <a href="https://www.kaggle.com/brendanhasz">
+                  <a href="{{ site.kaggle_url }}">
                     <div class="col3"> 
-                      <img src="./test_page_files/kaggle_icon.png" height="16" width="16" style="vertical-align: middle;">  
+                      <img src="/assets/img/kaggle_icon.png" height="16" width="16" style="vertical-align: middle;">  
                       <span style="vertical-align: middle;"> Kaggle </span>
                   </div>
                   </a>
-                  <a href="http://www.linkedin.com/in/brendan-hasz">
+                  <a href="{{ site.linkedin_url }}">
                     <div class="col3">
-                      <img src="./test_page_files/linkedin_icon.png" height="16" width="16" style="vertical-align: middle;">  
+                      <img src="/assets/img/linkedin_icon.png" height="16" width="16" style="vertical-align: middle;">  
                       <span style="vertical-align: middle;"> LinkedIn </span>
                     </div>
                   </a>
                 </div>
 
                 <div class="row">
-                  <a href="mailto:winsto99@gmail.com">
+                  <a href="{{ site.email_url }}">
                     <div class="col2"> 
-                      <img src="./test_page_files/email_icon.png" height="16" width="16" style="vertical-align: middle;">  
+                      <img src="/assets/img/email_icon.png" height="16" width="16" style="vertical-align: middle;">  
                       <span style="vertical-align: middle;"> Email </span>
                     </div>
                   </a>
-                  <a href="https://brendanhasz.github.io/assets/files/BrendanHasz_CV.pdf">
+                  <a href="{{ site.cv_url }}">
                     <div class="col2"> 
-                      <img src="./test_page_files/cv_icon.png" height="16" width="16" style="vertical-align: middle;">  
+                      <img src="/assets/img/cv_icon.png" height="16" width="16" style="vertical-align: middle;">  
                       <span style="vertical-align: middle;"> CV </span>
                     </div>
                   </a>

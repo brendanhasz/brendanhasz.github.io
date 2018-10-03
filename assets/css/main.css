@@ -81,7 +81,7 @@ section {
     margin:0;
   }
     
-  header, section, footer {
+  section, footer {
     float:none;
     position:static;
     width:auto;
