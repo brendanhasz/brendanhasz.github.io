@@ -63,8 +63,9 @@ section {
 
 .small_header {
   text-align:center;
-  display:none;
+  display:flex;
   flex-wrap:wrap;
+
 }
 
 .small_header_box {
@@ -72,6 +73,16 @@ section {
   flex:1;
   min-width:270px;
   margin: 0 0 10px 0;
+}
+
+@media print, screen and (min-width: 1160px) {
+  header {
+    visibility:visible;
+  }
+
+  div.small_header {
+    visibility:hidden;
+  }
 }
 
 @media print, screen and (max-width: 1160px) {
@@ -88,11 +99,11 @@ section {
   }
 
   header {
-    display:none;
+    visibility:hidden;
   }
 
   div.small_header {
-    display:flex;
+    visibility:visible;
   }
     
   section {
