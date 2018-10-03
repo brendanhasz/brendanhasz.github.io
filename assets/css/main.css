@@ -77,11 +77,11 @@ section {
 
 @media print, screen and (min-width: 1160px) {
   header {
-    visibility:visible;
+    display:block;
   }
 
   div.small_header {
-    visibility:hidden;
+    display:none;
   }
 }
 
@@ -99,11 +99,11 @@ section {
   }
 
   header {
-    visibility:hidden;
+    display:none;
   }
 
   div.small_header {
-    visibility:visible;
+    display:flex;
   }
     
   section {
