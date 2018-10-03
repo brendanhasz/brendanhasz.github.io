@@ -61,6 +61,19 @@ section {
   width:960px;
 }
 
+.small_header {
+  text-align:center;
+  display:none;
+  flex-wrap:wrap;
+}
+
+.small_header_box {
+  height:60px;
+  flex:1;
+  min-width:270px;
+  margin: 0 0 10px 0;
+}
+
 @media print, screen and (max-width: 1160px) {
 
   div.wrapper {
@@ -72,6 +85,14 @@ section {
     float:none;
     position:static;
     width:auto;
+  }
+
+  header {
+    display:none;
+  }
+
+  div.small_wrapper {
+    display:flex;
   }
     
   section {
