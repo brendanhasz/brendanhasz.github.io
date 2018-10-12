@@ -4117,16 +4117,6 @@ test['TARGET'] = np.nan
 app = train.append(test, ignore_index=True)
 ```
 
-    /opt/conda/lib/python3.6/site-packages/pandas/core/frame.py:6211: FutureWarning: Sorting because non-concatenation axis is not aligned. A future version
-    of pandas will change to not sort by default.
-    
-    To accept the future behavior, pass 'sort=False'.
-    
-    To retain the current behavior and silence the warning, pass 'sort=True'.
-    
-      sort=sort)
-    
-
 The gender column contains whether the loan applicant was male or female.  The training datset contains 4 values which weren't empty but were labelled `XNA`.  Normally we would want to create a new column to represent when the gender value is null.  However,  since the test dataset has only `M` and `F` entries, and because there are only 4 entries with a gender of `XNA` in the training set, we'll remove those entries from the training set.
 
 
@@ -4461,11 +4451,6 @@ plt.title('Calibration curve for baseline XGBoost model')
 plt.show()
 ```
 
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    
-
-
 ![svg](/assets/img/loan-risk-prediction/output_42_1.svg)
 
 
@@ -4542,25 +4527,6 @@ print('Mean AUROC with sigmoid calibration:',
       roc_auc_score(train_y, sig_pred))
 ```
 
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    
-
-
 ![svg](/assets/img/loan-risk-prediction/output_44_1.svg)
 
 
@@ -4584,10 +4550,6 @@ df_out['SK_ID_CURR'] = test.index
 df_out['TARGET'] = test_pred[:,1]
 df_out.to_csv('xgboost_calibrated.csv', index=False)
 ```
-
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    
 
 <a class="anchor" id="resampling"></a>
 ## Resampling
@@ -4674,50 +4636,11 @@ plt.legend()
 plt.show()
 ```
 
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    
-
     Oversampling AUROC: 0.7554566031903476
-    
-
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    
-
     Undersampling AUROC: 0.754677367433835
-    
-
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    
-
     SMOTE AUROC: 0.692312181508109
-    
-
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    /opt/conda/lib/python3.6/site-packages/sklearn/model_selection/_split.py:1943: FutureWarning: You should specify a value for 'cv' instead of relying on the default value. The default value will change from 3 to 5 in version 0.22.
-      warnings.warn(CV_WARNING, FutureWarning)
-    
-
     No resampling AUROC: 0.7544329991005927
     
-
 
 ![svg](/assets/img/loan-risk-prediction/output_50_8.svg)
 
@@ -4755,11 +4678,6 @@ plt.figure()
 sns.barplot(x='CODE_GENDER', y="TARGET", data=train_o)
 plt.show()
 ```
-
-    /opt/conda/lib/python3.6/site-packages/scipy/stats/stats.py:1713: FutureWarning: Using a non-tuple sequence for multidimensional indexing is deprecated; use `arr[tuple(seq)]` instead of `arr[seq]`. In the future this will be interpreted as an array index, `arr[np.array(seq)]`, which will result either in an error or a different result.
-      return np.add.reduce(sorted[indexer] * weights, axis=axis) / sumval
-    
-
 
 ![svg](/assets/img/loan-risk-prediction/output_55_1.svg)
 
