@@ -70,7 +70,7 @@ train.head()
 
 
 
-<div>
+<div class="scroll_box">
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
@@ -612,6 +612,8 @@ for col in train:
         print(train[col].value_counts().to_string(header=None))
     print()
 ```
+
+<div style="width:100%; height:400px; overflow-y:scroll;">
 
     SK_ID_CURR
     Number empty:  0
@@ -2290,7 +2292,7 @@ for col in train:
     75%           3.000000
     max          25.000000
     Name: AMT_REQ_CREDIT_BUREAU_YEAR, dtype: float64
-    
+</div>
     
 
 
@@ -2307,6 +2309,8 @@ for col in test:
         print(test[col].value_counts().to_string(header=None))
     print()
 ```
+
+<div style="width:100%; height:400px; overflow-y:scroll;">
 
     SK_ID_CURR
     Number empty:  0
@@ -3970,6 +3974,7 @@ for col in test:
     max         17.000000
     Name: AMT_REQ_CREDIT_BUREAU_YEAR, dtype: float64
     
+</div>
     
 
 The column containing the values we are trying to predict, `TARGET`, doesn't contain any missing values.  The value of `TARGET` is $0$ when the loan was repayed sucessfully, and $1$ when there were problems repaying the loan.  Many more loans were succesfully repayed than not, which means that the dataset is imbalanced in terms of our dependent variable, which is something we'll have to watch out for when we build a predictive model later:
@@ -3999,6 +4004,8 @@ for col in test:
         print('Unique in Test: ', sorted([str(e) for e in test[col].unique().tolist()]))
         print()
 ```
+
+<div style="width:100%; height:400px; overflow-y:scroll;">
 
     NAME_CONTRACT_TYPE
     Num Unique in Train: 2
@@ -4096,7 +4103,7 @@ for col in test:
     Unique in Train: ['No', 'Yes', 'nan']
     Unique in Test:  ['No', 'Yes', 'nan']
     
-    
+</div>
 
 We'll merge the test and training dataset, and create a column which indicates whether a sample is in the test or train dataset.  That way, we can perform operations (label encoding, one-hot encoding, etc) to all the data together instead of doing it once to the training data and once to the test data.
 
@@ -4155,7 +4162,7 @@ plt.show()
 ```
 
 
-![svg](output_21_0.svg)
+![svg](/assets/img/loan-risk-prediction/output_21_0.svg)
 
 
 $350,000$ days?  That's like $1,000$ years!  Looks like all the reasonable values represent the number of days between when the applicant was employed and the date of the loan application.  The unreasonable values are all exactly $365,243$, so we'll set those to `NaN`.
@@ -4170,7 +4177,7 @@ plt.show()
 ```
 
 
-![svg](output_23_0.svg)
+![svg](/assets/img/loan-risk-prediction/output_23_0.svg)
 
 
 
@@ -4253,7 +4260,7 @@ plt.show()
 ```
 
 
-![svg](output_29_0.svg)
+![svg](/assets/img/loan-risk-prediction/output_29_0.svg)
 
 
 
@@ -4459,7 +4466,7 @@ plt.show()
     
 
 
-![svg](output_42_1.svg)
+![svg](/assets/img/loan-risk-prediction/output_42_1.svg)
 
 
 The model is pretty well calibrated as is, exept for at higher predicted probabilities.  We can better calibrate our model by adjusting predicted probabilities to more accurately reflect the probability of loan default.  
@@ -4554,7 +4561,7 @@ print('Mean AUROC with sigmoid calibration:',
     
 
 
-![svg](output_44_1.svg)
+![svg](/assets/img/loan-risk-prediction/output_44_1.svg)
 
 
     Mean AUROC with isotonic calibration: 0.7557712988933571
@@ -4596,7 +4603,7 @@ plt.show()
 ```
 
 
-![svg](output_48_0.svg)
+![svg](/assets/img/loan-risk-prediction/output_48_0.svg)
 
 
 We'll use the [imbalanced-learn](http://contrib.scikit-learn.org/imbalanced-learn/stable/index.html) package to re-sample our dataset such that the classes are balanced.  There are several different common methods we could use for re-sampling: 
@@ -4712,7 +4719,7 @@ plt.show()
     
 
 
-![svg](output_50_8.svg)
+![svg](/assets/img/loan-risk-prediction/output_50_8.svg)
 
 
 Unfortunately it looks like none of the sampling techniques actually helped improve the AUROC score!  The SMOTE resampling technique did even more poorly than simply under- or over-sampling.  This is probably because SMOTE generates samples by interpolating between training samples in feature-space, but most of our features are binary.  So, interpolation isn't really adding diversity to the training data, it's just adding noise and making it more difficult for our classification algorithm to decide where to put a threshold in that dimension.
@@ -4736,7 +4743,7 @@ plt.show()
 ```
 
 
-![svg](output_53_0.svg)
+![svg](/assets/img/loan-risk-prediction/output_53_0.svg)
 
 
 The three most important factors by far were the three "external sources."  Presumably these were credit scores or some other similar reliability measure from sources outside Home Credit.  The credit-to-annuity ration was also very important, and other factors such as employment length, age, gender - *gender*?
@@ -4754,7 +4761,7 @@ plt.show()
     
 
 
-![svg](output_55_1.svg)
+![svg](/assets/img/loan-risk-prediction/output_55_1.svg)
 
 
 Indeed female applicants only default on their loans around 7% of the time, while male applicants default around 10% of the time.
