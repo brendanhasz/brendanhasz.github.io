@@ -8,8 +8,6 @@ img_url: /assets/img/loan-risk-prediction/output_44_1.svg
 tags: [python, prediction]
 ---
 
-# Home Credit Group Loan Risk Prediction
-
 [Home Credit Group](http://www.homecredit.net/) is a financial institution which specializes in consumer lending, especially to people with little credit history.  In order to determine what a reasonable principal is for applicants, and a repayment schedule which will help their clients sucessfully repay their loans, Home Credit Group wants to use data about the applicant to predict how likely they are to be able to repay their loan.  Home Credit Group recently hosted a [kaggle competition](https://www.kaggle.com/c/home-credit-default-risk) to predict loan repayment probability from (anonymized) applicant information.  In this post we'll use that data to try and predict loan repayment ability.
 
 ## Outline
