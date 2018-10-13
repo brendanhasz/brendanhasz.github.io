@@ -3985,7 +3985,7 @@ for col in test:
   </div>
 </div>    
 
-The column containing the values we are trying to predict, `TARGET`, doesn't contain any missing values.  The value of `TARGET` is $0$ when the loan was repayed sucessfully, and $1$ when there were problems repaying the loan.  Many more loans were succesfully repayed than not, which means that the dataset is imbalanced in terms of our dependent variable, which is something we'll have to watch out for when we build a predictive model later:
+The column containing the values we are trying to predict, `TARGET`, doesn't contain any missing values.  The value of `TARGET` is 0 when the loan was repayed sucessfully, and 1 when there were problems repaying the loan.  Many more loans were succesfully repayed than not, which means that the dataset is imbalanced in terms of our dependent variable, which is something we'll have to watch out for when we build a predictive model later:
 
 
 ```python
@@ -4167,7 +4167,7 @@ plt.show()
 ![svg](/assets/img/loan-risk-prediction/output_21_0.svg)
 
 
-$350,000$ days?  That's like $1,000$ years!  Looks like all the reasonable values represent the number of days between when the applicant was employed and the date of the loan application.  The unreasonable values are all exactly $365,243$, so we'll set those to `NaN`.
+350,000 days?  That's like 1,000 years!  Looks like all the reasonable values represent the number of days between when the applicant was employed and the date of the loan application.  The unreasonable values are all exactly 365,243, so we'll set those to `NaN`.
 
 
 ```python
@@ -4321,7 +4321,7 @@ for col in app:
 app = pd.get_dummies(app, columns=cat_features)
 ```
 
-And finally we'll remove duplicate columns.  We'll hash the columns and check if the hashes match before checking if all the values actually match, because it's a lot faster than comparing $O(N^2)$ columns elementwise.
+And finally we'll remove duplicate columns.  We'll hash the columns and check if the hashes match before checking if all the values actually match, because it's a lot faster than comparing \\( O(N^2) \\) columns elementwise.
 
 
 ```python
@@ -4546,7 +4546,7 @@ print('Mean AUROC with sigmoid calibration:',
     Mean AUROC with sigmoid calibration: 0.755912952365782
     
 
-Sigmoid calibration didn't appear to work very well in this case...  Isotonic calibration didn't work perfectly either, however it did appear to improve the model's discrimination a small bit (the model without calibration has slightly poorer discrimination in that it is more likely to predict probabilities which are close to 0.5).  Isotonic calibration is usually only recommended if one has $>>1000$ datapoints, which we do (the training set contains around 300,000 datapoins), so we'll go ahead and use isotonic calibration.  Now we can output our predictions after calibrating.
+Sigmoid calibration didn't appear to work very well in this case...  Isotonic calibration didn't work perfectly either, however it did appear to improve the model's discrimination a small bit (the model without calibration has slightly poorer discrimination in that it is more likely to predict probabilities which are close to 0.5).  Isotonic calibration is usually only recommended if one has \\( >>1000 \\) datapoints, which we do (the training set contains around 300,000 datapoins), so we'll go ahead and use isotonic calibration.  Now we can output our predictions after calibrating.
 
 
 ```python
