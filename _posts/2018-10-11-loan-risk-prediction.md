@@ -4,6 +4,7 @@ title: "Home Credit Group Loan Risk Prediction"
 date: 2018-10-11
 description: "Prediction of loan default using python, scikit-learn, and XGBoost."
 github_url: https://github.com/brendanhasz/home-credit-group
+kaggle_url: https://www.kaggle.com/brendanhasz/home-credit-group-loan-risk-prediction
 img_url: /assets/img/loan-risk-prediction/output_44_1.svg
 tags: [python, prediction]
 ---
