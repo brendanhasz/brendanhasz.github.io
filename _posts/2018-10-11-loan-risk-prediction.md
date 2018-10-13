@@ -2299,7 +2299,7 @@ for col in train:
   </div>
 </div>
     
-
+<br />
 
 ```python
 # Print info about each column in the test dataset
@@ -3984,6 +3984,8 @@ for col in test:
   </pre>
   </div>
 </div>    
+
+<br />
 
 The column containing the values we are trying to predict, `TARGET`, doesn't contain any missing values.  The value of `TARGET` is 0 when the loan was repayed sucessfully, and 1 when there were problems repaying the loan.  Many more loans were succesfully repayed than not, which means that the dataset is imbalanced in terms of our dependent variable, which is something we'll have to watch out for when we build a predictive model later:
 
