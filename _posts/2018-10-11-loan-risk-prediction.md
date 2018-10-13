@@ -613,9 +613,10 @@ for col in train:
     print()
 ```
 
-<div style="width:100%; height:400px; overflow-y:scroll;">
-
-    SK_ID_CURR
+<div class="highlighter-rouge" style="width:100%; height:400px; overflow-y:scroll;">
+  <div class="highlight">
+    <pre class="highlight">
+    <code>SK_ID_CURR
     Number empty:  0
     Percent empty:  0.0
     count    307511.000000
@@ -2292,6 +2293,10 @@ for col in train:
     75%           3.000000
     max          25.000000
     Name: AMT_REQ_CREDIT_BUREAU_YEAR, dtype: float64
+    
+  </code>
+  </pre>
+  </div>
 </div>
     
 
@@ -2310,9 +2315,10 @@ for col in test:
     print()
 ```
 
-<div style="width:100%; height:400px; overflow-y:scroll;">
-
-    SK_ID_CURR
+<div class="highlighter-rouge" style="width:100%; height:400px; overflow-y:scroll;">
+  <div class="highlight">
+    <pre class="highlight">
+    <code>SK_ID_CURR
     Number empty:  0
     Percent empty:  0.0
     count     48744.000000
@@ -3974,8 +3980,10 @@ for col in test:
     max         17.000000
     Name: AMT_REQ_CREDIT_BUREAU_YEAR, dtype: float64
     
-</div>
-    
+  </code>
+  </pre>
+  </div>
+</div>    
 
 The column containing the values we are trying to predict, `TARGET`, doesn't contain any missing values.  The value of `TARGET` is $0$ when the loan was repayed sucessfully, and $1$ when there were problems repaying the loan.  Many more loans were succesfully repayed than not, which means that the dataset is imbalanced in terms of our dependent variable, which is something we'll have to watch out for when we build a predictive model later:
 
@@ -4005,9 +4013,10 @@ for col in test:
         print()
 ```
 
-<div style="width:100%; height:400px; overflow-y:scroll;">
-
-    NAME_CONTRACT_TYPE
+<div class="highlighter-rouge" style="width:100%; height:400px; overflow-y:scroll;">
+  <div class="highlight">
+    <pre class="highlight">
+    <code>NAME_CONTRACT_TYPE
     Num Unique in Train: 2
     Num Unique in Test:  2
     Unique in Train: ['Cash loans', 'Revolving loans']
@@ -4103,7 +4112,10 @@ for col in test:
     Unique in Train: ['No', 'Yes', 'nan']
     Unique in Test:  ['No', 'Yes', 'nan']
     
-</div>
+  </code>
+  </pre>
+  </div>
+</div> 
 
 We'll merge the test and training dataset, and create a column which indicates whether a sample is in the test or train dataset.  That way, we can perform operations (label encoding, one-hot encoding, etc) to all the data together instead of doing it once to the training data and once to the test data.
 
