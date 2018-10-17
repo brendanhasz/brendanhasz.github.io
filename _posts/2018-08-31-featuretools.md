@@ -4,6 +4,7 @@ title: "Automated Feature Engineering with Featuretools"
 date: 2018-08-31
 description: "Running deep feature synthesis for automated feature engineering, using the Featuretools package for Python."
 tags: [feature engineering, featuretools, python]
+comments: true
 published: false
 ---
 

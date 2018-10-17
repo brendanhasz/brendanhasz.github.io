@@ -8,6 +8,7 @@ kaggle_url: https://www.kaggle.com/brendanhasz/multilevel-bayesian-correlations
 zip_url: /assets/zips/bayesian-correlation.zip
 img_url: /assets/img/bayesian-correlation/output_38_0.svg
 tags: [bayesian, stan, python]
+comments: true
 ---
 
 
