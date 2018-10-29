@@ -20,7 +20,7 @@ comments: true
 * [Baseline Predictions](#baseline-predictions)
 * [Calibration](#calibration)
 * [Resampling](#resampling)
-* [Final Predictions and Feature Importance](#final-predictions)
+* [Final Predictions and Feature Importance](#feature-importance)
 
 First let's load the packages we'll use.
 
