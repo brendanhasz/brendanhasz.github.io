@@ -1,10 +1,10 @@
 ---
 layout: post
 title: "Automated Feature Engineering with Featuretools"
-date: 2018-08-31
+date: 2018-11-11
 description: "Running deep feature synthesis for automated feature engineering, using the Featuretools package for Python."
 tags: [feature engineering, featuretools, python]
-published: false
+published: true
 ---
 
 [Featuretools](https://www.featuretools.com/) is a fantastic python package for automated feature engineering.  It can automatically generate features from secondary datasets which can then be used in machine learning models.  In this post we'll see how automated feature engineering with Featuretools works, and how to run it on complex multi-table datsets!
