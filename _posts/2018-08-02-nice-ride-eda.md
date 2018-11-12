@@ -8,6 +8,7 @@ kaggle_url: https://www.kaggle.com/brendanhasz/nice-ride-mn-eda
 zip_url: /assets/zips/nice-ride-eda.zip
 img_url: /assets/img/nice-ride-eda/demand-diff-gif.gif
 tags: [eda, python, bokeh]
+comments: true
 ---
 
 Bicycle ride-sharing systems have become increasingly popular in major cities.  They allow people to enjoy biking around the city without investing in buying a bike for themselves, by providing affordable bike rentals.  Here in the twin cities (Minneapolis/St. Paul, MN) we have the bike-sharing nonprofit [Nice Ride MN](https://www.niceridemn.org/).  Customers can rent bikes at stations, each of which has docks for several bikes, and are scattered throughout the cities.  Customers can then bike around, and return their bike at any other station (providing there's an empty dock for it).  

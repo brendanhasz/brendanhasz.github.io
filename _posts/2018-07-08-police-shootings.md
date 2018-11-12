@@ -8,6 +8,7 @@ kaggle_url: https://www.kaggle.com/brendanhasz/police-shootings-eda
 zip_url: /assets/zips/police-shootings-eda.zip
 img_url: /assets/img/police-shootings/output_33_0.svg
 tags: [eda, python, bokeh]
+comments: true
 ---
 
 The Washington Post maintains a [database of fatal police shootings in the US](https://github.com/washingtonpost/data-police-shootings) since 2015.  We'll take a quick look at the data, and also analyze how biased shootings are by state or race.
