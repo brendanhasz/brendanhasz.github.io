@@ -1506,13 +1506,13 @@ The next step is to define the relationships between entities.  That is, what co
 ```python
 # Define relationships between dataframes
 relationships = [
-    # parent_entity   parent_variable  child_entity      child_variable
-    ('applications', 'SK_ID_CURR',   'bureau',         'SK_ID_CURR'),
-    ('bureau',       'SK_ID_BUREAU', 'bureau_balance', 'SK_ID_BUREAU'),
-    ('applications', 'SK_ID_CURR',   'prev_app',       'SK_ID_CURR'),
-    ('applications', 'SK_ID_CURR',   'cash_balance',   'SK_ID_CURR'),
-    ('applications', 'SK_ID_CURR',   'payments',       'SK_ID_CURR'),
-    ('applications', 'SK_ID_CURR',   'card_balance',   'SK_ID_CURR')
+  # parent_entity   parent_variable  child_entity      child_variable
+  ('applications', 'SK_ID_CURR',    'bureau',         'SK_ID_CURR'),
+  ('bureau',       'SK_ID_BUREAU',  'bureau_balance', 'SK_ID_BUREAU'),
+  ('applications', 'SK_ID_CURR',    'prev_app',       'SK_ID_CURR'),
+  ('applications', 'SK_ID_CURR',    'cash_balance',   'SK_ID_CURR'),
+  ('applications', 'SK_ID_CURR',    'payments',       'SK_ID_CURR'),
+  ('applications', 'SK_ID_CURR',    'card_balance',   'SK_ID_CURR')
 ]
 
 # Create the relationships
