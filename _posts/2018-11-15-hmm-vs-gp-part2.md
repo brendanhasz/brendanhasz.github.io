@@ -13,7 +13,7 @@ In [a previous post](https://brendanhasz.github.io/2018/10/10/hmm-vs-gp.html),
 we built Bayesian models of Gaussian processes and hidden Markov models
 in R using [Stan](http://mc-stan.org/).
 However, there were a few things we left undone!
-First, the Stan models above assumed a single
+First, the Stan models in that post assumed a single
 process evolving over a short period of time. However, if we have data
 over repeated trials, we have to alter the
 models to sum the log probability over all trials. Also, with real
@@ -69,46 +69,48 @@ code for a Gaussian process which can handle multiple trials:
 writeLines(readLines("lgp_multitrial.stan"))
 ```
 
-    data {
-      int<lower=1> N;  //number of datapoints per trial
-      int<lower=1> Nt; //number of trials
-      real x[N];       //x values (assume same for each trial)
-      row_vector<lower=0, upper=1>[N] y[Nt]; //y values
-    }
+```stan
+data {
+  int<lower=1> N;  //number of datapoints per trial
+  int<lower=1> Nt; //number of trials
+  real x[N];       //x values (assume same for each trial)
+  row_vector<lower=0, upper=1>[N] y[Nt]; //y values
+}
+ 
+transformed data {
+  vector[N] mu;      //mean function (vector of 0s)
+  real sum_ln_scale; //sum of scales for logit normal dists
+  mu = rep_vector(0, N);
+  sum_ln_scale = 0;
+  for (i in 1:Nt) //pre-compute contribution of logit normal scales
+    sum_ln_scale += -sum(log(y[i])+log(1-y[i]));
+}
+ 
+parameters {
+  real<lower=0> rho;   //length scale
+  real<lower=0> alpha; //marginal/output/signal standard deviation
+  real<lower=0> sigma; //noise standard deviation
+}
+ 
+model {
+  // Covariance matrix (assume x same for each trial)
+  matrix[N, N] K = cov_exp_quad(x, alpha, rho) + 
+                   diag_matrix(rep_vector(square(sigma), N));
+ 
+  // Priors
+  target += inv_gamma_lpdf(rho | 2, 0.5);
+  target += normal_lpdf(alpha | 0, 2) + log(2); //half-normal dists
+  target += normal_lpdf(sigma | 0, 1) + log(2); //mult density by 2
+   
+  // Accumulate evidence over trials
+  for (i in 1:Nt)
+    target += multi_normal_lpdf(logit(y[i]) | mu, K);
      
-    transformed data {
-      vector[N] mu;      //mean function (vector of 0s)
-      real sum_ln_scale; //sum of scales for logit normal dists
-      mu = rep_vector(0, N);
-      sum_ln_scale = 0;
-      for (i in 1:Nt) //pre-compute contribution of logit normal scales
-        sum_ln_scale += -sum(log(y[i])+log(1-y[i]));
-    }
-     
-    parameters {
-      real<lower=0> rho;   //length scale
-      real<lower=0> alpha; //marginal/output/signal standard deviation
-      real<lower=0> sigma; //noise standard deviation
-    }
-     
-    model {
-      // Covariance matrix (assume x same for each trial)
-      matrix[N, N] K = cov_exp_quad(x, alpha, rho) + 
-                       diag_matrix(rep_vector(square(sigma), N));
-     
-      // Priors
-      target += inv_gamma_lpdf(rho | 2, 0.5);
-      target += normal_lpdf(alpha | 0, 2) + log(2); //half-normal dists
-      target += normal_lpdf(sigma | 0, 1) + log(2); //mult density by 2
-       
-      // Accumulate evidence over trials
-      for (i in 1:Nt)
-        target += multi_normal_lpdf(logit(y[i]) | mu, K);
-         
-      // Add scales such that likelihood integrates to 1 over y
-      target += sum_ln_scale;
-       
-    }
+  // Add scales such that likelihood integrates to 1 over y
+  target += sum_ln_scale;
+   
+}
+```
 
 And Stan code for a hidden Markov model which can handle multiple
 trials:
@@ -186,8 +188,8 @@ sim_params = list(N=N, x=x, rho=rho, alpha=alpha, sigma=sigma)
 for (trial in 1:Nt){
   sim_gp = stan(file='simulate_lgp.stan', data=sim_params, iter=1, 
                 chains=1, seed=trial*100, algorithm="Fixed_param")
-  f[trial,] = extract(sim_gp)\\( f
-  y[trial,] = extract(sim_gp) \\)y
+  f[trial,] = extract(sim_gp)$f
+  y[trial,] = extract(sim_gp)$y
 }
 
 # Store data
@@ -234,8 +236,8 @@ sim_params = list(N=N, phi=phi, theta=theta)
 for (trial in 1:Nt){
   sim_hmm = stan(file='simulate_hmm.stan', data=sim_params, iter=1, 
                  chains=1, seed=trial*100, algorithm="Fixed_param")
-  s[trial,] = extract(sim_hmm)\\( s-1
-  y[trial,] = extract(sim_hmm) \\)y
+  s[trial,] = extract(sim_hmm)$s-1
+  y[trial,] = extract(sim_hmm)$y
 }
 
 # Store data
@@ -451,8 +453,8 @@ hidden Markov model looks reasonable.
 posterior = extract(fit_gp_to_hmm)
 par(mfrow=c(1, 3))
 interval_density(posterior$rho, xlab="rho", xlim=c(0, 0.4))
-interval_density(posterior\\( alpha, xlab="alpha")
-interval_density(posterior \\)sigma, xlab="sigma")
+interval_density(posterior$alpha, xlab="alpha")
+interval_density(posterior$sigma, xlab="sigma")
 ```
 
 ![](/assets/img/hmm-vs-gp-part2/unnamed-chunk-68-1.svg)
@@ -1008,8 +1010,8 @@ for (sub in 1:Ns){
     ix = (sub-1)*Nts+trial #index in array of all trials
     sim_gp = stan(file='simulate_lgp.stan', data=sim_params, iter=1, 
                   chains=1, seed=ix, algorithm="Fixed_param")
-    f[ix,] = extract(sim_gp)\\( f
-    y[ix,] = extract(sim_gp) \\)y
+    f[ix,] = extract(sim_gp)$f
+    y[ix,] = extract(sim_gp)$y
     sid[ix,] = sub
   }
 }
@@ -1033,7 +1035,7 @@ for (sub in 1:Ns){
           ylim=c(0, 1), xlab='', ylab='')
   par(new=T)
   matplot(t(xs), t(y[ix,]), type='p', pch=20, 
-          ylim=c(0, 1), xlab='x', ylab=paste('Sub ',toString(sub)))
+          ylim=c(0, 1), xlab='x', ylab=sprintf("Sub %d",sub))
 }
 ```
 
@@ -1077,8 +1079,8 @@ for (sub in 1:Ns){
     ix = (sub-1)*Nts+trial #index in array of all trials
     sim_hmm = stan(file='simulate_hmm.stan', data=sim_params, iter=1, 
                    chains=1, seed=ix, algorithm="Fixed_param")
-    s[ix,] = extract(sim_hmm)\\( s-1
-    y[ix,] = extract(sim_hmm) \\)y
+    s[ix,] = extract(sim_hmm)$s-1
+    y[ix,] = extract(sim_hmm)$y
     sid[ix,] = sub
   }
 }
@@ -1100,7 +1102,7 @@ for (sub in 1:Ns){
           ylim=c(0, 1), xlab='', ylab='')
   par(new=T)
   matplot(t(xs), t(y[ix,]), type='p', pch=20, 
-          ylim=c(0, 1), xlab='x', ylab=paste('Sub ',toString(sub)))
+          ylim=c(0, 1), xlab='x', ylab=sprintf("Sub %d",sub))
 }
 ```
 
