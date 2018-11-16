@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Bayesian Modeling of Gaussian Processes and Hidden Markov Models with Stan, Part 2"
+title: "Multilevel Gaussian Processes and Hidden Markov Models with Stan"
 date: 2018-11-15
 description: "Multilevel and multitrial Gaussian Processes and hidden Markov models in R, using Stan and bridge sampling."
 github_url: https://github.com/brendanhasz/hmm-vs-gp
@@ -69,7 +69,7 @@ code for a Gaussian process which can handle multiple trials:
 writeLines(readLines("lgp_multitrial.stan"))
 ```
 
-```stan
+``` stan
 data {
   int<lower=1> N;  //number of datapoints per trial
   int<lower=1> Nt; //number of trials
@@ -119,46 +119,48 @@ trials:
 writeLines(readLines("hmm_multitrial.stan"))
 ```
 
-    data {
-      int<lower=1> N; //number of observations per trial
-      int<lower=1> Nt; //number of trials
-      real<lower=0, upper=1> y[Nt, N]; //observations
-    }
-     
-    parameters {
-      simplex[2] phi[2];      //transition probabilities
-      real<lower=1> theta[2]; //observation distribution params
-    }
-     
-    model {
-     
-      // Priors
-      target += beta_lpdf(phi[1,1] | 1.2, 1.2);
-      target += beta_lpdf(phi[2,2] | 1.2, 1.2);
-      target += gamma_lpdf(theta[1]-1 | 2, 2);
-      target += gamma_lpdf(theta[2]-1 | 2, 2);
-     
-      // Compute the marginal probability over possible sequences
-      {
-        real acc[2];
-        real gamma[N, 2];
-        for (i in 1:Nt) { // accumulate evidence over trials
-          gamma[1,1] = beta_lpdf(y[i,1] | 1, theta[1]);
-          gamma[1,2] = beta_lpdf(y[i,2] | theta[2], 1);
-          for (t in 2:N) {
-            for (k in 1:2) {
-              acc[1] = gamma[t-1, 1] + log(phi[1,k]);
-              acc[2] = gamma[t-1, 2] + log(phi[2,k]);
-              gamma[t,k] = log_sum_exp(acc);
-            }
-            gamma[t,1] += beta_lpdf(y[i,t] | 1, theta[1]);
-            gamma[t,2] += beta_lpdf(y[i,t] | theta[2], 1);
-          }
-          target += log_sum_exp(gamma[N]);
+``` stan
+data {
+  int<lower=1> N; //number of observations per trial
+  int<lower=1> Nt; //number of trials
+  real<lower=0, upper=1> y[Nt, N]; //observations
+}
+ 
+parameters {
+  simplex[2] phi[2];      //transition probabilities
+  real<lower=1> theta[2]; //observation distribution params
+}
+ 
+model {
+ 
+  // Priors
+  target += beta_lpdf(phi[1,1] | 1.2, 1.2);
+  target += beta_lpdf(phi[2,2] | 1.2, 1.2);
+  target += gamma_lpdf(theta[1]-1 | 2, 2);
+  target += gamma_lpdf(theta[2]-1 | 2, 2);
+ 
+  // Compute the marginal probability over possible sequences
+  {
+    real acc[2];
+    real gamma[N, 2];
+    for (i in 1:Nt) { // accumulate evidence over trials
+      gamma[1,1] = beta_lpdf(y[i,1] | 1, theta[1]);
+      gamma[1,2] = beta_lpdf(y[i,2] | theta[2], 1);
+      for (t in 2:N) {
+        for (k in 1:2) {
+          acc[1] = gamma[t-1, 1] + log(phi[1,k]);
+          acc[2] = gamma[t-1, 2] + log(phi[2,k]);
+          gamma[t,k] = log_sum_exp(acc);
         }
+        gamma[t,1] += beta_lpdf(y[i,t] | 1, theta[1]);
+        gamma[t,2] += beta_lpdf(y[i,t] | theta[2], 1);
       }
-     
+      target += log_sum_exp(gamma[N]);
     }
+  }
+ 
+}
+```
 
 These are relatively minor changes to the Stan routines - basically
 we've simply accumulated the log posterior across trials. The rest of
@@ -778,89 +780,91 @@ are drawn.
 writeLines(readLines("lgp_multilevel.stan"))
 ```
 
-    data {
-      int<lower=1> N;  //number of datapoints per trial
-      int<lower=1> Nt; //number of trials (total across all subjects)
-      int<lower=1> Ns; //number of subjects
-      real x[N];       //independent var (same across trials/subjects)
-      int<lower=1,upper=Ns> S[Nt]; //subject ID for each trial
-      row_vector<lower=0, upper=1>[N] y[Nt]; //dependent variable
-    }
+``` stan
+data {
+  int<lower=1> N;  //number of datapoints per trial
+  int<lower=1> Nt; //number of trials (total across all subjects)
+  int<lower=1> Ns; //number of subjects
+  real x[N];       //independent var (same across trials/subjects)
+  int<lower=1,upper=Ns> S[Nt]; //subject ID for each trial
+  row_vector<lower=0, upper=1>[N] y[Nt]; //dependent variable
+}
+ 
+transformed data {
+  vector[N] mu;      //mean function (vector of 0s)
+  real sum_ln_scale; //sum of scales for logit normal dists
+  mu = rep_vector(0, N);
+  sum_ln_scale = 0;
+  for (i in 1:Nt) //pre-compute contribution of logit normal scales
+    sum_ln_scale += -sum(log(y[i])+log(1-y[i]));
+}
+ 
+parameters {
+  // Per-subject parameters (non-centered parameterization)
+  real rho_tilde[Ns];   //non-centered std of length scale
+  real alpha_tilde[Ns]; //non-centered std of signal std dev
+  real sigma_tilde[Ns]; //non-centered std of noise std dev
+   
+  // Population-level parameters
+  real<lower=0> rho_m;   //median of rho population distribution
+  real<lower=0> rho_s;   //std of rho population distribution
+  real<lower=0> alpha_m; //median of alpha population distribution
+  real<lower=0> alpha_s; //std of alpha population distribution
+  real<lower=0> sigma_m; //median of sigma population distribution
+  real<lower=0> sigma_s; //std of sigma population distribution
+}
+ 
+transformed parameters {
+  // Per-subject parameters
+  real<lower=0> rho[Ns];   //length scale
+  real<lower=0> alpha[Ns]; //signal standard deviation
+  real<lower=0> sigma[Ns]; //noise standard deviation
+   
+  // Non-centered parameterization of per-subject parameters
+  for (s in 1:Ns) {
+    rho[s] = exp(log(rho_m) + rho_s * rho_tilde[s]);
+    alpha[s] = exp(log(alpha_m) + alpha_s * alpha_tilde[s]);
+    sigma[s] = exp(log(sigma_m) + sigma_s * sigma_tilde[s]);
+  }
+}
+ 
+model {
+   
+  // Covariance matrix for each subject (assume x same for each trial)
+  matrix[N, N] K[Ns];
+  for (s in 1:Ns) {
+    K[s] = cov_exp_quad(x, alpha[s], rho[s]) + 
+           diag_matrix(rep_vector(square(sigma[s]), N));
+  }
+ 
+  // Priors (on population-level params)
+  target += inv_gamma_lpdf(rho_m | 2, 0.5);
+  target += normal_lpdf(alpha_m | 0, 2)   + log(2);
+  target += normal_lpdf(sigma_m | 0, 1)   + log(2);
+  target += normal_lpdf(rho_s   | 0, 0.5) + log(2);
+  target += normal_lpdf(alpha_s | 0, 0.5) + log(2);
+  target += normal_lpdf(sigma_s | 0, 0.5) + log(2);
+   
+  // Subject-level parameters drawn from pop-level distributions
+  // (non-centered parameterizations)
+  target += normal_lpdf(rho_tilde   | 0, 1); //log(rho) ~ normal(exp(rho_m), rho_s)
+  target += normal_lpdf(alpha_tilde | 0, 1); //log(alpha) ~ normal(exp(alpha_m), alpha_s)
+  target += normal_lpdf(sigma_tilde | 0, 1); //log(sigma) ~ normal(exp(sigma_m), sigma_s)
+  
+  // Jacobian adjustments for GLM parts of model
+  target += -sum(log(rho));
+  target += -sum(log(alpha));
+  target += -sum(log(sigma));
+   
+  // Accumulate evidence over trials
+  for (i in 1:Nt)
+    target += multi_normal_lpdf(logit(y[i]) | mu, K[S[i]]);
      
-    transformed data {
-      vector[N] mu;      //mean function (vector of 0s)
-      real sum_ln_scale; //sum of scales for logit normal dists
-      mu = rep_vector(0, N);
-      sum_ln_scale = 0;
-      for (i in 1:Nt) //pre-compute contribution of logit normal scales
-        sum_ln_scale += -sum(log(y[i])+log(1-y[i]));
-    }
-     
-    parameters {
-      // Per-subject parameters (non-centered parameterization)
-      real rho_tilde[Ns];   //non-centered std of length scale
-      real alpha_tilde[Ns]; //non-centered std of signal std dev
-      real sigma_tilde[Ns]; //non-centered std of noise std dev
-       
-      // Population-level parameters
-      real<lower=0> rho_m;   //median of rho population distribution
-      real<lower=0> rho_s;   //std of rho population distribution
-      real<lower=0> alpha_m; //median of alpha population distribution
-      real<lower=0> alpha_s; //std of alpha population distribution
-      real<lower=0> sigma_m; //median of sigma population distribution
-      real<lower=0> sigma_s; //std of sigma population distribution
-    }
-     
-    transformed parameters {
-      // Per-subject parameters
-      real<lower=0> rho[Ns];   //length scale
-      real<lower=0> alpha[Ns]; //signal standard deviation
-      real<lower=0> sigma[Ns]; //noise standard deviation
-       
-      // Non-centered parameterization of per-subject parameters
-      for (s in 1:Ns) {
-        rho[s] = exp(log(rho_m) + rho_s * rho_tilde[s]);
-        alpha[s] = exp(log(alpha_m) + alpha_s * alpha_tilde[s]);
-        sigma[s] = exp(log(sigma_m) + sigma_s * sigma_tilde[s]);
-      }
-    }
-     
-    model {
-       
-      // Covariance matrix for each subject (assume x same for each trial)
-      matrix[N, N] K[Ns];
-      for (s in 1:Ns) {
-        K[s] = cov_exp_quad(x, alpha[s], rho[s]) + 
-               diag_matrix(rep_vector(square(sigma[s]), N));
-      }
-     
-      // Priors (on population-level params)
-      target += inv_gamma_lpdf(rho_m | 2, 0.5);
-      target += normal_lpdf(alpha_m | 0, 2)   + log(2);
-      target += normal_lpdf(sigma_m | 0, 1)   + log(2);
-      target += normal_lpdf(rho_s   | 0, 0.5) + log(2);
-      target += normal_lpdf(alpha_s | 0, 0.5) + log(2);
-      target += normal_lpdf(sigma_s | 0, 0.5) + log(2);
-       
-      // Subject-level parameters drawn from pop-level distributions
-      // (non-centered parameterizations)
-      target += normal_lpdf(rho_tilde   | 0, 1); //log(rho) ~ normal(exp(rho_m), rho_s)
-      target += normal_lpdf(alpha_tilde | 0, 1); //log(alpha) ~ normal(exp(alpha_m), alpha_s)
-      target += normal_lpdf(sigma_tilde | 0, 1); //log(sigma) ~ normal(exp(sigma_m), sigma_s)
-      
-      // Jacobian adjustments for GLM parts of model
-      target += -sum(log(rho));
-      target += -sum(log(alpha));
-      target += -sum(log(sigma));
-       
-      // Accumulate evidence over trials
-      for (i in 1:Nt)
-        target += multi_normal_lpdf(logit(y[i]) | mu, K[S[i]]);
-         
-      // Add logit-normal scale terms to log posterior
-      target += sum_ln_scale;
-       
-    }
+  // Add logit-normal scale terms to log posterior
+  target += sum_ln_scale;
+   
+}
+```
 
 I tried implementing several optimizations, including pre-computing
 logit(y) (in the transformed data block), writing a custom user-defined
@@ -881,84 +885,86 @@ a non-centered parameterization.
 writeLines(readLines("hmm_multilevel.stan"))
 ```
 
-    data {
-      int<lower=1> N;     //number of observations per trial
-      int<lower=1> Nt;    //number of trials
-      int<lower=1> Ns;    //number of subjects
-      int<lower=1> S[Nt]; //subject id
-      real<lower=0, upper=1> y[Nt, N]; //observations
-    }
-     
-    parameters {
-      // Per-subject parameters (non-centered parameterization)
-      real phi_tilde[Ns,2];   //transition probabilities
-      real theta_tilde[Ns,2]; //observation distribution params
-       
-      // Population-level parameters
-      real<lower=0,upper=1> phi_m[2]; //median of phi population dists
-      real<lower=0> phi_s[2];   //std of phi population dists
-      real<lower=1> theta_m[2]; //median of theta population dists
-      real<lower=0> theta_s[2]; //std of theta population dists
-    }
-     
-    transformed parameters {
-      // Per-subject parameters
-      simplex[2] phi[Ns,2];      //transition probabilities
-      real<lower=1> theta[Ns,2]; //observation distribution params
-     
-      // Non-centered parameterization of per-subject parameters
-      for (s in 1:Ns) {
-        phi[s,1,1] = inv_logit(logit(phi_m[1])+phi_s[1]*phi_tilde[s,1]);
-        phi[s,2,2] = inv_logit(logit(phi_m[2])+phi_s[2]*phi_tilde[s,2]);
-        phi[s,1,2] = 1 - phi[s,1,1];
-        phi[s,2,1] = 1 - phi[s,2,2];
-        theta[s,1] = 1+exp(log(theta_m[1]-1)+theta_s[1]*theta_tilde[s,1]);
-        theta[s,2] = 1+exp(log(theta_m[2]-1)+theta_s[2]*theta_tilde[s,2]);
-      }
-    }
-     
-    model {
-       
-      // Priors for each of the 2 states
-      for (i in 1:2) {
-        // Priors (on population-level params)
-        target += beta_lpdf(phi_m[i] | 1.2, 1.2);
-        target += gamma_lpdf(theta_m[i]-1 | 2, 2);
-        target += normal_lpdf(phi_s[i] | 0, 1) + log(2);
-        target += normal_lpdf(theta_s[i] | 0, 2) + log(2);
-       
-        // Subject-level parameters drawn from pop-level distributions
-        // (non-centered parameterizations)
-        target += normal_lpdf(phi_tilde[,i] | 0, 1);   //logit(phi) ~ normal(inv_logit(phi_m), phi_s)
-        target += normal_lpdf(theta_tilde[,i] | 0, 1); //log(theta) ~ normal(exp(theta_m), theta_s)
-       
-        // Jacobian adjustments for GLM parts of model
-        for (s in 1:Ns)
-          target += -log(phi[s,i,i]*(1-phi[s,i,i]));
-        target += -sum(log(theta[,i]));
-      }
-     
-      // Compute the marginal probability over possible sequences
-      {
-        real acc[2];
-        real gamma[N, 2];
-        for (i in 1:Nt) { // accumulate evidence over trials
-          gamma[1,1] = beta_lpdf(y[i,1] | 1, theta[S[i],1]);
-          gamma[1,2] = beta_lpdf(y[i,2] | theta[S[i],2], 1);
-          for (t in 2:N) {
-            for (k in 1:2) {
-              acc[1] = gamma[t-1, 1] + log(phi[S[i],1,k]);
-              acc[2] = gamma[t-1, 2] + log(phi[S[i],2,k]);
-              gamma[t,k] = log_sum_exp(acc);
-            }
-            gamma[t,1] += beta_lpdf(y[i,t] | 1, theta[S[i],1]);
-            gamma[t,2] += beta_lpdf(y[i,t] | theta[S[i],2], 1);
-          }
-          target += log_sum_exp(gamma[N]);
+``` stan
+data {
+  int<lower=1> N;     //number of observations per trial
+  int<lower=1> Nt;    //number of trials
+  int<lower=1> Ns;    //number of subjects
+  int<lower=1> S[Nt]; //subject id
+  real<lower=0, upper=1> y[Nt, N]; //observations
+}
+ 
+parameters {
+  // Per-subject parameters (non-centered parameterization)
+  real phi_tilde[Ns,2];   //transition probabilities
+  real theta_tilde[Ns,2]; //observation distribution params
+   
+  // Population-level parameters
+  real<lower=0,upper=1> phi_m[2]; //median of phi population dists
+  real<lower=0> phi_s[2];   //std of phi population dists
+  real<lower=1> theta_m[2]; //median of theta population dists
+  real<lower=0> theta_s[2]; //std of theta population dists
+}
+ 
+transformed parameters {
+  // Per-subject parameters
+  simplex[2] phi[Ns,2];      //transition probabilities
+  real<lower=1> theta[Ns,2]; //observation distribution params
+ 
+  // Non-centered parameterization of per-subject parameters
+  for (s in 1:Ns) {
+    phi[s,1,1] = inv_logit(logit(phi_m[1])+phi_s[1]*phi_tilde[s,1]);
+    phi[s,2,2] = inv_logit(logit(phi_m[2])+phi_s[2]*phi_tilde[s,2]);
+    phi[s,1,2] = 1 - phi[s,1,1];
+    phi[s,2,1] = 1 - phi[s,2,2];
+    theta[s,1] = 1+exp(log(theta_m[1]-1)+theta_s[1]*theta_tilde[s,1]);
+    theta[s,2] = 1+exp(log(theta_m[2]-1)+theta_s[2]*theta_tilde[s,2]);
+  }
+}
+ 
+model {
+   
+  // Priors for each of the 2 states
+  for (i in 1:2) {
+    // Priors (on population-level params)
+    target += beta_lpdf(phi_m[i] | 1.2, 1.2);
+    target += gamma_lpdf(theta_m[i]-1 | 2, 2);
+    target += normal_lpdf(phi_s[i] | 0, 1) + log(2);
+    target += normal_lpdf(theta_s[i] | 0, 2) + log(2);
+   
+    // Subject-level parameters drawn from pop-level distributions
+    // (non-centered parameterizations)
+    target += normal_lpdf(phi_tilde[,i] | 0, 1);   //logit(phi) ~ normal(inv_logit(phi_m), phi_s)
+    target += normal_lpdf(theta_tilde[,i] | 0, 1); //log(theta) ~ normal(exp(theta_m), theta_s)
+   
+    // Jacobian adjustments for GLM parts of model
+    for (s in 1:Ns)
+      target += -log(phi[s,i,i]*(1-phi[s,i,i]));
+    target += -sum(log(theta[,i]));
+  }
+ 
+  // Compute the marginal probability over possible sequences
+  {
+    real acc[2];
+    real gamma[N, 2];
+    for (i in 1:Nt) { // accumulate evidence over trials
+      gamma[1,1] = beta_lpdf(y[i,1] | 1, theta[S[i],1]);
+      gamma[1,2] = beta_lpdf(y[i,2] | theta[S[i],2], 1);
+      for (t in 2:N) {
+        for (k in 1:2) {
+          acc[1] = gamma[t-1, 1] + log(phi[S[i],1,k]);
+          acc[2] = gamma[t-1, 2] + log(phi[S[i],2,k]);
+          gamma[t,k] = log_sum_exp(acc);
         }
+        gamma[t,1] += beta_lpdf(y[i,t] | 1, theta[S[i],1]);
+        gamma[t,2] += beta_lpdf(y[i,t] | theta[S[i],2], 1);
       }
-     
+      target += log_sum_exp(gamma[N]);
     }
+  }
+ 
+}
+```
 
 
 ### Validation
