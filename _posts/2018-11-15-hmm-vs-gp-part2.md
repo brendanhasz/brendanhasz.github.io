@@ -513,7 +513,7 @@ cat(sprintf("Log Bayes factor in favor of HMM over GP on HMM-generated data: %0.
 ## Multilevel Models
 
 Another problem with the Stan models so far is they only handle a single
-subject. We want our models to include mixed effects (that is, account
+subject. We want our models to include random effects (that is, account
 for inter-subject variability). So, we'll build multilevel versions of
 both the Gaussian process and hidden Markov models which can handle
 multiple trials from multiple subjects. This "multilevel" model will
