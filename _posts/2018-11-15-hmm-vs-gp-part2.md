@@ -328,7 +328,7 @@ check_hmc_diagnostics(fit_hmm_to_hmm)
     E-BFMI indicated no pathological behavior.
 
 The chains converged for all four fits (Rhat values look good -
-i.e. they are near 1).
+i.e. they are near 1).
 
 ``` r
 # Check GP fit to GP data
@@ -512,7 +512,7 @@ Another problem with the Stan models so far is they only handle a single
 subject. We want our models to include mixed effects (that is, account
 for inter-subject variability). So, we'll build multilevel versions of
 both the Gaussian process and hidden Markov models which can handle
-multiple trials from multiple subjects. This “multilevel” model will
+multiple trials from multiple subjects. This "multilevel" model will
 have a subject level and a population level. At the subject level, each
 subject has their own set of parameters, which are used to compute the
 probability of the data for that subject. But, each subect's parameters
@@ -865,7 +865,7 @@ logit(y) (in the transformed data block), writing a custom user-defined
 Stan function to compute the covariance matrix which assumed
 linearly-spaced x values, etc. However, none of the optimizations
 actually ended up making the sampling run any faster! Stan's pretty fast
-as is. Well. Maybe not “fast”. *Optimized*.
+as is. Well. Maybe not "fast". *Optimized*.
 
 We'll do the same thing for the hidden Markov model. Here's a diagram of
 the non-centered parameterization of the hidden Markov model.
