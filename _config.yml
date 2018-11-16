@@ -22,4 +22,4 @@ social:
     - https://www.kaggle.com/brendanhasz
 plugins:
   - jekyll-seo-tag
-highlighter: pygments
+highlighter: rouge
