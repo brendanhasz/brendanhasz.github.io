@@ -119,7 +119,7 @@ trials:
 writeLines(readLines("hmm_multitrial.stan"))
 ```
 
-``` Stan
+``` stan
 data {
   int<lower=1> N; //number of observations per trial
   int<lower=1> Nt; //number of trials
