@@ -636,7 +636,7 @@ instead of the means?  Just for simplicity and consistency, really.  Because of
 the skew introduced by the log- and logit-transforms, the means of the log- and
 logit-normal distributions are not equal to their \\( \mu \\) parameters.  The mean of
 a log-normal distribution is relatively easy to compute
-($exp(\mu+\frac{\sigma^2}{2})), but the mean of a logit-normal distribution has
+( \\( exp(\mu+\frac{\sigma^2}{2} \\) ), but the mean of a logit-normal distribution has
 no analytical solution, and would have to be estimated numerically.  Which would
 be a pain to do manually in Stan, would be *hideously* inelegant, and as of
 version 2.17.0, Stan doesn't have a built-in function for doing this.  So, I
@@ -717,7 +717,8 @@ population distribution can shrink (up to a point) while maintaining a similar
 posterior probability, because while the likelihood of any one individual's data
 decreases, the likelihood due to individuals' parameters being drawn from the
 population distribution increases (because the distribution is being
-compressed).  This can lead to a "funnel"-like geometry in the posterior.
+compressed, and so it gets "taller", because the distribution must integrate to 
+1).  This can lead to a "funnel"-like geometry in the posterior.
 
 ![Hierarchical funnel](/assets/img/hmm-vs-gp-part2/hierarchical_funnel.svg)
 
@@ -739,8 +740,8 @@ the models as is, nearly *half* of the transitions end up diverging!
 To correct for this problem, we can use a non-centered parameterization of our
 models.  Instead of defining an individual \\( i \\)'s parameter (say, \\( \theta_i \\)) as
 being drawn from a population distribution, we will instead draw a per-subject
-scaling factor \\( \tilde{\theta}_i \\) from a normal distribution (which is
-independent from the population distribution variance).
+scaling factor \\( \tilde{\theta}_i \\) from a standard normal distribution
+(which is independent from the population distribution variance).
 
 $$
 \tilde{\theta}_i \sim \text{Normal}(0, 1)
@@ -761,7 +762,7 @@ parameter-space only includes the value for \\( \tilde{\theta} \\) and not for
 is no longer funnel-shaped, and divergent transitions become much less of a
 problem.  For more about this problem and how to fix it, check out this great
 [case study by Michael Betancourt](http://mc-stan.org/users/documentation/case-studies/divergences_and_bias.html).
-Or [read the paper about it](https://arxiv.org/abs/1312.0906).
+Or [read their paper about it](https://arxiv.org/abs/1312.0906).
 
 Here's a diagram of the non-centered parameterization of the Gaussian process
 model.  Instead of drawing individuals' parameters from a population
@@ -999,17 +1000,16 @@ sigma_b = sigma_mu/sigma_var
 # Arrays to store generated data
 f = matrix(data=NA, nrow=Nt, ncol=N) #latent function
 y = matrix(data=NA, nrow=Nt, ncol=N) #observation values
-sid = matrix(data=NA, Nt)        #subject id
-rho_true = matrix(data=NA, Ns)   #true rho value for each subject
-alpha_true = matrix(data=NA, Ns) #true alpha value for each subject
-sigma_true = matrix(data=NA, Ns) #true sigma value for each subject
+sid = matrix(data=NA, Nt) #subject id
 xs = matrix(x, nrow=Nts, ncol=N, byrow=TRUE)
+
+# Generate parameters for each subject
+rho_true = rgamma(Ns, rho_a, rho_b)
+alpha_true = rgamma(Ns, alpha_a, alpha_b)
+sigma_true = rgamma(Ns, sigma_a, sigma_b)
 
 # Simulate
 for (sub in 1:Ns){
-  rho_true[sub] = rgamma(1, rho_a, rho_b) #rho for this subject
-  alpha_true[sub] = rgamma(1, alpha_a, alpha_b) #alpha for this subj
-  sigma_true[sub] = rgamma(1, sigma_a, sigma_b) #sigma for this subj
   sim_params = list(N=N, x=x, rho=rho_true[sub], 
                     alpha=alpha_true[sub], sigma=sigma_true[sub])
   for (trial in 1:Nts){
@@ -1047,6 +1047,13 @@ for (sub in 1:Ns){
 
 ![](/assets/img/hmm-vs-gp-part2/unnamed-chunk-78-1.svg)
 
+We can see that different subjects have different parameters in this data.  For
+example, subject 1 has a much slower length-scale than subject 2, as the latent
+function moves around much faster for subject 2.  However, none of the subjects
+have wildly different parameter values.  This is what the multilevel model 
+allows for - each subject can have a different parameter value, but not in a 
+totally unconstrained way.
+
 Similarly, we'll generate multiple trials from multiple subjects using a
 hidden Markov model.
 
@@ -1067,6 +1074,8 @@ theta_b = (theta_mu-1)/theta_var
 s = matrix(data=NA, nrow=Nt, ncol=N) #hidden state
 y = matrix(data=NA, nrow=Nt, ncol=N) #observed values
 sid = matrix(data=NA, Nt)          #subject id
+
+# Parameters for each subject
 phi_true = matrix(data=NA, Ns, 2)  #true phi values for each subject
 theta_true = matrix(data=NA, Ns, 2)#true theta values for each subject
 
@@ -1297,7 +1306,7 @@ for (sub in 1:Ns){
 
 ![](/assets/img/hmm-vs-gp-part2/unnamed-chunk-90-1.svg)
 
-As was the hidden Markov model.
+As was the hidden Markov model (again, imperfectly for some parameters).
 
 ``` r
 # Plot true vs posterior
