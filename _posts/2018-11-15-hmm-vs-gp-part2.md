@@ -636,7 +636,7 @@ instead of the means?  Just for simplicity and consistency, really.  Because of
 the skew introduced by the log- and logit-transforms, the means of the log- and
 logit-normal distributions are not equal to their \\( \mu \\) parameters.  The mean of
 a log-normal distribution is relatively easy to compute
-( \\( exp(\mu+\frac{\sigma^2}{2} \\) ), but the mean of a logit-normal distribution has
+( \\( exp(\mu+\frac{\sigma^2}{2} ) \\) ), but the mean of a logit-normal distribution has
 no analytical solution, and would have to be estimated numerically.  Which would
 be a pain to do manually in Stan, would be *hideously* inelegant, and as of
 version 2.17.0, Stan doesn't have a built-in function for doing this.  So, I
