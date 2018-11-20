@@ -225,7 +225,7 @@ N = 100
 Nt = 10 #number of trials
 
 # Parameters
-phi = array(c(0.9, 0.1, 0.1, 0.9), dim=c(2,2)) #transition probabilities
+phi = array(c(0.9, 0.1, 0.1, 0.9), dim=c(2,2)) #transition probs
 theta = c(5, 5) #observation distribution parameters
 
 # Arrays to store generated data
@@ -343,11 +343,11 @@ print(fit_gp_to_gp)
     4 chains, each with iter=2000; warmup=1000; thin=1; 
     post-warmup draws per chain=1000, total post-warmup draws=4000.
      
-             mean se_mean   sd    2.5%     25%     50%     75%   97.5% n_eff Rhat
-    rho      0.52    0.00 0.02    0.48    0.51    0.52    0.53    0.56  2655    1
-    alpha    2.10    0.00 0.17    1.80    1.98    2.09    2.21    2.47  2666    1
-    sigma    0.30    0.00 0.01    0.29    0.30    0.30    0.31    0.32  2835    1
-    lp__  1649.00    0.03 1.24 1645.81 1648.45 1649.32 1649.89 1650.40  1757    1
+             mean se_mean   sd    2.5%     50%   97.5% n_eff Rhat
+    rho      0.52    0.00 0.02    0.48    0.52    0.56  2655    1
+    alpha    2.10    0.00 0.17    1.80    2.09    2.47  2666    1
+    sigma    0.30    0.00 0.01    0.29    0.30    0.32  2835    1
+    lp__  1649.00    0.03 1.24 1645.81 1649.32 1650.40  1757    1
 
 ``` r
 # Check HMM fit to GP data
@@ -358,14 +358,14 @@ print(fit_hmm_to_gp)
     4 chains, each with iter=2000; warmup=1000; thin=1; 
     post-warmup draws per chain=1000, total post-warmup draws=4000.
      
-               mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
-    phi[1,1]   0.98    0.00 0.01   0.97   0.98   0.98   0.98   0.99  3797    1
-    phi[1,2]   0.02    0.00 0.01   0.01   0.02   0.02   0.02   0.03  3797    1
-    phi[2,1]   0.03    0.00 0.01   0.02   0.03   0.03   0.04   0.05  4000    1
-    phi[2,2]   0.97    0.00 0.01   0.95   0.96   0.97   0.97   0.98  4000    1
-    theta[1]   3.24    0.00 0.21   2.82   3.10   3.24   3.37   3.66  3108    1
-    theta[2]   4.43    0.01 0.37   3.75   4.18   4.41   4.64   5.23  2967    1
-    lp__     499.90    0.04 1.51 496.18 499.14 500.23 501.03 501.78  1839    1
+               mean se_mean   sd   2.5%    50%  97.5% n_eff Rhat
+    phi[1,1]   0.98    0.00 0.01   0.97   0.98   0.99  3797    1
+    phi[1,2]   0.02    0.00 0.01   0.01   0.02   0.03  3797    1
+    phi[2,1]   0.03    0.00 0.01   0.02   0.03   0.05  4000    1
+    phi[2,2]   0.97    0.00 0.01   0.95   0.97   0.98  4000    1
+    theta[1]   3.24    0.00 0.21   2.82   3.24   3.66  3108    1
+    theta[2]   4.43    0.01 0.37   3.75   4.41   5.23  2967    1
+    lp__     499.90    0.04 1.51 496.18 500.23 501.78  1839    1
 
 ``` r
 # Check GP fit to HMM data
@@ -376,11 +376,11 @@ print(fit_gp_to_hmm)
     4 chains, each with iter=2000; warmup=1000; thin=1; 
     post-warmup draws per chain=1000, total post-warmup draws=4000.
      
-            mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
-    rho     0.16    0.00 0.01   0.14   0.16   0.16   0.17   0.19  3206    1
-    alpha   1.87    0.00 0.11   1.66   1.79   1.86   1.94   2.11  2906    1
-    sigma   1.68    0.00 0.05   1.59   1.65   1.68   1.71   1.77  3241    1
-    lp__  359.31    0.03 1.27 355.86 358.79 359.65 360.23 360.73  2044    1
+            mean se_mean   sd   2.5%    50%  97.5% n_eff Rhat
+    rho     0.16    0.00 0.01   0.14   0.16   0.19  3206    1
+    alpha   1.87    0.00 0.11   1.66   1.86   2.11  2906    1
+    sigma   1.68    0.00 0.05   1.59   1.68   1.77  3241    1
+    lp__  359.31    0.03 1.27 355.86 359.65 360.73  2044    1
 
 ``` r
 # Check HMM fit to HMM data
@@ -391,14 +391,14 @@ print(fit_hmm_to_hmm)
     4 chains, each with iter=2000; warmup=1000; thin=1; 
     post-warmup draws per chain=1000, total post-warmup draws=4000.
      
-               mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
-    phi[1,1]   0.90    0.00 0.01   0.88   0.90   0.91   0.91   0.93  4000    1
-    phi[1,2]   0.10    0.00 0.01   0.07   0.09   0.09   0.10   0.12  4000    1
-    phi[2,1]   0.11    0.00 0.02   0.08   0.10   0.11   0.12   0.14  4000    1
-    phi[2,2]   0.89    0.00 0.02   0.86   0.88   0.89   0.90   0.92  4000    1
-    theta[1]   4.89    0.00 0.24   4.44   4.73   4.88   5.05   5.37  4000    1
-    theta[2]   4.87    0.00 0.26   4.36   4.69   4.86   5.05   5.40  4000    1
-    lp__     494.87    0.03 1.46 491.38 494.17 495.19 495.93 496.64  2071    1
+               mean se_mean   sd   2.5%    50%  97.5% n_eff Rhat
+    phi[1,1]   0.90    0.00 0.01   0.88   0.91   0.93  4000    1
+    phi[1,2]   0.10    0.00 0.01   0.07   0.09   0.12  4000    1
+    phi[2,1]   0.11    0.00 0.02   0.08   0.11   0.14  4000    1
+    phi[2,2]   0.89    0.00 0.02   0.86   0.89   0.92  4000    1
+    theta[1]   4.89    0.00 0.24   4.44   4.88   5.37  4000    1
+    theta[2]   4.87    0.00 0.26   4.36   4.86   5.40  4000    1
+    lp__     494.87    0.03 1.46 491.38 495.19 496.64  2071    1
 
 Were the models able to recover the parameters used to generate the
 data? The Gaussian process fit was able to sucessfully recover the
@@ -494,20 +494,22 @@ fit to data generated by the Gaussian process.
 
 ``` r
 lbf1 = bf(bridge_gp_gp, bridge_hmm_gp, log=TRUE)
-cat(sprintf("Log Bayes factor in favor of GP over HMM on GP-generated data: %0.3g\n", lbf1$bf))
+cat(sprintf("LBF of GP over HMM on GP-generated data: %0.3g\n", 
+            lbf1$bf))
 ```
 
-    Log Bayes factor in favor of GP over HMM on GP-generated data: 1.15e+03
+    LBF of GP over HMM on GP-generated data: 1.15e+03
 
 Conversely, the bridge-sampling-estimated Bayes factor favored the
 hidden Markov model fit to data generated by the hidden Markov model.
 
 ``` r
 lbf2 = bf(bridge_hmm_hmm, bridge_gp_hmm, log=TRUE)
-cat(sprintf("Log Bayes factor in favor of HMM over GP on HMM-generated data: %0.3g\n", lbf2$bf))
+cat(sprintf("LBF of HMM over GP on HMM-generated data: %0.3g\n", 
+            lbf2$bf))
 ```
 
-    Log Bayes factor in favor of HMM over GP on HMM-generated data: 137
+    LBF of HMM over GP on HMM-generated data: 137
 
 
 ## Multilevel Models
@@ -573,7 +575,7 @@ $$
 
 The signal standard deviation parameter (\\( \alpha \\)) for each subject \\( i \\) is
 drawn from a population log-normal distribution with median \\( \alpha_m \\) and
-standard deviation parameter \\( \alpha_\sigma \\)..
+standard deviation parameter \\( \alpha_\sigma \\).
 
 $$
 \forall i, ~ \alpha_i \sim \text{LogNormal}(\log (\alpha_m), ~ \alpha_\sigma)
@@ -596,7 +598,7 @@ $$
 
 Finally, the noise standard deviation parameter (\\( \sigma \\)) for each subject \\( i \\)
 is drawn from a population log-normal distribution with median \\( \sigma_m \\) and
-standard deviation parameter \\( \sigma_sigma \\).
+standard deviation parameter \\( \sigma_{sigma} \\).
 
 $$
 \forall i, ~ \sigma_i \sim \text{LogNormal}(\log (\sigma_m), \sigma_\sigma)
@@ -831,7 +833,7 @@ transformed parameters {
  
 model {
    
-  // Covariance matrix for each subject (assume x same for each trial)
+  // Covariance matrix for each subject (x same for each trial)
   matrix[N, N] K[Ns];
   for (s in 1:Ns) {
     K[s] = cov_exp_quad(x, alpha[s], rho[s]) + 
@@ -872,7 +874,9 @@ logit(y) (in the transformed data block), writing a custom user-defined
 Stan function to compute the covariance matrix which assumed
 linearly-spaced x values, etc. However, none of the optimizations
 actually ended up making the sampling run any faster! Stan's pretty fast
-as is. Well. Maybe not "fast". *Optimized*.
+as is. 
+
+Well. Maybe not "fast". *Optimized*.
 
 We'll do the same thing for the hidden Markov model. Here's a diagram of
 the non-centered parameterization of the hidden Markov model.
@@ -1014,7 +1018,8 @@ for (sub in 1:Ns){
                     alpha=alpha_true[sub], sigma=sigma_true[sub])
   for (trial in 1:Nts){
     ix = (sub-1)*Nts+trial #index in array of all trials
-    sim_gp = stan(file='simulate_lgp.stan', data=sim_params, iter=1, 
+    sim_gp = stan(file='simulate_lgp.stan', 
+                  data=sim_params, iter=1, 
                   chains=1, seed=ix, algorithm="Fixed_param")
     f[ix,] = extract(sim_gp)$f
     y[ix,] = extract(sim_gp)$y
@@ -1035,7 +1040,7 @@ And now we can take a look at all the latent functions we generated
 plot.new()
 par(mfrow=c(Ns,1))
 for (sub in 1:Ns){
-  ix = 1:Nts+(sub-1)*Nts #indexes of this subj in array of all trials
+  ix = 1:Nts+(sub-1)*Nts #indexes of this subject
   par(mfg=c(sub,1), mar=c(1,4,1,1))
   matplot(t(xs), t(f[ix,]), type='l', lty=1, lwd=2, 
           ylim=c(0, 1), xlab='', ylab='')
@@ -1076,8 +1081,8 @@ y = matrix(data=NA, nrow=Nt, ncol=N) #observed values
 sid = matrix(data=NA, Nt)          #subject id
 
 # Parameters for each subject
-phi_true = matrix(data=NA, Ns, 2)  #true phi values for each subject
-theta_true = matrix(data=NA, Ns, 2)#true theta values for each subject
+phi_true = matrix(data=NA, Ns, 2)   #phi for each subject
+theta_true = matrix(data=NA, Ns, 2) #theta for each subject
 
 # Simulate
 for (sub in 1:Ns){
@@ -1092,7 +1097,8 @@ for (sub in 1:Ns){
   sim_params = list(N=N, phi=phi, theta=theta)
   for (trial in 1:Nts){
     ix = (sub-1)*Nts+trial #index in array of all trials
-    sim_hmm = stan(file='simulate_hmm.stan', data=sim_params, iter=1, 
+    sim_hmm = stan(file='simulate_hmm.stan', 
+                   data=sim_params, iter=1, 
                    chains=1, seed=ix, algorithm="Fixed_param")
     s[ix,] = extract(sim_hmm)$s-1
     y[ix,] = extract(sim_hmm)$y
@@ -1111,7 +1117,7 @@ And here's the data generated by the hidden Markov model.
 plot.new()
 par(mfrow=c(Ns,1))
 for (sub in 1:Ns){
-  ix = 1:Nts+(sub-1)*Nts #indexes of this subj in array of all trials
+  ix = 1:Nts+(sub-1)*Nts #indexes of this subject
   par(mfg=c(sub,1), mar=c(1,4,1,1))
   matplot(t(xs), t(s[ix,]), type='l', lty=1, lwd=2, 
           ylim=c(0, 1), xlab='', ylab='')
@@ -1352,20 +1358,22 @@ fit to data generated by the Gaussian process.
 
 ``` r
 lbf1 = bf(bridge_gp_gp, bridge_hmm_gp, log=TRUE)
-cat(sprintf("Log Bayes factor in favor of GP over HMM on GP-generated data: %0.3g\n", lbf1$bf))
+cat(sprintf("LBF of GP over HMM on GP-generated data: %0.3g\n", 
+            lbf1$bf))
 ```
 
-    Log Bayes factor in favor of GP over HMM on GP-generated data: 1.31e+03
+    LBF of GP over HMM on GP-generated data: 1.31e+03
 
 Conversely, the bridge-sampling-estimated Bayes factor favored the
 hidden Markov model fit to data generated by the hidden Markov model.
 
 ``` r
 lbf2 = bf(bridge_hmm_hmm, bridge_gp_hmm, log=TRUE)
-cat(sprintf("Log Bayes factor in favor of HMM over GP on HMM-generated data: %0.3g\n", lbf2$bf))
+cat(sprintf("LBF of HMM over GP on HMM-generated data: %0.3g\n", 
+            lbf2$bf))
 ```
 
-    Log Bayes factor in favor of HMM over GP on HMM-generated data: 145
+    LBF of HMM over GP on HMM-generated data: 145
 
 
 ## Original Computing Environment
@@ -1380,7 +1388,7 @@ writeLines(readLines(file.path(Sys.getenv("HOME"), ".R/Makevars")))
 devtools::session_info()
 ```
 
-    Session info -------------------------------------------------------------
+    Session info --------------------------------------
      
      setting  value                       
      version  R version 3.5.1 (2018-07-02)
@@ -1391,7 +1399,7 @@ devtools::session_info()
      tz       America/Chicago             
      date     2018-11-15
      
-    Packages -----------------------------------------------------------------
+    Packages ------------------------------------------
      
      package        * version date       source        
      assertthat       0.2.0   2017-04-11 CRAN (R 3.5.1)
