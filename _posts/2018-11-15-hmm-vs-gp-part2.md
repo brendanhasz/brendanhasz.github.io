@@ -1332,7 +1332,7 @@ for (sub in 1:Ns){
                    xlab=sprintf("theta_1,%d", sub))
   abline(v=theta_true[sub,1], col=c_dark, lwd=3)
   
-  interval_density(posterior$theta[,sub,1], 
+  interval_density(posterior$theta[,sub,2], 
                    xlab=sprintf("theta_2,%d", sub))
   abline(v=theta_true[sub,2], col=c_dark, lwd=3)
 }
