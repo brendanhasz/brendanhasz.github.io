@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+    <script>
+      function show_tag_section(tag) {
+        // Hide all other tag divs
+        var tag_divs = document.getElementsByClassName('by_tag');
+        var i; 
+        for (var i = 0; i < tag_divs.length; i++) {
+          tag_divs[i].style.display = 'none';
+        }
+        // Show the one we want
+        document.getElementById(tag).style.display = 'block';
+      }
+    </script>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
     {% seo %}
   </head>

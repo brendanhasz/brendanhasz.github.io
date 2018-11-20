@@ -22,10 +22,8 @@ layout: default
   {% endfor %}
 
 
-  {% comment %}
-  =======================
-  The following part extracts all the tags from your posts and sort tags, so that you do not need to manually collect your tags to a place.
-  =======================
+  {% comment %} 
+  Get tags from all posts
   {% endcomment %}
   {% assign rawtags = "" %}
   {% for post in site.posts %}
@@ -35,9 +33,7 @@ layout: default
   {% assign rawtags = rawtags | split:'|' | sort %}
 
   {% comment %}
-  =======================
-  The following part removes dulpicated tags and invalid tags like blank tag.
-  =======================
+  Remove duplicate tags
   {% endcomment %}
   {% assign tags = "" %}
   {% for tag in rawtags %}
@@ -51,24 +47,14 @@ layout: default
     {% endif %}
   {% endfor %}
 
-  {% comment %}
-  =======================
-  The purpose of this snippet is to list all the tags you have in your site.
-  =======================
-  {% endcomment %}
   <h2> Tags </h2>
   {% for tag in tags %}
-    <a href="#{{ tag | slugify }}" class="post_tag"> {{ tag }} </a>
+    <a onclick="show_tag_section('{{ tag | slugify }}')" href="#{{ tag | slugify }}" class="post_tag"> {{ tag }} </a>
   {% endfor %}
   <br />
 
-  {% comment %}
-  =======================
-  The purpose of this snippet is to list all your posts posted with a certain tag.
-  =======================
-  {% endcomment %}
   {% for tag in tags %}
-    <div id="{{ tag | slugify }}" class="tags">
+    <div id="{{ tag | slugify }}" class="by_tag">
     <h2 id="{{ tag | slugify }}">Posts tagged "{{ tag }}"</h2>
      {% for post in site.posts %}
        {% if post.tags contains tag %}
