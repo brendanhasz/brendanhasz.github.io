@@ -3,7 +3,7 @@ layout: default
 ---
 
 <div>
-  <p> Hi! I'm a PhD Student in Neuroscience at the <a href="https://twin-cities.umn.edu/">University of Minnesota</a>. I research the neural mechanisms behind habitual and deliberative decision-making in the lab of <a href="http://redishlab.neuroscience.umn.edu/">David Redish</a>.  Right now I'm recording from neurons in the hippocampus and prefrontal cortex of rats as they run through mazes, and determining how those areas encode information about contingencies, reward, and choice.  I'm also interested in data science and machine learning - especially in accurately quantifying the uncertainty of predictive models.
+  <p> Hi! I'm a PhD Student in Neuroscience at the <a href="https://twin-cities.umn.edu/">University of Minnesota</a>. I research the neural mechanisms behind habitual and deliberative decision-making in the lab of <a href="http://redishlab.neuroscience.umn.edu/">David Redish</a>.  Right now I'm recording from neurons in the hippocampus and prefrontal cortex of rats as they run through mazes, and determining how those areas encode information about contingencies, reward, and choice.  I'm also interested in data science and machine learning - especially in accurately quantifying the uncertainty of predictive models. </p>
 
   {% comment %} 
   Get tags from all posts
@@ -35,6 +35,7 @@ layout: default
   {% for tag in tags %}
     <a onclick="show_tag_section('{{ tag | slugify }}')" class="post_tag"> {{ tag }} </a>
   {% endfor %}
+  <br />
   <br />
 
   <div id="all_posts">
