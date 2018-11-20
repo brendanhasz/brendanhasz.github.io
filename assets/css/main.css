@@ -80,7 +80,7 @@ section {
   display: inline-block;
   background: rgba(106,159,181,0.15);
   padding: 0.5rem;
-  margin-right: 0.25rem;
+  margin: 0.25rem;
   border-radius: 5px;
 }
 
