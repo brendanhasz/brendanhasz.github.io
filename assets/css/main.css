@@ -84,10 +84,6 @@ section {
   border-radius: 5px;
 }
 
-#by_tag {
-  display: none !important;
-}
-
 @media print, screen and (min-width: 1160px) {
   header {
     display:block;
