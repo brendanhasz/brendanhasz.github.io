@@ -10,6 +10,7 @@
     <script>
       function show_tag_section(tag) {
         // Hide all other tag divs
+        document.getElementById('all_posts').style.display = 'none';
         var tag_divs = document.getElementsByClassName('by_tag');
         var i; 
         for (var i = 0; i < tag_divs.length; i++) {

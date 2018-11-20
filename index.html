@@ -5,23 +5,6 @@ layout: default
 <div>
   <p> Hi! I'm a PhD Student in Neuroscience at the <a href="https://twin-cities.umn.edu/">University of Minnesota</a>. I research the neural mechanisms behind habitual and deliberative decision-making in the lab of <a href="http://redishlab.neuroscience.umn.edu/">David Redish</a>.  Right now I'm recording from neurons in the hippocampus and prefrontal cortex of rats as they run through mazes, and determining how those areas encode information about contingencies, reward, and choice.  I'm also interested in data science and machine learning - especially in accurately quantifying the uncertainty of predictive models.
 
-  <h2> All Posts </h2>
-
-  {% for post in site.posts %}
-    <strong> <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a> </strong> <br />
-    <span><strong>{{ post.date | date_to_string }}</strong> - {{ post.tags | array_to_sentence_string }}</span>
-    {% if post.description %} 
-      <p> {{ post.description }} </p>
-    {% endif %}
-    {% if post.img_url %} 
-      <a href="{{ post.url }}" title="{{ post.title }}">
-        <img src="{{ post.img_url }}" class="center_img">
-      </a>
-    {% endif %}
-    <br />
-  {% endfor %}
-
-
   {% comment %} 
   Get tags from all posts
   {% endcomment %}
@@ -48,10 +31,28 @@ layout: default
   {% endfor %}
 
   <h2> Tags </h2>
+  <a onclick="show_tag_section('all_posts')" class="post_tag"> All Posts </a>
   {% for tag in tags %}
-    <a onclick="show_tag_section('{{ tag | slugify }}')" href="#{{ tag | slugify }}" class="post_tag"> {{ tag }} </a>
+    <a onclick="show_tag_section('{{ tag | slugify }}')" class="post_tag"> {{ tag }} </a>
   {% endfor %}
   <br />
+
+  <div id="all_posts">
+  <h2> All Posts </h2>
+  {% for post in site.posts %}
+    <strong> <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a> </strong> <br />
+    <span><strong>{{ post.date | date_to_string }}</strong> - {{ post.tags | array_to_sentence_string }}</span>
+    {% if post.description %} 
+      <p> {{ post.description }} </p>
+    {% endif %}
+    {% if post.img_url %} 
+      <a href="{{ post.url }}" title="{{ post.title }}">
+        <img src="{{ post.img_url }}" class="center_img">
+      </a>
+    {% endif %}
+    <br />
+  {% endfor %}
+  </div>
 
   {% for tag in tags %}
     <div id="{{ tag | slugify }}" class="by_tag">
