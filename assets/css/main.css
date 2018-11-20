@@ -79,8 +79,9 @@ section {
 .post_tag {
   display: inline-block;
   background: rgba(106,159,181,0.15);
-  padding: 0 0.5rem;
+  padding: 0.5rem;
   margin-right: 0.25rem;
+  border-radius: 5px;
 }
 
 @media print, screen and (min-width: 1160px) {
