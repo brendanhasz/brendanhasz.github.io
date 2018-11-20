@@ -76,6 +76,13 @@ section {
   margin: 0 0 10px 0;
 }
 
+.post_tag {
+  display: inline-block;
+  background: rgba(106,159,181,0.15);
+  padding: 0 0.5rem;
+  margin-right: 0.25rem;
+}
+
 @media print, screen and (min-width: 1160px) {
   header {
     display:block;
