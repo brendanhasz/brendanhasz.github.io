@@ -1177,7 +1177,10 @@ print(fit_gp_to_hmm)
 print(fit_hmm_to_hmm)
 ```
 
-    Inference for Stan model: lgp_multilevel.
+<div class="highlighter-rouge" style="width:100%; height:400px; overflow-y:scroll;">
+  <div class="highlight">
+    <pre class="highlight">
+    <code>Inference for Stan model: lgp_multilevel.
     4 chains, each with iter=2000; warmup=1000; thin=1; 
     post-warmup draws per chain=1000, total post-warmup draws=4000.
      
@@ -1392,6 +1395,12 @@ print(fit_hmm_to_hmm)
     theta[5,1]         3.88  0.31   3.29   3.87   4.55  4000 1.00
     theta[5,2]         3.77  0.36   3.13   3.73   4.60  4000 1.00
     lp__             423.87  5.30 412.49 424.22 433.19   759 1.01
+  </code>
+  </pre>
+  </div>
+</div>
+    
+<br />
 
 Let's take a look at the HMC diagnostics.
 
