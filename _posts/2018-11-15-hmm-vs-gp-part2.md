@@ -401,7 +401,33 @@ print(fit_hmm_to_hmm)
     lp__     494.87    0.03 1.46 491.38 495.19 496.64  2071    1
 
 Were the models able to recover the parameters used to generate the
-data? The Gaussian process fit was able to sucessfully recover the
+data? 
+
+First let's make a function to plot the posterior distributions against the true value.
+
+``` r
+# Function to plot posterior distributions w/ 95% confidence intervals
+interval_density = function(x, bot=0.025, top=0.975,
+                            main="", xlab="", ylab="",
+                            xlim=c(min(x),max(x)), lwd=1,
+                            col1=c("#DCBCBC"), col2=c("#B97C7C"),
+                            true=NA, true_col=c("#8F2727")) {
+  dens = density(x[x>xlim[1] & x<xlim[2]])
+  plot(dens, main=main, xlab=xlab, ylab=ylab, xlim=xlim,
+       lwd=lwd, yaxt='n', bty='n', type='n')
+  polygon(dens, col=col1, border=NA)
+  qbot <- quantile(x, bot)
+  qtop <- quantile(x, top)
+  x1 = min(which(dens$x >= qbot))
+  x2 = max(which(dens$x < qtop))
+  with(dens, polygon(x=x[c(x1,x1:x2,x2)], y=c(0, y[x1:x2], 0), col=col2, border=NA))
+  if (!is.na(true)) {
+    abline(v=true, col=true_col, lwd=3)
+  }
+}
+```
+
+The Gaussian process fit was able to sucessfully recover the
 parameters of the Gaussian process used to generate the data. The
 vertical red line shows the true parameter value, and the distribution
 is the posterior.
@@ -410,15 +436,9 @@ is the posterior.
 # Plot true vs posterior for GP
 posterior = extract(fit_gp_to_gp)
 par(mfrow=c(1, 3))
-
-interval_density(posterior$rho, xlab="rho")
-abline(v=rho, col=c_dark, lwd=3)
-
-interval_density(posterior$alpha, xlab="alpha")
-abline(v=alpha, col=c_dark, lwd=3)
-
-interval_density(posterior$sigma, xlab="sigma")
-abline(v=sigma, col=c_dark, lwd=3)
+interval_density(posterior$rho, xlab="rho", true=rho)
+interval_density(posterior$alpha, xlab="alpha", true=alpha)
+interval_density(posterior$sigma, xlab="sigma", true=sigma)
 ```
 
 ![](/assets/img/hmm-vs-gp-part2/unnamed-chunk-66-1.svg)
@@ -430,18 +450,14 @@ the parameters of the hidden Markov model used to generate the data.
 # Plot true vs posterior
 posterior = extract(fit_hmm_to_hmm)
 par(mfrow=c(2, 2))
-
-interval_density(posterior$phi[,1,1], xlab="phi[,1,1]")
-abline(v=phi[1,1], col=c_dark, lwd=3)
-
-interval_density(posterior$phi[,2,2], xlab="phi[,2,2]")
-abline(v=phi[2,2], col=c_dark, lwd=3)
-
-interval_density(posterior$theta[,1], xlab="theta[1]")
-abline(v=theta[1], col=c_dark, lwd=3)
-
-interval_density(posterior$theta[,2], xlab="theta[2]")
-abline(v=theta[2], col=c_dark, lwd=3)
+interval_density(posterior$phi[,1,1], xlab="phi[,1,1]",
+                 true=phi[1,1])
+interval_density(posterior$phi[,2,2], xlab="phi[,2,2]",
+                 true=phi[2,2])
+interval_density(posterior$theta[,1], xlab="theta[1]",
+                 true=theta[1])
+interval_density(posterior$theta[,2], xlab="theta[2]",
+                 true=theta[2])
 ```
 
 ![](/assets/img/hmm-vs-gp-part2/unnamed-chunk-67-1.svg)
@@ -1243,18 +1259,15 @@ parameters of the Gaussian process used to generate the data.
 # Plot true vs posterior for GP fit to GP
 posterior = extract(fit_gp_to_gp)
 par(mfrow=c(1, 3))
-
-interval_density(posterior$rho_m, 
-                 xlab="Population median rho")
-abline(v=median(rho_true), col=c_dark, lwd=3)
-
-interval_density(posterior$alpha_m, 
-                 xlab="Population median alpha")
-abline(v=median(alpha_true), col=c_dark, lwd=3)
-
-interval_density(posterior$sigma_m, 
-                 xlab="Population median sigma")
-abline(v=median(sigma_true), col=c_dark, lwd=3)
+interval_density(posterior$rho_m,
+                 xlab="Population median rho",
+                 true=median(rho_true))
+interval_density(posterior$alpha_m,
+                 xlab="Population median alpha",
+                 true=median(alpha_true))
+interval_density(posterior$sigma_m,
+                 xlab="Population median sigma",
+                 true=median(sigma_true))
 ```
 
 ![](/assets/img/hmm-vs-gp-part2/unnamed-chunk-88-1.svg)
@@ -1265,22 +1278,18 @@ As was the hidden Markov model!
 # Plot true vs posterior
 posterior = extract(fit_hmm_to_hmm)
 par(mfrow=c(2, 2))
-
 interval_density(posterior$phi_m[,1], 
-                 xlab="Population median phi[1,1]")
-abline(v=median(phi_true[,1]), col=c_dark, lwd=3)
-
+                 xlab="Population median phi[1,1]",
+                 true=median(phi_true[,1]))
 interval_density(posterior$phi_m[,2], 
-                 xlab="Population median phi[2,2]")
-abline(v=median(phi_true[,2]), col=c_dark, lwd=3)
-
+                 xlab="Population median phi[2,2]",
+                 true=median(phi_true[,2]))
 interval_density(posterior$theta_m[,1], 
-                 xlab="Population median theta[1]")
-abline(v=median(theta_true[,1]), col=c_dark, lwd=3)
-
+                 xlab="Population median theta[1]",
+                 true=median(theta_true[,1]))
 interval_density(posterior$theta_m[,2], 
-                 xlab="Population median theta[2]")
-abline(v=median(theta_true[,2]), col=c_dark, lwd=3)
+                 xlab="Population median theta[2]",
+                 true=median(theta_true[,2]))
 ```
 
 ![](/assets/img/hmm-vs-gp-part2/unnamed-chunk-89-1.svg)
@@ -1296,17 +1305,15 @@ posterior = extract(fit_gp_to_gp)
 par(mfrow=c(Ns, 3), mar=c(1,1,1,1))
 
 for (sub in 1:Ns){
-  interval_density(posterior$rho[,sub], 
-                   xlab=sprintf("rho_%d", sub))
-  abline(v=rho_true[sub], col=c_dark, lwd=3)
-  
-  interval_density(posterior$alpha[,sub], 
-                   xlab=sprintf("alpha_%d", sub))
-  abline(v=alpha_true[sub], col=c_dark, lwd=3)
-  
-  interval_density(posterior$sigma[,sub], 
-                   xlab=sprintf("sigma_%d", sub))
-  abline(v=sigma_true[sub], col=c_dark, lwd=3)
+  interval_density(posterior$rho[,sub], xlim=xlim_rho,
+                   xlab=sprintf("rho_%d", sub),
+                   true=rho_true[sub])
+  interval_density(posterior$alpha[,sub],  xlim=xlim_alpha,
+                   xlab=sprintf("alpha_%d", sub),
+                   true=alpha_true[sub])
+  interval_density(posterior$sigma[,sub],  xlim=xlim_sigma,
+                   xlab=sprintf("sigma_%d", sub),
+                   true=sigma_true[sub])
 }
 ```
 
@@ -1320,21 +1327,18 @@ posterior = extract(fit_hmm_to_hmm)
 par(mfrow=c(Ns, 4), mar=c(1,1,1,1))
 
 for (sub in 1:Ns){
-  interval_density(posterior$phi[,sub,1,1], 
-                   xlab=sprintf("phi_1,1,%d", sub))
-  abline(v=phi_true[sub,1], col=c_dark, lwd=3)
-  
-  interval_density(posterior$phi[,sub,2,2], 
-                   xlab=sprintf("phi_2,2,%d", sub))
-  abline(v=phi_true[sub,2], col=c_dark, lwd=3)
-  
-  interval_density(posterior$theta[,sub,1], 
-                   xlab=sprintf("theta_1,%d", sub))
-  abline(v=theta_true[sub,1], col=c_dark, lwd=3)
-  
-  interval_density(posterior$theta[,sub,2], 
-                   xlab=sprintf("theta_2,%d", sub))
-  abline(v=theta_true[sub,2], col=c_dark, lwd=3)
+  interval_density(posterior$phi[,sub,1,1], xlim=xlim_phi1,
+                   xlab=sprintf("phi_1,1,%d", sub),
+                   true=phi_true[sub,1])
+  interval_density(posterior$phi[,sub,2,2], xlim=xlim_phi2,
+                   xlab=sprintf("phi_2,2,%d", sub),
+                   true=phi_true[sub,2])
+  interval_density(posterior$theta[,sub,1], xlim=xlim_theta1,
+                   xlab=sprintf("theta_1,%d", sub),
+                   true=theta_true[sub,1])
+  interval_density(posterior$theta[,sub,2], xlim=xlim_theta2,
+                   xlab=sprintf("theta_2,%d", sub),
+                   true=theta_true[sub,2])
 }
 ```
 
