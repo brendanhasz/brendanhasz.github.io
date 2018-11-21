@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 504 360" version="1.1">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="504pt" height="360pt" viewBox="0 0 504 360" version="1.1">
 <defs>
 <g>
 <symbol overflow="visible" id="glyph0-0">
@@ -115,7 +115,7 @@
 </symbol>
 </g>
 </defs>
-<g id="surface121">
+<g id="surface6">
 <rect x="0" y="0" width="504" height="360" style="fill:rgb(100%,100%,100%);fill-opacity:1;stroke:none;"/>
 <path style="fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(65.098039%,80.784314%,89.019608%);stroke-opacity:1;stroke-miterlimit:10;" d="M 74.398438 278.132813 L 97.671875 278.132813 L 101.550781 257.066406 L 117.066406 257.066406 L 120.945313 278.132813 L 144.21875 278.132813 L 148.097656 257.066406 L 167.492188 257.066406 L 171.371094 278.132813 L 198.519531 278.132813 L 202.398438 257.066406 L 241.1875 257.066406 L 245.066406 278.132813 L 264.460938 278.132813 L 268.339844 257.066406 L 314.886719 257.066406 L 318.761719 278.132813 L 330.398438 278.132813 L 334.277344 257.066406 L 338.15625 257.066406 L 342.035156 278.132813 L 369.1875 278.132813 L 373.066406 257.066406 L 404.097656 257.066406 L 407.976563 278.132813 L 458.398438 278.132813 "/>
 <path style="fill:none;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 74.398438 286.558594 L 458.398438 286.558594 "/>
