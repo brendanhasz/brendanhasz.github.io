@@ -1070,8 +1070,8 @@ for (sub in 1:Ns){
 ![](/assets/img/hmm-vs-gp-part2/unnamed-chunk-24-1.svg)
 
 We can see that different subjects have different parameters in this data.  For
-example, subject 1 has a much slower length-scale than subject 2, as the latent
-function moves around much faster for subject 2.  However, none of the subjects
+example, subjects 1 and 2 have much faster length-scales than subject 3, as the latent
+function moves around much slower for subject 3.  However, none of the subjects
 have wildly different parameter values.  This is what the multilevel model 
 allows for - each subject can have a different parameter value, but not in a 
 totally unconstrained way.
