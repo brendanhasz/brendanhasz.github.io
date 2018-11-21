@@ -9,7 +9,7 @@ tags: [bayesian, stan, r]
 comments: true
 ---
 
-In [a previous post](https://brendanhasz.github.io/2018/10/10/hmm-vs-gp.html),
+In [a previous post](/2018/10/10/hmm-vs-gp.html),
 we built Bayesian models of Gaussian processes and hidden Markov models
 in R using [Stan](http://mc-stan.org/).
 However, there were a few things we left undone!
