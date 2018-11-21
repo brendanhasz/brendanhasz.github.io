@@ -4,7 +4,7 @@ title: "Multilevel Gaussian Processes and Hidden Markov Models with Stan"
 date: 2018-11-15
 description: "Multilevel and multitrial Gaussian Processes and hidden Markov models in R, using Stan and bridge sampling."
 github_url: https://github.com/brendanhasz/hmm-vs-gp
-img_url: /assets/img/hmm-vs-gp-part2/unnamed-chunk-60-1.svg
+img_url: /assets/img/hmm-vs-gp-part2/unnamed-chunk-5-1.svg
 tags: [bayesian, stan, r]
 comments: true
 ---
