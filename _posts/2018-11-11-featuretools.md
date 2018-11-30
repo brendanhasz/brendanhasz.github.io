@@ -1554,7 +1554,7 @@ pd.options.display.max_rows = 100
 ft.list_primitives()
 ```
 
-<div class="scroll_box">
+<div class="scroll_box" style="height:400px; overflow-y:scroll;">
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
