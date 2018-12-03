@@ -1015,5 +1015,5 @@ Both inference methods have 95% interval coverages which are a bit too high!  Th
 
 TensorFlow Probability is a great new package for probabilistic model-building and inference, which supports both classical MCMC methods and stochastic variational inference.  With both these inference methods, we can estimate how uncertain we are about the model parameters (via the posterior distribution), and how uncertain we are about the predicted value of a new datapoint (via the posterior predictive distributions).  Variational inference is a lot faster than MCMC sampling, but it makes assumptions about the shape of the posterior distributions and about parameter independence.
 
-It's also important to realize that TensorFlow Probability is, like I said, a very new project.  Unfortunately that means it's changing a lot and the documentation leaves a lot to be desired.  The API reference is great, but there aren't many simple examples which fully explain how the package is doing things, or why.  I wouldn't be surprised if a lot of things in the code above become outdated pretty quick!
+It's also important to realize that TensorFlow Probability is, like I said, a very new project.  Since it's still undergoing such heavy development, I wouldn't be surprised if a lot of things in the code above become outdated pretty quick!
 
