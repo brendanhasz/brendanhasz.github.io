@@ -21,6 +21,8 @@ data we may have multiple subjects or groups, which means we have to build a
 multilevel model which allows the parameters to vary slightly between
 subjects or groups.
 
+**Outline**
+
 -   [Setup](#setup)
 -   [Repeated Measures](#repeated-measures)
 -   [Multilevel Models](#multilevel-models)
