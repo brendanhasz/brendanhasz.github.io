@@ -13,7 +13,7 @@ One downside of these packages (with the exception of Edward) is that they don't
 
 Most MCMC methods, like [Hamiltonian Monte Carlo](https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo) (HMC), and the [No-U-Turn sampler](http://www.jmlr.org/papers/v15/hoffman14a.html) (NUTS), use the gradient of the posterior probability to traverse parameter-space in order to efficiently sample the posterior.  Stan (and other packages) use [reverse-mode automatic differentiation](https://rufflewind.com/2016-12-30/reverse-mode-automatic-differentiation) to compute the gradient (also see [this post](https://rufflewind.com/2016-12-30/reverse-mode-automatic-differentiation)).  Basically this allows the user to build a program to compute the posterior probability from a model and data, and the gradient of the posterior is computed from this program automatically using the derivatives of simple components of that program and the chain rule.
 
-It occurred to me that this is exactly what [TensorFlow](https://www.tensorflow.org/) does!  Edward (which runs on top of TensorFlow) implements a few types of MCMC samplers, but not the NUTS sampler.  While googling for a TensorFlow-based NUTS sampler, I stumbled across [TensorFlow Probability](https://www.tensorflow.org/probability/), which is a new offshoot of TensorFlow, dedicated to fitting probabilistic modeling.  And they're working on a NUTS sampler for it!
+It occurred to me that this is exactly what [TensorFlow](https://www.tensorflow.org/) does!  Edward (which runs on top of TensorFlow) implements a few types of MCMC samplers, but not the NUTS sampler.  While googling for a TensorFlow-based NUTS sampler, I stumbled across [TensorFlow Probability](https://www.tensorflow.org/probability/), which is a new offshoot of TensorFlow, dedicated to fitting probabilistic modeling.  And they've got an [experimental NUTS sampler](https://github.com/tensorflow/probability/tree/master/experimental/no_u_turn_sampler) for it which can work in a [distributed way](https://arxiv.org/abs/1811.02091)!
 
 In this post we'll use TensorFlow Probability to build and fit Bayesian Regression models, first with MCMC and then using stochastic variational inference.
 
@@ -535,7 +535,7 @@ x_vals, y_vals,  handle, training_iterator, validation_iterator = (
 
 Now we can construct the variational model.  It will have a single "dense" layer, with one output unit which has no activation function.  This is just multiplying the inputs by the weights, and adding them together - plus an intercept - with normally-distributed noise. This is the same thing our model did which we fit using MCMC. 
 
-Tensorflow probability provides functions to generate neural network layers where the parameters are inferred via variational inference.  The "flipout" layer randomly samples parameter values from their variational distributions in an efficient way.
+Tensorflow probability provides functions to generate neural network layers where the parameters are inferred via variational inference.  The ["flipout" layer](https://arxiv.org/abs/1803.04386) randomly samples parameter values from their variational distributions in an efficient way.
 
 However, we also need to infer the value of the noise standard deviation parameter variationally, so we'll do that one manually.  To do that, we'll first need a function to generate a variational distribution.
 
