@@ -3,9 +3,8 @@ layout: post
 title: "Bayesian Regressions with MCMC or Variational Methods using TensorFlow Probability"
 date: 2018-12-03
 description: "Bayesian regressions via MCMC sampling or variational inference using TensorFlow Probability, a new package for probabilistic model-building and inference."
-img_url: /assets/img/featuretools/DataframeTree.svg
+img_url: /assets/img/tfp-regression/output_79_1.svg
 tags: [bayesian, python, tensorflow]
-published: true
 ---
 
 One way to fit Bayesian models is using Markov chain Monte Carlo (MCMC) sampling. These methods generate samples from the posterior distribution such that the number of samples generated in a region of parameter-space is proportional to the posterior probability of those parameter values.  (Check out this [great animation](https://chi-feng.github.io/mcmc-demo/app.html#HamiltonianMC,banana) by Chi Feng to see how different MCMC algorithms sample the posterior distribution.) Programs and packages like [Stan](http://mc-stan.org/), [JAGS](http://mcmc-jags.sourceforge.net/), [BUGS](http://www.openbugs.net/w/FrontPage), [Edward](http://edwardlib.org/), and [PyMC3](https://docs.pymc.io/) implement MCMC sampling from user-specified Bayesian models.
@@ -21,23 +20,23 @@ In this post we'll use TensorFlow Probability to build and fit Bayesian Regressi
 **Outline**
 
 -   [Setup](#setup)
--   [Data](#scrollTo=5Sl3oQAlVVYQ)
--   [Markov Chain Monte Carlo](#scrollTo=VeuCuk2zgPTx)
-    -   [Bayesian Model](#scrollTo=9cCxquAOP-Sp)
-    -   [MCMC Sampling](#scrollTo=4T_pXKJbVPs1)
-    -   [Posterior](#scrollTo=3LjFseDRiyfl)
-    -   [Predictive Distribution](#scrollTo=vXRshfpUd_nc)
--   [Variational Bayes](#scrollTo=AVYSmZ6exIlh)
-    -   [Data Pipeline](#scrollTo=HUlFbmPpzboP)
-    -   [Variational Model](#scrollTo=p1rmKI6ozuK0)
-    -   [Fitting the Variational Model](#scrollTo=Pd_WGG-ziII4)
-    -   [Parameters and metrics over training](#scrollTo=EVct2VF8X9d3)
-    -   [Posterior](#scrollTo=LbDLJkLAtGCY)
-    -   [Predictive Distributions](#scrollTo=e9ljOhywieDm)
--   Comparing MCMC and Variational Fits](#scrollTo=q0VU7eLaagiu)
-    -   [Posteriors](#scrollTo=E-aZrH4ni1TK)
-    -   [Predictive Distributions](#scrollTo=TL8RbElNitoo)
--   [Conclusion](#scrollTo=2_LECAWfpeTm)
+-   [Data](#data)
+-   [Markov Chain Monte Carlo](#markov-chain-monte-carlo)
+    -   [Bayesian Model](#bayesian-model)
+    -   [MCMC Sampling](#mcmc-sampling)
+    -   [Posteriors](#posteriors)
+    -   [Predictive Distributions](#predictive-distributions)
+-   [Variational Bayes](#variational-bayes)
+    -   [Data Pipeline](#data-pipeline)
+    -   [Variational Model](#variational-model)
+    -   [Fitting the Variational Model](#fitting-the-variational-model)
+    -   [Parameters and metrics over training](#parameters-and-metrics-over-training)
+    -   [Posterior](#posterior)
+    -   [Predictive Distribution](#predictive-distribution)
+-   [Comparing MCMC and Variational Fits](#comparing-mcmc-and-variational-fits)
+    -   [The Posteriors](#the-posteriors)
+    -   [The Predictive Distributions](#the-predictive-distributions)
+-   [Conclusion](#conclusion)
 
 
 ## Setup
@@ -305,7 +304,7 @@ print('Acceptance rate: %0.1f%%' % (100*np.mean(accepted_samples)))
 
 Generally we'd want a lower acceptance rate (around 20%), but this is fine for our purposes.  There's quite a few other MCMC diagnostics which one would usually want to check for, including chain convergence, energy Bayesian fraction of missing information (E-BFMI), divergences, etc, which I talked about in a [previous post](https://brendanhasz.github.io/2018/10/10/hmm-vs-gp.html).  Unfortunately, TFP doesn't yet provide functions to check these.  Though, checking for chain convergence could be done manually pretty easily.
 
-### Posterior
+### Posteriors
 
 Next, we'll take a look at the posterior distributions for the parameters of our model.  In each of the plots below, the solid vertical line is the true value of the parameter, the distribution is the posterior as estimated by MCMC sampling, and the dotted lines indicate the 95% confidence interval of the posterior distribution.
 
@@ -363,7 +362,7 @@ plt.show()
 
 It looks like our model accurately recovered the true parameters used to generate the data!
 
-### Predictive Distribution
+### Predictive Distributions
 
 To "criticize" our model, we can take a look at the posterior predictive distributions on held-out (validation) data.  The posterior predictive distribution is the distribution of \\( y \\) values which our model predicts for a given held-out \\( x \\), if we assume that the true parameter values follow the probability distribution that we computed using the non-held-out data (the posterior).  That is, it's how likely any given \\( y \\) value is for a new \\( x \\) value, if we incorporate all our sources of uncertainty.
 
@@ -844,7 +843,7 @@ plt.show()
 ![svg](/assets/img/tfp-regression/output_69_1.svg)
 
 
-### Predictive Distributions
+### Predictive Distribution
 
 Variational inference can also get us the posterior predictive distributions.  Again these were computed while running the training session above (see the code block `Draw predictive distribution samples`).  Now we can compare the posterior predictive distributions for each validation datapoint (distributions below) to the true \\( y \\) value of that validation datapoint (vertical lines).
 
@@ -891,7 +890,7 @@ print('%0.1f %% of validation samples are w/i the %0.1f %% prediction interval'
 
 Now we can compare the fit using MCMC to the variational fit.  We'll first see how the parameter posteriors from each method stack up to each other, and then we'll compare the posterior predictive distributions from each method.
 
-### Posteriors
+### The Posteriors
 
 The blue distributions below are the posterior distributions for each parameter as estimated by MCMC, while the green distributions are the posterior distributions as estimated by variational inference.  For the noise standard deviation parameter, this is a point estimate for the variational model, and so that estimate is a vertical line.  The dotted black vertical lines are the true parameter values used to generate the data.
 
@@ -943,7 +942,7 @@ The posteriors for the four weight parameters are very similar for both methods!
 
 Finally, the noise standard deviation parameter's posterior as computed by variational inference is similar to the posterior obtained via MCMC, but not exactly the same.  The distributions appear to have similar means and variances, but notice that the posterior computed with MCMC is slightly more positively skewed.  The variational posterior has a non-skewed normal distribution shape because, remember, we forced each parameter's posterior to be a normal distribution when we replaced each parameter with a normal distribution in order to do variational inference!
 
-### Predictive Distributions 
+### The Predictive Distributions 
 
 Let's also compare the posterior predictive distributions on some individual validation datapoints.
 
