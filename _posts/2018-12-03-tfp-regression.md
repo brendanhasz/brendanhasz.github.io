@@ -68,7 +68,7 @@ tf.set_random_seed(111)
 We need some data to fit our Bayesian models to!  Let's use a simple linear model to generate some data:
 
 $$
-y_i &\sim \text{Normal}(\alpha + x_i^\top \beta, ~ \sigma^2)
+y_i \sim \text{Normal}(\alpha + x_i^\top \beta, ~ \sigma^2)
 $$
 
 where 
@@ -136,21 +136,21 @@ The first method for fiting Bayesian models we'll look at is Markov chain Monte 
 The model we'll use is a simple Bayesian linear regression.  That is, the same model we used to generate the data:
 
 $$
-y_i &\sim \text{Normal}(\alpha + x_i^\top \beta, ~ \sigma^2)
+y_i \sim \text{Normal}(\alpha + x_i^\top \beta, ~ \sigma^2)
 $$
 
 However, we'll also put priors on the parameters:
 
 $$
-\beta &\sim \text{Normal}(0, 1)
+\beta \sim \text{Normal}(0, 1)
 $$
 
 $$
-\sigma &\sim \text{HalfNormal}(1)
+\sigma \sim \text{HalfNormal}(1)
 $$
 
 $$
-\alpha &\sim \text{Normal}(0, 1)
+\alpha \sim \text{Normal}(0, 1)
 $$
 
 We'll use the `edward` module from TensorFlow Probability to code the model:
