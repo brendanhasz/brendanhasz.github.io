@@ -74,13 +74,13 @@ $$
 
 where 
 
-* $y_i$ is the observed value for datapoint $i$,
-* $\alpha$ is a bias parameter (the intercept),
-* $x_i$ is the vector of features (independent variables) for datapoint $i$,
-* $\beta$ is a vector of coefficients (weights), and
-* $\sigma$ is the error standard deviation.
+* \\( y_i \\) is the observed value for datapoint \\( i \\),
+* \\( \alpha \\) is a bias parameter (the intercept),
+* \\( x_i \\) is the vector of features (independent variables) for datapoint \\( i \\),
+* \\( \beta \\) is a vector of coefficients (weights), and
+* \\( \sigma \\) is the error standard deviation.
 
-So, the $y$ value of each datapoint is set by the intercept, plus the effect of the dependent variables according to the weights, plus some noise.
+So, the \\( y \\) value of each datapoint is set by the intercept, plus the effect of the dependent variables according to the weights, plus some noise.
 
 
 ```python
@@ -116,7 +116,7 @@ plt.show()
 ![svg](/assets/img/tfp-regression/output_8_0.svg)
 
 
-The bias looks to be around $-1$, and some weights look likely positive (like $\beta_2$), while other weights look likely to be negative (like $\beta_4$).  Let's take a look at the parameters which were used to generate the data.
+The bias looks to be around \\( -1 \\), and some weights look likely positive (like \\( \beta_2 \\)), while other weights look likely to be negative (like \\( \beta_4 \\)).  Let's take a look at the parameters which were used to generate the data.
 
 
 ```python
@@ -365,7 +365,7 @@ It looks like our model accurately recovered the true parameters used to generat
 
 ### Predictive Distribution
 
-To "criticize" our model, we can take a look at the posterior predictive distributions on held-out (validation) data.  The posterior predictive distribution is the distribution of $y$ values which our model predicts for a given held-out $x$, if we assume that the true parameter values follow the probability distribution that we computed using the non-held-out data (the posterior).  That is, it's how likely any given $y$ value is for a new $x$ value, if we incorporate all our sources of uncertainty.
+To "criticize" our model, we can take a look at the posterior predictive distributions on held-out (validation) data.  The posterior predictive distribution is the distribution of \\( y \\) values which our model predicts for a given held-out \\( x \\), if we assume that the true parameter values follow the probability distribution that we computed using the non-held-out data (the posterior).  That is, it's how likely any given \\( y \\) value is for a new \\( x \\) value, if we incorporate all our sources of uncertainty.
 
 To look at the posterior predictive distributions, we need held-out data, so we'll first generate some validation data:
 
@@ -382,7 +382,7 @@ Then we can compute the predictive distributions.  We'll draw one sample from ou
 
 TensorFlow Probability (and Edward) provide a method to do this they call "intercepting", which allows the user to set the value of the model parameters, and then draw a sample from the model.  Unfortunately this method isn't well-suited to drawing many samples each with different parameter values (i.e. it takes a long time), so we'll just do it manually.
 
-In the figure below, each plot corresponds to a different validation datapoint (I've only plotted 8 out of the 1000 we generated), the vertical lines show the true value of $y$ for that datapoint, and the distributions show the predictive distristribution (our guess for how likely each value of $y$ is given our model and our uncertainty as to the model's parameters).
+In the figure below, each plot corresponds to a different validation datapoint (I've only plotted 8 out of the 1000 we generated), the vertical lines show the true value of \\( y \\) for that datapoint, and the distributions show the predictive distristribution (our guess for how likely each value of \\( y \\) is given our model and our uncertainty as to the model's parameters).
 
 
 ```python
@@ -415,7 +415,7 @@ axes[3][1].set_xlabel('y')
 ![svg](/assets/img/tfp-regression/output_37_2.svg)
 
 
-We can also take the mean of each posterior predictive distribution, and compute the residuals (difference between the mean of each held-out datapoint's true $y$ value and the mean of that datapoint's posterior predictive distribution).
+We can also take the mean of each posterior predictive distribution, and compute the residuals (difference between the mean of each held-out datapoint's true \\( y \\) value and the mean of that datapoint's posterior predictive distribution).
 
 
 ```python
@@ -436,7 +436,7 @@ plt.show()
 
 We used a normal distribution to model the error, so the residuals should be normally-distributed.  The residuals look pretty good normally-distributed, but if they hadn't, we might have wanted to change the type of distribution used to model noise.
 
-To asses how accurate our uncertainty estimates are, we can compute the coverage of the 95% interval.  That is, how often does the true $y$ value actually fall within the 95% interval of our posterior predictive distribution?  If our model is accurately capturing its uncertainty, then 95% of the true values should fall within the 95% interval of their posterior predictive distributions.
+To asses how accurate our uncertainty estimates are, we can compute the coverage of the 95% interval.  That is, how often does the true \\( y \\) value actually fall within the 95% interval of our posterior predictive distribution?  If our model is accurately capturing its uncertainty, then 95% of the true values should fall within the 95% interval of their posterior predictive distributions.
 
 
 ```python
@@ -846,7 +846,7 @@ plt.show()
 
 ### Predictive Distributions
 
-Variational inference can also get us the posterior predictive distributions.  Again these were computed while running the training session above (see the code block `Draw predictive distribution samples`).  Now we can compare the posterior predictive distributions for each validation datapoint (distributions below) to the true $y$ value of that validation datapoint (vertical lines).
+Variational inference can also get us the posterior predictive distributions.  Again these were computed while running the training session above (see the code block `Draw predictive distribution samples`).  Now we can compare the posterior predictive distributions for each validation datapoint (distributions below) to the true \\( y \\) value of that validation datapoint (vertical lines).
 
 
 ```python
@@ -864,7 +864,7 @@ for i in range(4):
 ![svg](/assets/img/tfp-regression/output_71_1.svg)
 
 
-Using these posterior predictive distributions, we can compute the coverage of the 95% interval (how often the true $y$ value falls within our 95% confidence interval):
+Using these posterior predictive distributions, we can compute the coverage of the 95% interval (how often the true \\( y \\) value falls within our 95% confidence interval):
 
 
 ```python
