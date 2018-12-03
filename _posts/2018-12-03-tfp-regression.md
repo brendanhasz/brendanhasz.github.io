@@ -170,7 +170,7 @@ def linear_regression(features):
   noise_std = ed.HalfNormal( #half-normal prior on noise std
       scale=tf.ones([1]),
       name="noise_std")
-  predictions = ed.Normal(   #normally-distributed noise around predicted values
+  predictions = ed.Normal(   #normally-distributed noise
       loc=tf.matmul(features, coeffs)+bias,
       scale=noise_std,
       name="predictions")
@@ -322,8 +322,9 @@ def post_plot(data, title='', ax=None, true=None, prc=95):
   if ax is None:
     ax = plt.gca()
   sns.kdeplot(data, ax=ax, shade=True)
-  ax.axvline(x=np.percentile(data, (100-prc)/2), linestyle='--')
-  ax.axvline(x=np.percentile(data, 100-(100-prc)/2), linestyle='--')
+  tprc = (100-prc)/2
+  ax.axvline(x=np.percentile(data, tprc), linestyle='--')
+  ax.axvline(x=np.percentile(data, 100-tprc), linestyle='--')
   ax.title.set_text(title+" distribution")
   if true is not None:
     ax.axvline(x=true)
@@ -373,7 +374,7 @@ To look at the posterior predictive distributions, we need held-out data, so we'
 # Generate held out data
 N_val = 1000
 x_val = np.random.randn(N_val, D).astype(np.float32)
-noise = noise_std_true * np.random.randn(N_val, 1).astype(np.float32)
+noise = noise_std_true*np.random.randn(N_val, 1).astype(np.float32)
 y_val = np.matmul(x_val, w_true) + b_true + noise
 ```
 
@@ -385,17 +386,19 @@ In the figure below, each plot corresponds to a different validation datapoint (
 
 
 ```python
-def ind_prediction_distribution(X):
-  '''Compute the prediction distribution for an individual validation example'''
-  predictions = np.matmul(X, coeffs_samples.transpose()) + bias_samples[:,0]
-  noise = noise_std_samples[:,0]*np.random.randn(noise_std_samples.shape[0])
+def ind_pred_dist(X):
+  '''Compute the prediction distribution'''
+  predictions = (np.matmul(X, coeffs_samples.transpose()) + 
+                 bias_samples[:,0])
+  noise = (noise_std_samples[:,0] * 
+           np.random.randn(noise_std_samples.shape[0]))
   return predictions + noise
 
 # Compute prediction distribution for all validation samples
 Nmcmc = coeffs_samples.shape[0]
 prediction_distribution = np.zeros((N_val, Nmcmc))
 for i in range(N_val):
-  prediction_distribution[i,:] = ind_prediction_distribution(x_val[i,:])
+  prediction_distribution[i,:] = ind_pred_dist(x_val[i,:])
 
 # Plot random datapoints and their prediction intervals
 fig, axes = plt.subplots(4, 2, sharex='all')
@@ -574,9 +577,9 @@ Before fitting the model, we have to define the ELBO loss, and an error metric f
 
 ```python
 # Compute the -ELBO as the loss, averaged over the batch size
-neg_log_likelihood = -tf.reduce_mean(pred_distribution.log_prob(y_vals))
+neg_log_prob = -tf.reduce_mean(pred_distribution.log_prob(y_vals))
 kl_div = sum(layer.losses) / N
-elbo_loss = neg_log_likelihood + kl_div
+elbo_loss = neg_log_prob + kl_div
 
 # Mean squared error metric for evaluation
 mse, mse_update_op = tf.metrics.mean_squared_error(
@@ -671,9 +674,11 @@ Let's visualize the means of the variational distributions (the normal distribut
 # Plot value of weights over training
 plt.figure()
 for iW in range(D):
-  plt.plot(weight_means[:,iW], label='Fit W[{}]'.format(iW), 
+  plt.plot(weight_means[:,iW], 
+           label='Fit W[{}]'.format(iW), 
            color=colors[iW])
-  plt.hlines(w_true[iW], 0, max_steps, label='True W[{}]'.format(iW), 
+  plt.hlines(w_true[iW], 0, max_steps, 
+             label='True W[{}]'.format(iW), 
              color=colors[iW], linestyle='--')
 plt.xlabel('Training Step')
 plt.ylabel('Weight posterior mean')
@@ -815,8 +820,9 @@ def post_plot(data, title='', ax=None, true=None, prc=95):
   if ax is None:
     ax = plt.gca()
   sns.distplot(data, ax=ax)
-  ax.axvline(x=np.percentile(data, (100-prc)/2), linestyle='--')
-  ax.axvline(x=np.percentile(data, 100-(100-prc)/2), linestyle='--')
+  tprc = (100-prc)/2
+  ax.axvline(x=np.percentile(data, tprc), linestyle='--')
+  ax.axvline(x=np.percentile(data, 100-tprc), linestyle='--')
   ax.title.set_text(title+" distribution")
   if true is not None:
     ax.axvline(x=true)
