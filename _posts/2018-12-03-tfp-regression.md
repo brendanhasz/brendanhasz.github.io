@@ -5,6 +5,7 @@ date: 2018-12-03
 description: "Bayesian regressions via MCMC sampling or variational inference using TensorFlow Probability, a new package for probabilistic model-building and inference."
 img_url: /assets/img/tfp-regression/output_79_1.svg
 tags: [bayesian, python, tensorflow]
+comments: true
 ---
 
 One way to fit Bayesian models is using Markov chain Monte Carlo (MCMC) sampling. These methods generate samples from the posterior distribution such that the number of samples generated in a region of parameter-space is proportional to the posterior probability of those parameter values.  (Check out this [great animation](https://chi-feng.github.io/mcmc-demo/app.html#HamiltonianMC,banana) by Chi Feng to see how different MCMC algorithms sample the posterior distribution.) Programs and packages like [Stan](http://mc-stan.org/), [JAGS](http://mcmc-jags.sourceforge.net/), [BUGS](http://www.openbugs.net/w/FrontPage), [Edward](http://edwardlib.org/), and [PyMC3](https://docs.pymc.io/) implement MCMC sampling from user-specified Bayesian models.
