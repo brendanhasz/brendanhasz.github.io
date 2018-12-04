@@ -912,7 +912,7 @@ Note that to answer the *causal* question "does increased funding *cause* an inc
 
 ```python
 # Load Massachusetts Public School data
-df = pd.read_csv('../input/MA_Public_Schools_2017.csv')
+df = pd.read_csv('MA_Public_Schools_2017.csv')
 
 # Plot distribution of Expenditures per Pupil
 costs = df['Average Expenditures per Pupil']
