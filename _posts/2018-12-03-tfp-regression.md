@@ -437,7 +437,7 @@ plt.show()
 ![svg](/assets/img/tfp-regression/output_39_0.svg)
 
 
-We used a normal distribution to model the error, so the residuals should be normally-distributed.  The residuals look pretty good normally-distributed, but if they hadn't, we might have wanted to change the type of distribution used to model noise.
+We used a normal distribution to model the error, so the residuals should be normally-distributed.  The residuals look pretty good and normally-distributed, but if they hadn't, we might have wanted to change the type of distribution used to model noise.
 
 To assess how accurate our uncertainty estimates are, we can compute the coverage of the 95% interval.  That is, how often does the true \\( y \\) value actually fall within the 95% interval of our posterior predictive distribution?  If our model is accurately capturing its uncertainty, then 95% of the true values should fall within the 95% interval of their posterior predictive distributions.
 
