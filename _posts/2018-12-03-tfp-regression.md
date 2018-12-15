@@ -5,6 +5,7 @@ date: 2018-12-03
 description: "Bayesian regressions via MCMC sampling or variational inference using TensorFlow Probability, a new package for probabilistic model-building and inference."
 img_url: /assets/img/tfp-regression/output_79_1.svg
 tags: [bayesian, python, tensorflow]
+comments: true
 ---
 
 One way to fit Bayesian models is using Markov chain Monte Carlo (MCMC) sampling. These methods generate samples from the posterior distribution such that the number of samples generated in a region of parameter-space is proportional to the posterior probability of those parameter values.  (Check out this [great animation](https://chi-feng.github.io/mcmc-demo/app.html#HamiltonianMC,banana) by Chi Feng to see how different MCMC algorithms sample the posterior distribution.) Programs and packages like [Stan](http://mc-stan.org/), [JAGS](http://mcmc-jags.sourceforge.net/), [BUGS](http://www.openbugs.net/w/FrontPage), [Edward](http://edwardlib.org/), and [PyMC3](https://docs.pymc.io/) implement MCMC sampling from user-specified Bayesian models.
@@ -13,7 +14,7 @@ One downside of these packages (with the exception of Edward) is that they don't
 
 Most MCMC methods, like [Hamiltonian Monte Carlo](https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo) (HMC), and the [No-U-Turn sampler](http://www.jmlr.org/papers/v15/hoffman14a.html) (NUTS), use the gradient of the posterior probability to traverse parameter-space in order to efficiently sample the posterior.  Stan (and other packages) use [reverse-mode automatic differentiation](https://rufflewind.com/2016-12-30/reverse-mode-automatic-differentiation) to compute the gradient (also see [this post](https://rufflewind.com/2016-12-30/reverse-mode-automatic-differentiation)).  Basically this allows the user to build a program to compute the posterior probability from a model and data, and the gradient of the posterior is computed from this program automatically using the derivatives of simple components of that program and the chain rule.
 
-It occurred to me that this is exactly what [TensorFlow](https://www.tensorflow.org/) does!  Edward (which runs on top of TensorFlow) implements a few types of MCMC samplers, but not the NUTS sampler.  While googling for a TensorFlow-based NUTS sampler, I stumbled across [TensorFlow Probability](https://www.tensorflow.org/probability/), which is a new offshoot of TensorFlow, dedicated to fitting probabilistic modeling.  And they're working on a NUTS sampler for it!
+It occurred to me that this is exactly what [TensorFlow](https://www.tensorflow.org/) does!  Edward (which runs on top of TensorFlow) implements a few types of MCMC samplers, but not the NUTS sampler.  While googling for a TensorFlow-based NUTS sampler, I stumbled across [TensorFlow Probability](https://www.tensorflow.org/probability/), which is a new offshoot of TensorFlow, dedicated to fitting probabilistic modeling.  And they've got an [experimental NUTS sampler](https://github.com/tensorflow/probability/tree/master/experimental/no_u_turn_sampler) for it which can work in a [distributed way](https://arxiv.org/abs/1811.02091)!
 
 In this post we'll use TensorFlow Probability to build and fit Bayesian Regression models, first with MCMC and then using stochastic variational inference.
 
@@ -436,7 +437,7 @@ plt.show()
 ![svg](/assets/img/tfp-regression/output_39_0.svg)
 
 
-We used a normal distribution to model the error, so the residuals should be normally-distributed.  The residuals look pretty good normally-distributed, but if they hadn't, we might have wanted to change the type of distribution used to model noise.
+We used a normal distribution to model the error, so the residuals should be normally-distributed.  The residuals look pretty good and normally-distributed, but if they hadn't, we might have wanted to change the type of distribution used to model noise.
 
 To assess how accurate our uncertainty estimates are, we can compute the coverage of the 95% interval.  That is, how often does the true \\( y \\) value actually fall within the 95% interval of our posterior predictive distribution?  If our model is accurately capturing its uncertainty, then 95% of the true values should fall within the 95% interval of their posterior predictive distributions.
 
@@ -535,7 +536,7 @@ x_vals, y_vals,  handle, training_iterator, validation_iterator = (
 
 Now we can construct the variational model.  It will have a single "dense" layer, with one output unit which has no activation function.  This is just multiplying the inputs by the weights, and adding them together - plus an intercept - with normally-distributed noise. This is the same thing our model did which we fit using MCMC. 
 
-Tensorflow probability provides functions to generate neural network layers where the parameters are inferred via variational inference.  The "flipout" layer randomly samples parameter values from their variational distributions in an efficient way.
+Tensorflow probability provides functions to generate neural network layers where the parameters are inferred via variational inference.  The ["flipout" layer](https://arxiv.org/abs/1803.04386) randomly samples parameter values from their variational distributions in an efficient way.
 
 However, we also need to infer the value of the noise standard deviation parameter variationally, so we'll do that one manually.  To do that, we'll first need a function to generate a variational distribution.
 
@@ -1014,5 +1015,5 @@ Both inference methods have 95% interval coverages which are a bit too high!  Th
 
 TensorFlow Probability is a great new package for probabilistic model-building and inference, which supports both classical MCMC methods and stochastic variational inference.  With both these inference methods, we can estimate how uncertain we are about the model parameters (via the posterior distribution), and how uncertain we are about the predicted value of a new datapoint (via the posterior predictive distributions).  Variational inference is a lot faster than MCMC sampling, but it makes assumptions about the shape of the posterior distributions and about parameter independence.
 
-It's also important to realize that TensorFlow Probability is, like I said, a very new project.  Unfortunately that means it's changing a lot and the documentation leaves a lot to be desired.  The API reference is great, but there aren't many simple examples which fully explain how the package is doing things, or why.  I wouldn't be surprised if a lot of things in the code above become outdated pretty quick!
+It's also important to realize that TensorFlow Probability is, like I said, a very new project.  Since it's still undergoing such heavy development, I wouldn't be surprised if a lot of things in the code above become outdated pretty quick!
 

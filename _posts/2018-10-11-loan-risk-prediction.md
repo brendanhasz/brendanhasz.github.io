@@ -58,8 +58,8 @@ Let's load both the training and test data.
 
 ```python
 # Load applications data
-train = pd.read_csv('../input/application_train.csv')
-test = pd.read_csv('../input/application_test.csv')
+train = pd.read_csv('application_train.csv')
+test = pd.read_csv('application_test.csv')
 ```
 
 And now we can take a look at the data we're working with.  
