@@ -49,6 +49,7 @@ from sklearn.isotonic import IsotonicRegression
 from sklearn.metrics import mean_absolute_error, make_scorer
 from sklearn.model_selection import cross_val_score, cross_val_predict
 from catboost import CatBoostRegressor
+from scipy.stats import zscore
 
 # Settings
 sns.set()
@@ -79,7 +80,8 @@ train = pd.read_csv('train.csv',
 # Convert pickup time column to datetime
 train['pickup_datetime'] = train['pickup_datetime'].str.slice(0, 16)
 train['pickup_datetime'] = pd.to_datetime(train['pickup_datetime'], 
-                                          utc=True, format='%Y-%m-%d %H:%M')
+                                          utc=True, 
+                                          format='%Y-%m-%d %H:%M')
 ```
 
 
@@ -199,9 +201,12 @@ Instead of using the raw time, let's extract useful features from the time like 
 ```python
 # Extract useful time information
 train['min_of_day'] = (60*train['pickup_datetime'].dt.hour + 
-                       train['pickup_datetime'].dt.minute).astype('int32')
-train['day_of_week'] = train['pickup_datetime'].dt.dayofweek.astype('int32')
-train['day_of_year'] = train['pickup_datetime'].dt.dayofyear.astype('int32')
+                       train['pickup_datetime'].dt.minute
+                      ).astype('int32')
+train['day_of_week'] = (train['pickup_datetime']
+                        .dt.dayofweek.astype('int32'))
+train['day_of_year'] = (train['pickup_datetime']
+                        .dt.dayofyear.astype('int32'))
 train['year'] = train['pickup_datetime'].dt.year.astype('int32')
 
 # Remove original datetime column
@@ -816,7 +821,7 @@ plt.show()
 
 # Plot distribution of fares around 0
 tfmd_y_taxi = np.log(np.log10(y_taxi))
-tfmd_y_taxi = (tfmd_y_taxi-np.mean(tfmd_y_taxi))/np.std(tfmd_y_taxi)
+tfmd_y_taxi = zscore(tfmd_y_taxi)
 plt.hist(tfmd_y_taxi, bins=30)
 plt.title('Transformed Distribution of fare amounts')
 plt.show()
