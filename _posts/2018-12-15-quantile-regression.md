@@ -556,7 +556,7 @@ $$
 \epsilon \sim \mathcal{N}(0, \sigma)
 $$
 
-But this assumes that the variance of the normally-distributed noise ($\sigma$) isn't changing as a function of $x$!  In a lot of real-world data, the variance of $y$ changes as a function of $x$.  Let's generate some heteroskedastic data just to see what that looks like.
+But this assumes that the variance of the normally-distributed noise (\\( \sigma \\)) isn't changing as a function of \\( x \\)!  In a lot of real-world data, the variance of \\( y \\) changes as a function of \\( x \\).  Let's generate some heteroskedastic data just to see what that looks like.
 
 
 ```python
@@ -634,7 +634,7 @@ plt.title('Fare amount by Time')
 ![svg](/assets/img/quantile-regression/output_56_1.svg)
 
 
-The $y$-values are heteroskedastic as a function of time as well! How about over pickup location?
+The \\( y \\)-values are heteroskedastic as a function of time as well! How about over pickup location?
 
 
 ```python
@@ -667,7 +667,7 @@ What if we now want to predict our uncertainty as to our estimate, instead of on
 
 With a quantile regression we can separately estimate the expected value, the upper bound of the (say, 95%) predictive interval, and the lower bound of the predictive interval.  That is, we're predicting not just the mean, but also the 97.5-th *quantile* of the data, and the 2.5-th quantile.
 
-To do this we can just change the loss function we're using.  Instead of minimizing a defualt loss like the sum of squared error, we minimize the quantile loss for a choosen quantile value $q$.  The quantile loss for true values $y$, the predicted values $\hat{y}_i$, and a desired quantile $q$ (from 0 to 1) is
+To do this we can just change the loss function we're using.  Instead of minimizing a defualt loss like the sum of squared error, we minimize the quantile loss for a choosen quantile value \\( q \\).  The quantile loss for true values \\( y \\), the predicted values \\( \hat{y}_i \\), and a desired quantile \\( q \\) (from 0 to 1) is
 
 $$
 L_q(y,\hat{y}) = (q-1) \sum_{i \in y_i<\hat{y}_i} |y_i-\hat{y}_i| + q \sum_{i \in y_i \geq \hat{y}_i} |y_i-\hat{y}_i|
@@ -781,7 +781,7 @@ print('Coverage of 95%% predictive interval: %0.1f%%'
     Coverage of 95% predictive interval: 81.5%
     
 
-Yikes, that's not so great at all!  We could try manually calibrating our model by adjusting the theoretical desired quantile such that our predictions actually fall within the 95% predictive interval.  However, because the target distribution (of fare amounts) is so skewed, there is no value we can use for the desired upper bound of the predicted interval that will bound the desired 97.5%!  Even setting $\alpha=1$ only bounds the lower 83% of the data.
+Yikes, that's not so great at all!  We could try manually calibrating our model by adjusting the theoretical desired quantile such that our predictions actually fall within the 95% predictive interval.  However, because the target distribution (of fare amounts) is so skewed, there is no value we can use for the desired upper bound of the predicted interval that will bound the desired 97.5%!  Even setting \\( \alpha=1 \\) only bounds the lower 83% of the data.
 
 
 ```python
