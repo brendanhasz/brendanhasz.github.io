@@ -90,10 +90,7 @@ Now we can take a peek at the dataset we loaded.
 train.head()
 ```
 
-
-
-
-<div>
+<div class="scroll_box">
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
