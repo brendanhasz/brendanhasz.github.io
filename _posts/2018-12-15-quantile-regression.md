@@ -636,8 +636,11 @@ plt.title('Fare amount by Time')
 ![svg](/assets/img/quantile-regression/output_56_1.svg)
 
 
-The \\( y \\)-values are heteroskedastic as a function of time as well! How about over pickup location?
+The \\( y \\)-values are heteroskedastic as a function of time as well! 
 
+Side note: in the plot above of fares vs time, you can see the flat-rate fee to La Guardia and JFK airports undergo a price hike at the end of summer 2012!  And then the price of the JFK flat-rate continue to creep up afterwards.  You can also see that there was some sort of constant interval charge before that period, whereas after prices are more continuous.  Perhaps there was a subset of cab companies which charged ~$2 per mile and rounded up to the nearest mile - probably via the odometer - but switched to charging a continuous rate per distance in mid 2012.
+
+Does the variance in the ride fares change across pickup location too?
 
 ```python
 # Plot pickup locations as a heatmap
@@ -659,8 +662,6 @@ plt.gca().grid(False)
 
 
 The variance also changes across pickup location!  The fares are much more variable when the pickup is across the Hudson river in Jersey City and Hoboken than it is in, say, downtown Manhattan.  To deal with this heteroskedasticity, we can't assume a constant error.  Instead, we have to allow our estimate of uncertainty to vary across data-space.  One way to do this is to use a quantile regression.
-
-Side note: in the plot above of fares vs time, you can see the flat-rate fee to La Guardia and JFK airports undergo a price hike at the end of summer 2012!  And then the price of the JFK flat-rate continue to creep up afterwards.  You can also see that there was some sort of constant interval charge before that period, whereas after prices are more continuous.  Perhaps there was a subset of cab companies which charged ~$2 per mile and rounded up to the nearest mile - probably via the odometer - but switched to charging a continuous rate per distance in mid 2012.
 
 
 ## Quantile Regression
