@@ -751,7 +751,6 @@ plt.show()
 ```python
 # Plot value of noise std dev over training
 plt.figure()
-#plt.plot(noise_stds, label='fit')
 plt.plot(noise_means, label='fit')
 plt.axhline(noise_std_true, label='true', linestyle='--')
 plt.xlabel('Training Step')
