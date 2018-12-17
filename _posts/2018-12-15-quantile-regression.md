@@ -4,7 +4,9 @@ title: "Prediction Intervals for Taxi Fares using Quantile Loss"
 date: 2018-12-15
 description: "Training gradient boosted decision trees with a quantile loss to predict taxi fares, in python using catboost and vaex."
 img_url: /assets/img/quantile-regression/output_28_0.svg
+github_url: https://github.com/brendanhasz/tfp-taxi
 tags: [python, uncertainty, prediction, eda]
+comments: true
 ---
 
 Uncertainty estimation can be especially difficult when the data is [heteroskedastic](https://en.wikipedia.org/wiki/Heteroscedasticity), that is, when the variance of the target variable changes across the value of the predictors.  The [quantile loss](https://en.wikipedia.org/wiki/Quantile_regression) can be used with most loss-based regression techniques to estimate predictive intervals (by estimating the value of a certain quantile of the target variable at any point in feature-space).
