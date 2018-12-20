@@ -11,9 +11,7 @@ comments: true
 
 Uncertainty estimation can be especially difficult when the data is [heteroskedastic](https://en.wikipedia.org/wiki/Heteroscedasticity), that is, when the variance of the target variable changes across the value of the predictors.  The [quantile loss](https://en.wikipedia.org/wiki/Quantile_regression) can be used with most loss-based regression techniques to estimate predictive intervals (by estimating the value of a certain quantile of the target variable at any point in feature-space).
 
-New York City releases their [taxi ride data](http://www.nyc.gov/html/tlc/html/about/trip_record_data.shtml), and Kaggle hosts a subset of the data
-[here](https://www.kaggle.com/c/new-york-city-taxi-fare-prediction/data), which we'll use for this post.
-
+In this post we'll predict taxi fares in New York City from the ride start time, pickup location, and dropoff locations.  But instead of just predicting a single estimate, let's also estimate the 95% confidence intervals of our predictions, to get a better idea about how uncertain our model's predictions are.
 
 **Outline**
 
@@ -62,7 +60,7 @@ np.random.seed(111)
 
 ## Data
 
-We'll be predicting taxi fares given pickup/dropoff locations and ride times, using the [New York City Taxi Fare dataset](https://www.kaggle.com/c/new-york-city-taxi-fare-prediction/data).  First we'll load the information from the dataset concerning fares, times, and pickup/dropoff locations.
+We'll be predicting taxi fares given pickup/dropoff locations and ride start times, using the [New York City Taxi Fare dataset](https://www.kaggle.com/c/new-york-city-taxi-fare-prediction/data) (the rest of NYC's taxi data can be found [here](http://www.nyc.gov/html/tlc/html/about/trip_record_data.shtml)).  First let's load the information from the dataset concerning fares, times, and pickup/dropoff locations.
 
 
 ```python
@@ -197,7 +195,7 @@ There are some null values, but a negligible amount of them, so we'll just remov
 train.dropna(inplace=True)
 ```
 
-Instead of using the raw time, let's extract useful features from the time like the time of day, day of the week, day of the year, and the year.
+Instead of using the raw pickup time, let's extract useful features from the time like the time of day, day of the week, day of the year, and the year.
 
 
 ```python
@@ -215,7 +213,7 @@ train['year'] = train['pickup_datetime'].dt.year.astype('int32')
 train.drop('pickup_datetime', axis=1, inplace=True)
 ```
 
-Let's check the fare amount distributions:
+How are the fare amounts distributed?
 
 
 ```python
