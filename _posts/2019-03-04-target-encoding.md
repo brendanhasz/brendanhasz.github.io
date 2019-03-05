@@ -4,6 +4,7 @@ title: "Representing Categorical Data with Target Encoding"
 date: 2019-03-04
 description: "Representing categorical variables with high cardinality using target encoding, and mitigating overfitting often seen with target encoding by using cross-fold and leave-one-out schemes."
 img_url: /assets/img/target-encoding/cross-fold.gif
+github_url: https://github.com/brendanhasz/target-encoding
 tags: [python, prediction]
 comments: true
 ---
@@ -87,7 +88,7 @@ def make_categorical_regression(n_samples=100,
         Number of categorical features to generate
         Default = 10
     n_informative : int >= 0
-        Number of features which carry information about the target.
+        Number of features to carry information about the target.
         Default = 10
     n_categories : int > 0
         Number of categories per feature.  Default = 10
@@ -181,8 +182,8 @@ def make_categorical_regression(n_samples=100,
     if interactions < 0:
         raise ValueError('interactions must be non-negative')
         
-    # Generate random categorical data (using category probabilities
-    # drawn from a beta-binomial dist w/ alpha=1, beta=imbalance+1)
+    # Generate random categorical data (using category probs drawn
+    # from a beta-binomial dist w/ alpha=1, beta=imbalance+1)
     cat_probs = beta_binomial(n_categories-1, 1.0, imbalance+1)
     categories = np.empty((n_samples, n_features), dtype='uint64')
     for iC in range(n_features):
@@ -196,7 +197,7 @@ def make_categorical_regression(n_samples=100,
     # Set non-informative columns' effect to 0
     cat_vals[:,:(n_features-n_informative)] = 0
     
-    # Compute target variable from those categories and their values
+    # Compute target variable from categories and their values
     y = np.zeros(n_samples)
     for iC in range(n_features):
         y += (1.0-interactions) * cat_vals[categories[:,iC], iC]
@@ -205,8 +206,8 @@ def make_categorical_regression(n_samples=100,
     if interactions > 0:
         for iC1 in range(n_informative):
             for iC2 in range(iC1+1, n_informative):
-                int_vals = np.random.randn(n_categories, #interaction
-                                           n_categories) #effects
+                int_vals = np.random.randn(n_categories,
+                                           n_categories)
                 y += interactions * int_vals[categories[:,iC1],
                                              categories[:,iC2]]
     
@@ -496,7 +497,7 @@ mean_absolute_error(np.random.randn(10000),
 The simplest categorical encoding method is label encoding, where each category is simply replaced with a unique integer.  However, there is no intrinsic relationship between the categories and the numbers being used to replace them.  In the diagram below, category A is replaced with 0, and B with 1 - but there is no reason to think that category A is somehow greater than category B.
 
 
-<iframe src="/assets/img/target-encoding/LabelEncoding.html" style="border:none" width="599" height="466"></iframe>
+<iframe src="/assets/img/target-encoding/LabelEncoding.html" style="border:none;overflow:hidden;" width="599" height="480"></iframe>
 
 
 We'll create a [scikit-learn](https://scikit-learn.org/stable/index.html)-compatible transformer class with which to label encode our data.  Note that we could instead just use [scikit-learn's LabelEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelEncoder.html) - although their version is a little wasteful in that it doesn't choose a data type efficiently.
@@ -846,7 +847,7 @@ print('Validation MAE: %0.3f' % test_mae)
 One-hot encoding, sometimes called "dummy coding", encodes the categorical information a little more intelligently.  Instead of assigning random integers to categories, a new feature is created for each category.  For each sample, the new feature is 1 if the sample's category matches the new feature, otherwise the value is 0.  This allows us to encode the categorical information numerically, without loss of information, but ends up adding a lot of columns when the original categorical feature has many unique categories.
 
 
-<iframe src="/assets/img/target-encoding/OneHotEncoding.html" style="border:none" width="599" height="466"></iframe>
+<iframe src="/assets/img/target-encoding/OneHotEncoding.html" style="border:none;overflow:hidden;" width="599" height="480"></iframe>
 
 
 Like before, we'll create an sklearn transformer class to perform one-hot encoding.  And again we could have used sklearn's built-in [OneHotEncoder class](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html).
@@ -867,14 +868,14 @@ class OneHotEncoder(BaseEstimator, TransformerMixin):
         Parameters
         ----------
         cols : list of str
-            Columns to one-hot encode.  Default is to one-hot encode 
-            all categorical columns in the DataFrame.
+            Columns to one-hot encode.  Default is to one-hot 
+            encode all categorical columns in the DataFrame.
         reduce_df : bool
-            Whether to use reduced degrees of freedom for the encoding
+            Whether to use reduced degrees of freedom for encoding
             (that is, add N-1 one-hot columns for a column with N 
-            categories). E.g. for a column with categories A, B, and 
-            C: When reduce_df is True, A=[1, 0], B=[0, 1], and 
-            C=[0, 0].  When reduce_df is False, A=[1, 0, 0], 
+            categories). E.g. for a column with categories A, B, 
+            and C: When reduce_df is True, A=[1, 0], B=[0, 1],
+            and C=[0, 0].  When reduce_df is False, A=[1, 0, 0], 
             B=[0, 1, 0], and C=[0, 0, 1]
             Default = False
         """
@@ -903,7 +904,8 @@ class OneHotEncoder(BaseEstimator, TransformerMixin):
         
         # Encode all categorical cols by default
         if self.cols is None:
-            self.cols = [c for c in X if str(X[c].dtype)=='object']
+            self.cols = [c for c in X 
+                         if str(X[c].dtype)=='object']
 
         # Check columns are in X
         for col in self.cols:
@@ -1320,7 +1322,7 @@ The problem with one-hot encoding is that it greatly increases the dimensionalit
 Target encoding allows us to retain actual useful information about the categories (like one-hot encoding, but unlike label encoding), while keeping the dimensionality of our data the same as the unencoded data (like label encoding, but unlike one-hot encoding).  To target encode data, for each feature, we simply replace each category with the mean target value for samples which have that category.
 
 
-<iframe src="/assets/img/target-encoding/TargetEncoding.html" style="border:none" width="599" height="466"></iframe>
+<iframe src="/assets/img/target-encoding/TargetEncoding.html" style="border:none;overflow:hidden;" width="599" height="480"></iframe>
 
 
 Let's create a transformer class which performs this target encoding.
@@ -1341,8 +1343,8 @@ class TargetEncoder(BaseEstimator, TransformerMixin):
         Parameters
         ----------
         cols : list of str
-            Columns to target encode.  Default is to target encode all 
-            categorical columns in the DataFrame.
+            Columns to target encode.  Default is to target 
+            encode all categorical columns in the DataFrame.
         """
         if isinstance(cols, str):
             self.cols = [cols]
@@ -1708,7 +1710,7 @@ There are a few different ways we can do this.  We could compute the per-categor
 First we'll try cross-fold target encoding, where we'll split the data up into \\( N \\) folds, and compute the means for each category in the \\( i \\)-th fold using data in all the other folds.  The diagram below illustrates an example using 2 folds.
 
 
-<iframe src="/assets/img/target-encoding/TargetEncodingCV.html" style="border:none" width="599" height="466"></iframe>
+<iframe src="/assets/img/target-encoding/TargetEncodingCV.html" style="border:none;overflow:hidden;" width="599" height="480"></iframe>
 
 
 Let's create a transformer class to perform the cross-fold target encoding.  There are a few things we need to watch out for now which we didn't have to worry about with the naive target encoder.  First, we may end up with NaNs (empty values) even when there were categories in the original dataframe.  This will happen for a category that appears in one fold, but when there are no examples of that category in the other folds.  Also, we can't perform cross-fold encoding on our test data, because we don't have any target values for which to compute the category means!  So, we have to use the category means from the training data in that case.
@@ -1790,7 +1792,8 @@ class TargetEncoderCV(TargetEncoder):
                 self._fit_tes.append(te.fit(X.iloc[train_ix,:],
                                             y.iloc[train_ix]))
             elif isinstance(X, np.ndarray):
-                self._fit_tes.append(te.fit(X[train_ix,:], y[train_ix]))
+                self._fit_tes.append(te.fit(X[train_ix,:],
+                                            y[train_ix]))
             else:
                 raise TypeError('X must be DataFrame or ndarray')
 
@@ -1799,9 +1802,11 @@ class TargetEncoderCV(TargetEncoder):
         for ix in range(len(self._test_ix)):
             test_ix = self._test_ix[ix]
             if isinstance(X, pd.DataFrame):
-                Xo.iloc[test_ix,:] = self._fit_tes[ix].transform(X.iloc[test_ix,:])
+                Xo.iloc[test_ix,:] = \
+                    self._fit_tes[ix].transform(X.iloc[test_ix,:])
             elif isinstance(X, np.ndarray):
-                Xo[test_ix,:] = self._fit_tes[ix].transform(X[test_ix,:])
+                Xo[test_ix,:] = \
+                    self._fit_tes[ix].transform(X[test_ix,:])
             else:
                 raise TypeError('X must be DataFrame or ndarray')
         return Xo
@@ -2095,7 +2100,7 @@ print('Validation MAE: %0.3f' % test_mae)
 We could also prevent the target data leakage by using a leave-one-out scheme.  With this method, we compute the per-category means as with the naive target encoder, but we don't include the current sample in that computation.
 
 
-<iframe src="/assets/img/target-encoding/TargetEncodingLOO.html" style="border:none" width="599" height="466"></iframe>
+<iframe src="/assets/img/target-encoding/TargetEncodingLOO.html" style="border:none;overflow:hidden;" width="599" height="480"></iframe>
 
 
 This may seem like it will take much longer than the cross-fold method, but it actually ends up being faster, because we can compute the mean without the effect of each sample in an efficient way.  Normally the mean is computed with:
@@ -2106,7 +2111,7 @@ $$
 
 where \\( v \\) is the target-encoded value for all samples having category \\( C \\), \\( N_C \\) is the number of samples having category \\( C \\), and \\( j \in C \\) indicates all the samples which have category \\( C \\).
 
-With leave-one-out target encoding, we can first compute the count of samples having category\\( C \\) ( \\( N_C \\) ), and then separately compute the sum of the target values of those categories:
+With leave-one-out target encoding, we can first compute the count of samples having category \\( C \\) ( \\( N_C \\) ), and then separately compute the sum of the target values of those categories:
 
 $$
 S_C = \sum_{j \in C} y_j
@@ -2155,7 +2160,8 @@ class TargetEncoderLOO(TargetEncoder):
         
         # Encode all categorical cols by default
         if self.cols is None:
-            self.cols = [col for col in X if str(X[col].dtype)=='object']
+            self.cols = [col for col in X
+                         if str(X[col].dtype)=='object']
 
         # Check columns are in X
         for col in self.cols:
@@ -2163,13 +2169,14 @@ class TargetEncoderLOO(TargetEncoder):
                 raise ValueError('Column \''+col+'\' not in X')
 
         # Encode each element of each column
-        self.sum_count = dict() #dict for sum + counts for each column
+        self.sum_count = dict()
         for col in self.cols:
             self.sum_count[col] = dict()
             uniques = X[col].unique()
             for unique in uniques:
                 ix = X[col]==unique
-                self.sum_count[col][unique] = (y[ix].sum(), ix.sum())
+                self.sum_count[col][unique] = \
+                    (y[ix].sum(),ix.sum())
             
         # Return the fit object
         return self
@@ -2178,8 +2185,8 @@ class TargetEncoderLOO(TargetEncoder):
     def transform(self, X, y=None):
         """Perform the target encoding transformation.
 
-        Uses leave-one-out target encoding for the training fold, and
-        uses normal target encoding for the test fold.
+        Uses leave-one-out target encoding for the training fold,
+        and uses normal target encoding for the test fold.
 
         Parameters
         ----------
