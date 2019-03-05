@@ -863,17 +863,17 @@ One-hot encoding, sometimes called "dummy coding", encodes the categorical infor
 
 
 <script>
-    var images = ["/assets/img/target-encoding/OneHotEncoding1.svg",
+    var images2 = ["/assets/img/target-encoding/OneHotEncoding1.svg",
                   "/assets/img/target-encoding/OneHotEncoding2.svg",
                   "/assets/img/target-encoding/OneHotEncoding3.svg",
                   "/assets/img/target-encoding/OneHotEncoding4.svg",];
-    var i = 0;
-    var renew = setInterval(function(){
-        if(i == images.length){
-            i = 0;
+    var i2 = 0;
+    var renew2 = setInterval(function(){
+        if(i2 == images2.length){
+            i2 = 0;
         }
-        document.getElementById("OneHotEncoding").src = images[i]; 
-        i++;
+        document.getElementById("OneHotEncoding").src = images2[i2]; 
+        i2++;
     },1000);
 </script>
 
@@ -1353,7 +1353,7 @@ Target encoding allows us to retain actual useful information about the categori
 
 
 <script>
-    var images = ["/assets/img/target-encoding/TargetEncoding1.svg",
+    var images3 = ["/assets/img/target-encoding/TargetEncoding1.svg",
                   "/assets/img/target-encoding/TargetEncoding2.svg",
                   "/assets/img/target-encoding/TargetEncoding3.svg",
                   "/assets/img/target-encoding/TargetEncoding4.svg",
@@ -1361,13 +1361,13 @@ Target encoding allows us to retain actual useful information about the categori
                   "/assets/img/target-encoding/TargetEncoding6.svg",
                   "/assets/img/target-encoding/TargetEncoding7.svg",
                   "/assets/img/target-encoding/TargetEncoding8.svg",];
-    var i = 0;
-    var renew = setInterval(function(){
-        if(i == images.length){
-            i = 0;
+    var i3 = 0;
+    var renew3 = setInterval(function(){
+        if(i3 == images3.length){
+            i3 = 0;
         }
-        document.getElementById("TargetEncoding").src = images[i]; 
-        i++;
+        document.getElementById("TargetEncoding").src = images3[i3]; 
+        i3++;
     },1000);
 </script>
 
@@ -1759,7 +1759,7 @@ First we'll try cross-fold target encoding, where we'll split the data up into \
 
 
 <script>
-    var images = ["/assets/img/target-encoding/TargetEncodingCV1.svg",
+    var images4 = ["/assets/img/target-encoding/TargetEncodingCV1.svg",
                   "/assets/img/target-encoding/TargetEncodingCV2.svg",
                   "/assets/img/target-encoding/TargetEncodingCV3.svg",
                   "/assets/img/target-encoding/TargetEncodingCV4.svg",
@@ -1767,13 +1767,13 @@ First we'll try cross-fold target encoding, where we'll split the data up into \
                   "/assets/img/target-encoding/TargetEncodingCV6.svg",
                   "/assets/img/target-encoding/TargetEncodingCV7.svg",
                   "/assets/img/target-encoding/TargetEncodingCV8.svg",];
-    var i = 0;
-    var renew = setInterval(function(){
-        if(i == images.length){
-            i = 0;
+    var i4 = 0;
+    var renew4 = setInterval(function(){
+        if(i4 == images4.length){
+            i4 = 0;
         }
-        document.getElementById("TargetEncodingCV").src = images[i]; 
-        i++;
+        document.getElementById("TargetEncodingCV").src = images4[i4]; 
+        i4++;
     },1000);
 </script>
 
@@ -2168,7 +2168,7 @@ We could also prevent the target data leakage by using a leave-one-out scheme.  
 
 
 <script>
-    var images = ["/assets/img/target-encoding/TargetEncodingLOO1.svg",
+    var images5 = ["/assets/img/target-encoding/TargetEncodingLOO1.svg",
                   "/assets/img/target-encoding/TargetEncodingLOO2.svg",
                   "/assets/img/target-encoding/TargetEncodingLOO3.svg",
                   "/assets/img/target-encoding/TargetEncodingLOO4.svg",
@@ -2182,13 +2182,13 @@ We could also prevent the target data leakage by using a leave-one-out scheme.  
                   "/assets/img/target-encoding/TargetEncodingLOO12.svg",
                   "/assets/img/target-encoding/TargetEncodingLOO13.svg",
                   "/assets/img/target-encoding/TargetEncodingLOO14.svg",];
-    var i = 0;
-    var renew = setInterval(function(){
-        if(i == images.length){
-            i = 0;
+    var i5 = 0;
+    var renew5 = setInterval(function(){
+        if(i5 == images5.length){
+            i5 = 0;
         }
-        document.getElementById("TargetEncodingLOO").src = images[i]; 
-        i++;
+        document.getElementById("TargetEncodingLOO").src = images5[i5]; 
+        i5++;
     },1000);
 </script>
 
