@@ -497,7 +497,22 @@ mean_absolute_error(np.random.randn(10000),
 The simplest categorical encoding method is label encoding, where each category is simply replaced with a unique integer.  However, there is no intrinsic relationship between the categories and the numbers being used to replace them.  In the diagram below, category A is replaced with 0, and B with 1 - but there is no reason to think that category A is somehow greater than category B.
 
 
-<iframe src="/assets/img/target-encoding/LabelEncoding.html" style="border:none;overflow:hidden;" width="599" height="480"></iframe>
+<script>
+    var images = ["/assets/img/target-encoding/LabelEncoding1.svg",
+                  "/assets/img/target-encoding/LabelEncoding2.svg",
+                  "/assets/img/target-encoding/LabelEncoding3.svg",
+                  "/assets/img/target-encoding/LabelEncoding4.svg",];
+    var i = 0;
+    var renew = setInterval(function(){
+        if(i == images.length){
+            i = 0;
+        }
+        document.getElementById("LabelEncoding").src = images[i]; 
+        i++;
+    },1000);
+</script>
+
+<img id="LabelEncoding" src="/assets/img/target-encoding/LabelEncoding1.svg" style="max-width:100%;height:auto;">
 
 
 We'll create a [scikit-learn](https://scikit-learn.org/stable/index.html)-compatible transformer class with which to label encode our data.  Note that we could instead just use [scikit-learn's LabelEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelEncoder.html) - although their version is a little wasteful in that it doesn't choose a data type efficiently.
@@ -847,7 +862,22 @@ print('Validation MAE: %0.3f' % test_mae)
 One-hot encoding, sometimes called "dummy coding", encodes the categorical information a little more intelligently.  Instead of assigning random integers to categories, a new feature is created for each category.  For each sample, the new feature is 1 if the sample's category matches the new feature, otherwise the value is 0.  This allows us to encode the categorical information numerically, without loss of information, but ends up adding a lot of columns when the original categorical feature has many unique categories.
 
 
-<iframe src="/assets/img/target-encoding/OneHotEncoding.html" style="border:none;overflow:hidden;" width="599" height="480"></iframe>
+<script>
+    var images = ["/assets/img/target-encoding/OneHotEncoding1.svg",
+                  "/assets/img/target-encoding/OneHotEncoding2.svg",
+                  "/assets/img/target-encoding/OneHotEncoding3.svg",
+                  "/assets/img/target-encoding/OneHotEncoding4.svg",];
+    var i = 0;
+    var renew = setInterval(function(){
+        if(i == images.length){
+            i = 0;
+        }
+        document.getElementById("OneHotEncoding").src = images[i]; 
+        i++;
+    },1000);
+</script>
+
+<img id="OneHotEncoding" src="/assets/img/target-encoding/OneHotEncoding1.svg" style="max-width:100%;height:auto;">
 
 
 Like before, we'll create an sklearn transformer class to perform one-hot encoding.  And again we could have used sklearn's built-in [OneHotEncoder class](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html).
@@ -1322,8 +1352,26 @@ The problem with one-hot encoding is that it greatly increases the dimensionalit
 Target encoding allows us to retain actual useful information about the categories (like one-hot encoding, but unlike label encoding), while keeping the dimensionality of our data the same as the unencoded data (like label encoding, but unlike one-hot encoding).  To target encode data, for each feature, we simply replace each category with the mean target value for samples which have that category.
 
 
-<iframe src="/assets/img/target-encoding/TargetEncoding.html" style="border:none;overflow:hidden;" width="599" height="480"></iframe>
+<script>
+    var images = ["/assets/img/target-encoding/TargetEncoding1.svg",
+                  "/assets/img/target-encoding/TargetEncoding2.svg",
+                  "/assets/img/target-encoding/TargetEncoding3.svg",
+                  "/assets/img/target-encoding/TargetEncoding4.svg",
+                  "/assets/img/target-encoding/TargetEncoding5.svg",
+                  "/assets/img/target-encoding/TargetEncoding6.svg",
+                  "/assets/img/target-encoding/TargetEncoding7.svg",
+                  "/assets/img/target-encoding/TargetEncoding8.svg",];
+    var i = 0;
+    var renew = setInterval(function(){
+        if(i == images.length){
+            i = 0;
+        }
+        document.getElementById("TargetEncoding").src = images[i]; 
+        i++;
+    },1000);
+</script>
 
+<img id="TargetEncoding" src="/assets/img/target-encoding/TargetEncoding1.svg" style="max-width:100%;height:auto;">
 
 Let's create a transformer class which performs this target encoding.
 
@@ -1710,7 +1758,26 @@ There are a few different ways we can do this.  We could compute the per-categor
 First we'll try cross-fold target encoding, where we'll split the data up into \\( N \\) folds, and compute the means for each category in the \\( i \\)-th fold using data in all the other folds.  The diagram below illustrates an example using 2 folds.
 
 
-<iframe src="/assets/img/target-encoding/TargetEncodingCV.html" style="border:none;overflow:hidden;" width="599" height="480"></iframe>
+<script>
+    var images = ["/assets/img/target-encoding/TargetEncodingCV1.svg",
+                  "/assets/img/target-encoding/TargetEncodingCV2.svg",
+                  "/assets/img/target-encoding/TargetEncodingCV3.svg",
+                  "/assets/img/target-encoding/TargetEncodingCV4.svg",
+                  "/assets/img/target-encoding/TargetEncodingCV5.svg",
+                  "/assets/img/target-encoding/TargetEncodingCV6.svg",
+                  "/assets/img/target-encoding/TargetEncodingCV7.svg",
+                  "/assets/img/target-encoding/TargetEncodingCV8.svg",];
+    var i = 0;
+    var renew = setInterval(function(){
+        if(i == images.length){
+            i = 0;
+        }
+        document.getElementById("TargetEncodingCV").src = images[i]; 
+        i++;
+    },1000);
+</script>
+
+<img id="TargetEncodingCV" src="/assets/img/target-encoding/TargetEncodingCV1.svg" style="max-width:100%;height:auto;">
 
 
 Let's create a transformer class to perform the cross-fold target encoding.  There are a few things we need to watch out for now which we didn't have to worry about with the naive target encoder.  First, we may end up with NaNs (empty values) even when there were categories in the original dataframe.  This will happen for a category that appears in one fold, but when there are no examples of that category in the other folds.  Also, we can't perform cross-fold encoding on our test data, because we don't have any target values for which to compute the category means!  So, we have to use the category means from the training data in that case.
@@ -2100,7 +2167,32 @@ print('Validation MAE: %0.3f' % test_mae)
 We could also prevent the target data leakage by using a leave-one-out scheme.  With this method, we compute the per-category means as with the naive target encoder, but we don't include the current sample in that computation.
 
 
-<iframe src="/assets/img/target-encoding/TargetEncodingLOO.html" style="border:none;overflow:hidden;" width="599" height="480"></iframe>
+<script>
+    var images = ["/assets/img/target-encoding/TargetEncodingLOO1.svg",
+                  "/assets/img/target-encoding/TargetEncodingLOO2.svg",
+                  "/assets/img/target-encoding/TargetEncodingLOO3.svg",
+                  "/assets/img/target-encoding/TargetEncodingLOO4.svg",
+                  "/assets/img/target-encoding/TargetEncodingLOO5.svg",
+                  "/assets/img/target-encoding/TargetEncodingLOO6.svg",
+                  "/assets/img/target-encoding/TargetEncodingLOO7.svg",
+                  "/assets/img/target-encoding/TargetEncodingLOO8.svg",
+                  "/assets/img/target-encoding/TargetEncodingLOO9.svg",
+                  "/assets/img/target-encoding/TargetEncodingLOO10.svg",
+                  "/assets/img/target-encoding/TargetEncodingLOO11.svg",
+                  "/assets/img/target-encoding/TargetEncodingLOO12.svg",
+                  "/assets/img/target-encoding/TargetEncodingLOO13.svg",
+                  "/assets/img/target-encoding/TargetEncodingLOO14.svg",];
+    var i = 0;
+    var renew = setInterval(function(){
+        if(i == images.length){
+            i = 0;
+        }
+        document.getElementById("TargetEncodingLOO").src = images[i]; 
+        i++;
+    },1000);
+</script>
+
+<img id="TargetEncodingLOO" src="/assets/img/target-encoding/TargetEncodingLOO1.svg" style="max-width:100%;height:auto;">
 
 
 This may seem like it will take much longer than the cross-fold method, but it actually ends up being faster, because we can compute the mean without the effect of each sample in an efficient way.  Normally the mean is computed with:
