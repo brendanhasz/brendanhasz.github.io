@@ -2223,7 +2223,7 @@ class TargetEncoderLOO(TargetEncoder):
     """Leave-one-out target encoder.
     """
     
-    def __init__(self, n_splits=3, shuffle=True, cols=None):
+    def __init__(self, cols=None):
         """Leave-one-out target encoding for categorical features.
         
         Parameters
