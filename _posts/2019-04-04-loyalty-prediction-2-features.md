@@ -952,7 +952,7 @@ plt.show()
 ![svg](/assets/img/loyalty-prediction-2-features/importances.svg)
 
 
-Finally, we'll want to save the features so that we can use them to train a model to predict the loyalty scores.  Let's save the top 100 most important features to a [feather]() file, so that we can quickly load them back in when we do the modeling.  First though, we need to figure out which features *are* the ones with the best importance scores.
+Finally, we'll want to save the features so that we can use them to train a model to predict the loyalty scores.  Let's save the top 100 most important features to a [feather](https://github.com/wesm/feather) file, so that we can quickly load them back in when we do the modeling.  First though, we need to figure out which features *are* the ones with the best importance scores.
 
 ```python
 # Get top 100 most important features
