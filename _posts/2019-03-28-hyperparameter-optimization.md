@@ -32,7 +32,7 @@ Manually searching for the best combination of hyperparameters for your model an
 
 With Bayesian optimization, we use a "surrogate" model to estimate the performance of our predictive algorithm as a function of the hyperparameter values.  This surrogate model is then used to select the next hyperparameter combination to try.  Here we'll use a Gaussian process as the surrogate model, but there are other alternatives such as random forests and [tree Parzen estimators](http://papers.nips.cc/paper/4443-algorithms-for-hyper-parameter-optimizat).
 
-In this post we'll first build a Python class for opimizing an(y) expensive function (in our case, the cross-validated predictive performance), and then a function which uses that class to find the optimal hyperparameters for any sklearn estimator.  Finally, we'll put it to use and find the optimal hyperparameters for [XGBoost](https://github.com/dmlc/xgboost) which allow us to best predict diabetes disease progression!
+In this post we'll first build a Python class for opimizing an(y) expensive function (in our case, the cross-validated predictive performance), and then a function which uses that class to find the optimal hyperparameters for any sklearn estimator.  Finally, we'll put it to use and find the optimal hyperparameters for [CatBoost](https://catboost.ai/) which allow us to best predict diabetes disease progression!
 
 
 **Outline**
@@ -109,7 +109,7 @@ $$
 
 and \\(\sigma\\), \\(\alpha\\), and \\(\ell\\) are parameters which are optimized during the fitting of the Gaussian process.
 
-For a more intuitive and less math-y overview of Gaussian processes, take a look at my [previous post](https://brendanhasz.github.io/2018/10/10/hmm-vs-gp.html) on them.
+For a more intuitive and less math-in-your-face overview of Gaussian processes, take a look at my [previous post](https://brendanhasz.github.io/2018/10/10/hmm-vs-gp.html) on them.
 
 If we've already sampled some points (hyperparameters and the scores they resulted in), then we can fit a Gaussian process to that data, and get an estimate of our model's performance as a function of the hyperparameters.  For example, in the image below, the cross-validated error of the algorithm is on the y-axis, and a hyperparameter value is on the x-axis.  The gray dots show the error for hyperparameters which have been tried.  Also shown is the Gaussian process's estimate as to the error over all hyperparameter combinations (blue line) and its 1 sigma confidence interval (shaded area).
 
@@ -192,8 +192,9 @@ So to start, let's build the class definition and the constructor (which defines
 
 ```python
 class GaussianProcessOptimizer():
-    """Bayesian function optimizer which uses a Gaussian process to model the
-    expensive function, and expected improvement as the acquisition function.
+    """Bayesian function optimizer which uses a Gaussian process
+    to model the expensive function, and expected improvement as
+    the acquisition function.
     """
 
     def __init__(self, lb, ub, minimize=True):
@@ -218,7 +219,7 @@ class GaussianProcessOptimizer():
 
         # Gaussian process to use for estimating the function
         self.gp = GaussianProcessRegressor(
-            kernel=RationalQuadratic()+WhiteKernel(noise_level=1e-3), 
+            kernel=RationalQuadratic()+WhiteKernel(), 
             alpha=0.0,
             n_restarts_optimizer=10,
         )
@@ -571,7 +572,7 @@ We can create a 2D optimizer and make some random samples in exactly the same wa
 
 ```python
 # Create an optimizer object
-gpo = GaussianProcessOptimizer([-10, -10], [10, 10], dtype=[float, float])
+gpo = GaussianProcessOptimizer([-10, -10], [10, 10])
 
 # Perform a few random samples
 for i in range(40):
@@ -735,7 +736,7 @@ def optimize_params(X, y, model, bounds,
 
 ### Optimizing One Hyperparameter
 
-Let's try the hyperparameter optimizer out on some real data.  We'll use the [Diabetes dataset](https://www4.stat.ncsu.edu/~boos/var.select/diabetes.html) dataset, and try to predict the severity of the progression of patients' diabetes from variables such as age, sex, BMI, blood pressure, and blood serum measurements.  Sklearn comes packaged with the dataset, so we'll load it using sklearn:
+Let's try the hyperparameter optimizer out on some real data.  We'll use the [Diabetes dataset](https://www4.stat.ncsu.edu/~boos/var.select/diabetes.html), and try to predict the severity of the progression of patients' diabetes from variables such as age, sex, BMI, blood pressure, and blood serum measurements.  Sklearn comes packaged with the dataset, so we'll load it using sklearn:
 
 
 ```python
