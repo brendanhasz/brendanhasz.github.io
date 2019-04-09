@@ -95,7 +95,7 @@ $$
 \mathbf{y} \sim \mathcal{N}(\mu, ~ \Sigma)
 $$
 
-We'll just normalize the data such that it has a mean of 0, and use \mu=0\\).  The covariance matrix, \\(\Sigma\\), of that normal distribution is an \\(N \times N\\) matrix defined by the independent variables \\(x\\) (in our case, the hyperparameter values):
+We'll just normalize the data such that it has a mean of 0, and use \\(mu=0\\).  The covariance matrix, \\(\Sigma\\), of that normal distribution is an \\(N \times N\\) matrix defined by the independent variables \\(x\\) (in our case, the hyperparameter values):
 
 $$
 \Sigma_{i,j} = K(x_i, x_j)

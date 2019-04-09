@@ -1,3 +1,8 @@
+a:hover {
+  font-weight: normal;
+  text-shadow: 0px 0px 1px;
+}
+
 .col3 {
     float: left;
     width: 33.33%;

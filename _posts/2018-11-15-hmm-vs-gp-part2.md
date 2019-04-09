@@ -61,8 +61,7 @@ color_scheme_set("red")
 ## Repeated Measures
 
 The Stan models we've created so far are only able to handle a single
-time series. But we have multiple time series: one for each pass through
-the choice point. That is, one per trial. To handle multiple trials, we
+time series. But we have multiple time series: one per trial. To handle multiple trials, we
 have to create modified Stan models which accumulate the contribution of
 each trial by summing the log likelihoods of each trial. Here's Stan
 code for a Gaussian process which can handle multiple trials:
