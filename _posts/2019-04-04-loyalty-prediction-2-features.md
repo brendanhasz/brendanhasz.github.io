@@ -906,6 +906,26 @@ print_table(['Column', 'Mutual_Information'],
 <br />
 
 
+Let's only bother keeping the features with the top 200 mutual information scores.
+
+
+```python
+# Create DataFrame with scores
+mi_df = pd.DataFrame()
+mi_df['Column'] = cols
+mi_df['mut_info'] = mis
+
+# Sort by mutual information
+mi_df = mi_df.sort_values('mut_info', ascending=False)
+top200 = mi_df.iloc[:200,:]
+top200 = top200['Column'].tolist()
+
+# Keep only top 200 columns
+X_train = X_train[top200]
+X_test = X_test[top200]
+```
+
+
 ### Permutation-based Feature Importance
 
 A different way to select features is to try and train a model using *all* the features, and then determine how heavily the model's performance depends on the features.  But, we'll need to use a model which can handle a lot of features without overfitting too badly (i.e., an unregularized linear regression wouldn't be a good idea here).  So, we'll use a gradient boosted decision tree, specifically [CatBoost](http://catboost.ai/).  
@@ -968,8 +988,8 @@ Then, we can save those features (and the corresponding target variable!) to a f
 
 ```python
 # Save file w/ 100 most important features
-cards = pd.concat([train_X[top100], test_X[top100]])
-cards['target'] = train_y
+cards = pd.concat([X_train[top100], X_test[top100]])
+cards['target'] = y_train
 cards.reset_index(inplace=True)
 cards.to_feather('card_features_top100.feather')
 ```
