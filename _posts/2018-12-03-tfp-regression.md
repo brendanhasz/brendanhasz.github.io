@@ -468,13 +468,13 @@ The true coverage of the 95% interval is close (ish) to 95%, which means our mod
 
 Despite its ability to accurately capture uncertainty, one big problem with MCMC sampling is that it's slow.  It took around 20s to sample from the posterior of our simple model with only 100 datapoints!  That might not sound too bad, but speed becomes huge when trying to fit models to real (i.e. large) datasets, especially when the model is more complex.
 
-To speed things up while still capturing uncertainty, we can make some simplifying assumptions and use [stochastic variational inference](http://www.jmlr.org/papers/v14/hoffman13a.html).  These assumptions are that our model's parameters are completely independent of each other (which MCMC sampling does not assume, since it samples from the joint distribution), and that the posterior for each of our parameters is normally distributed.  
+To speed things up while still capturing uncertainty, we can make some simplifying assumptions and use [stochastic variational inference](http://www.jmlr.org/papers/v14/hoffman13a.html).  These assumptions are that our model's parameters are completely independent of each other (which MCMC sampling does not assume, since it samples from the joint distribution), and that the posterior for each of our parameters follow some simple distribution (like a normal distribution).  
 
-How do these assumptions change how we can infer the model parameters?  Instead of sampling from the posterior a bunch of times like we did with MCMC (which takes too long), and instead of simply optimizing the parameters (which only gets us a single best point estimate and no uncertainty information), we'll compromise.  We'll use stochastic gradient descent to optimize the parameters, but instead of just optimizing the parameter values, we'll replace each single parameter value with a normal distribution.  This doubles the numbers of parameters in the model, because now we have a mean parameter and a variance parameter for each single parameter we had before.  At each training step, we'll sample a value from that normal distribution to get the value of the parameter for that training step.  Then we can update all the mean and variance parameters (for each original parameter) through backpropagation, instead of updating the point value of the parameter.  We'll also have to use the evidence lower bound (ELBO) loss function.
+How do these assumptions change how we can infer the model parameters?  Instead of sampling from the posterior a bunch of times like we did with MCMC (which takes too long), and instead of simply optimizing the parameters (which only gets us a single best point estimate and no uncertainty information), we'll compromise.  We'll use stochastic gradient descent to optimize the parameters, but instead of just optimizing the parameter values, we'll replace each single parameter value with a simple distribution.  We'll replace our point estimates of the weight and bias parameters with normal distributions.  This doubles the numbers of parameters in the model, because now we have a mean parameter and a variance parameter for each single parameter we had before.  At each training step, we'll sample a value from that normal distribution to get the value of the parameter for that training step.  Then we can update all the mean and variance parameters (for each original parameter) through backpropagation, instead of updating the point value of the parameter.  We'll also have to use the evidence lower bound (ELBO) loss function, which includes both the loss due to the expected log probability and the difference between the parameter's distributions and their priors.  I'll do a post on that sometime in the future, but for now see [this page](http://probflow.readthedocs.io/en/latest/math.html).
 
-The advantage of stochastic variational inference over simply optimizing the parameters' values is that we capture uncertainty as to the model parameter values (because we're treating each parameter as a normal distribution now, which has some variance).  An added bonus is that stochastically sampling from the variational distributions regularizes our model, helping to prevent overfitting.  However, while it's faster than MCMC sampling, it also makes more assumptions than MCMC sampling does (about the shape of the individual parameters' posteriors and their independence).
+The advantage of stochastic variational inference over simply optimizing the parameters' values is that we capture uncertainty as to the model parameter values (because we're treating each parameter as a distribution now, which has some variance).  An added bonus is that stochastically sampling from the variational distributions regularizes our model, helping to prevent overfitting.  However, while it's faster than MCMC sampling, it also makes more assumptions than MCMC sampling does (about the shape of the individual parameters' posteriors and their independence).
 
-We'll use a super-simple Bayesian neural network with no activation (which is equivalent to the model we fit with MCMC earlier) and see if it captures the same level of uncertainty as the previous model which we fit with MCMC.
+We'll use a super-simple one-layer Bayesian neural network with no activation (i.e., a linear regression, which is equivalent to the model we fit with MCMC earlier) and see if it captures the same level of uncertainty as the previous model which we fit with MCMC.
 
 First we'll set the batch size, number of training iterations, and the learning rate.
 
@@ -489,6 +489,9 @@ learning_rate = 0.005
 ### Data Pipeline
 
 For the variational model, we first need to set up a data pipeline which can feed data to our model in batches, and can switch between feeding the training data and the validation data. 
+
+**EDIT 2019-04-20**: When using a layer with the [flipout](https://www.tensorflow.org/probability/api_docs/python/tfp/layers/DenseFlipout) estimator, we have to be careful when sampling from the posterior.  Will Jacobs pointed out (see comments below) that when you use the flipout estimator and sample with a batch size > 1, you won't actually get independent samples from the distribution!  That's because samples within a batch when using flipout aren't independent (see [the paper](http://arxiv.org/abs/1803.04386)).  But samples across batches are, so we'll use a batch size of 1 when computing samples from the predictive distribution.  This is a really inefficient way to do it though - in practice you'd want to create a copy of the model with the same parameters as the version which was fit using flipout, but which always generates independent samples.
+
 
 ```python
 def build_input_pipeline(x, y, x_val, y_val, batch_size, N_val):
@@ -515,7 +518,7 @@ def build_input_pipeline(x, y, x_val, y_val, batch_size, N_val):
   # Build a iterator over the validation set with batch_size=N_val,
   # i.e., return the entire heldout set as a constant.
   val_dataset = tf.data.Dataset.from_tensor_slices((x_val, y_val))
-  val_frozen = val_dataset.take(N_val).repeat().batch(N_val)
+  val_frozen = val_dataset.take(N_val).repeat().batch(1)
   val_iterator = val_frozen.make_one_shot_iterator()
 
   # Combine these into a feedable iterator that can switch between training
@@ -657,8 +660,11 @@ with tf.Session() as sess:
   w_post, b_post, n_post = sess.run([w_draw, b_draw, n_draw])
   
   # Draw predictive distribution samples
-  prediction_dist_var = sess.run((pred_distribution.sample(Nmc)), 
-                                 feed_dict={handle: val_handle})
+  prediction_dist_var = np.full([Nmc, N_val, 1], np.nan)
+  sample_op = pred_distribution.sample(Nmc)
+  for iS in range(N_val):
+    prediction_dist_var[:, iS, 0] = \
+      sess.run(sample_op, feed_dict={handle: val_handle}).ravel()
 ```
 
     Elapsed time: 2.43s
