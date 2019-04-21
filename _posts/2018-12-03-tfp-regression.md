@@ -543,6 +543,8 @@ Tensorflow probability provides functions to generate neural network layers wher
 
 However, we also need to infer the value of the noise standard deviation parameter variationally, so we'll do that one manually.  To do that, we'll first need a function to generate a variational distribution.
 
+**EDIT 2019-04-20**: Note that really you shouldn't be using a normal distribution to model a scale parameter, because the standard deviation can't be <0! You could use an inverse gamma distribution as the variational posterior, and transform the distribution using the square root.  [See here](http://probflow.readthedocs.io/en/latest/parameters.html#scale-parameters) for more info about scale parameters.
+
 
 ```python
 def VariationalParameter(name, shape, constraint=None):
