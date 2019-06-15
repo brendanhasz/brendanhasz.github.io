@@ -2158,4 +2158,4 @@ plt.show()
 
 ## Conclusion
 
-Now that we've cleaned and gotten an understanding of the data, the next step is to connect the various data tables together and create features which a predictive model can use to predict customer loyalty.  In the next post, we'll focus on feature engineering!
+Now that we've cleaned and gotten an understanding of the data, the next step is to connect the various data tables together and create features which a predictive model can use to predict customer loyalty.  In [the next post](http://brendanhasz.github.io/2019/04/04/loyalty-prediction-2-features.html), we'll focus on feature engineering!
