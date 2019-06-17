@@ -2,8 +2,8 @@
 layout: post
 title: "Customer Loyalty Prediction 3: Predictive Modeling"
 date: 2019-06-19
-description: "Engineering features, performing aggregations with transaction information, and using mutual information and permutation-based feature importance to select features."
-img_url: /assets/img/loyalty-prediction-3-modeling/mutual_info.svg TODO
+description: "Performing hyperparameter optimization, and creating ensemble and stacking models to predict customer loyalty"
+img_url: /assets/img/loyalty-prediction-3-modeling/output_57_1.svg
 github_url: https://github.com/brendanhasz/loyalty-prediction
 tags: [python, prediction]
 comments: true
@@ -708,9 +708,8 @@ rmse_br, preds_br = cross_val_metric(
     cv=3, display='RMSE')
 ```
 
-    TODO:
-    Cross-validated RMSE: ???
-    Wall time: ???
+    Cross-validated RMSE: 3.778 +/- 0.034
+    Wall time: 11min 59s
 
 
 ```python
@@ -757,12 +756,144 @@ rmse_cb, preds_cb = cross_val_metric(
 
 ## Ensemble Model
 
-TODO
+TODO: explain ensembling
+
+Model w/ an average of the predictions of 4 models:
+
+* BayesianRidge
+* XGBoost
+* LightGBM
+* CatBoost
+
+
+TODO: talk about how ensembles do better when predictions of base learners aren't that correlated
+
+
+```python
+# Construct a DataFrame with each model's predictions
+pdf = pd.DataFrame()
+pdf['Ridge'] = preds_br
+pdf['XGB'] = preds_xgb
+pdf['LGBM'] = preds_lgb
+pdf['CatBoost'] = preds_cb
+
+# Plot the correlation matrix
+corr = pdf.corr()
+mask = np.zeros_like(corr, dtype=np.bool)
+mask[np.triu_indices_from(mask)] = True
+sns.set(style="white")
+sns.heatmap(corr, mask=mask, annot=True,
+            square=True, linewidths=.5,
+            cbar_kws={'label': 'Correlation coefficient'})
+```
+
+
+![svg](/assets/img/loyalty-prediction-3-modeling/output_57_1.svg)
+
+TODO: replace svg above w/ one w/ colorbar label
+
+On one hand, as we saw in the previous section the performance of the tree-based models is far better than the ridge regression.  On the other hand, the ridge regression's predictions aren't very highly correlated with the tree models', and including models whose predictions are not highly correlated in an ensemble usually leads to better performance.
+
+How well can we predict customer loyalty if we average the predictions from all 4 models?
+
+
+```python
+# Compute the averaged predictions
+mean_preds = pdf.mean(axis=1)
+
+# Compute RMSE of averaged predictions
+root_mean_squared_error(y_train, mean_preds)
+```
+
+    3.672874152416571
+
+
+And if we only use the tree-based models?
+
+
+```python
+# Compute the averaged predictions
+mean_preds = pdf[['XGB', 'LGBM', 'CatBoost']].mean(axis=1)
+
+# Compute RMSE of averaged predictions
+root_mean_squared_error(y_train, mean_preds)
+```
+
+    3.662652694070959
+
+
+TODO: compare performance.
 
 
 ## Stacking Model
 
-TODO
+TODO: explain stacking
+
+Model w/ 4 base models:
+
+* BayesianRidge
+* XGBoost
+* CatBoost
+* LightGBM
+
+and then for the meta-learner: 
+
+* BayesianRidge
+
+
+```python
+%%time
+
+# Create the ensemble regressor
+model = StackedRegressor([ridge, xgboost, catboost, lgbm],
+                         meta_learner=BayesianRidge())
+
+# Performance of ensemble
+cross_val_metric(model, X_train, y_train,
+                 metric=root_mean_squared_error,
+                 cv=3, display='RMSE')
+```
+
+    Cross-validated RMSE: 3.662 +/- 0.019
+    Wall time: 2h 9min 37s
+
+
+TODO: and how well do we do if we just use the tree models?
+
+
+```python
+%%time
+
+# Create the ensemble regressor
+model = StackedRegressor([xgboost, catboost, lgbm],
+                         meta_learner=BayesianRidge())
+
+# Performance of ensemble
+cross_val_metric(model, X_train, y_train,
+                 metric=root_mean_squared_error,
+                 cv=3, display='RMSE')
+```
+
+    Cross-validated RMSE: 3.661 +/- 0.019
+    Wall time: 2h 3min 55s
+    
+
+TODO: since it's a bit faster and a bit better, we'll just go w/ the stacking model which uses only the tree models.  Note that the ensemble model in this case is just barely better than the tree-based models by themselves.  Then just need to save to file:
+
+
+```python
+# Fit model on training data
+fit_model = model.fit(X_train, y_train)
+
+# Predict on test data
+predictions = fit_model.predict(X_test)
+
+# Write predictions to file
+df_out = pd.DataFrame()
+df_out['card_id'] = X_test.index
+df_out['target'] = predictions
+df_out.to_csv('predictions.csv', index=False)
+```
 
 
 ## Conclusion
