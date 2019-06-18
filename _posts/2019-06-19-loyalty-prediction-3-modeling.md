@@ -2,7 +2,7 @@
 layout: post
 title: "Customer Loyalty Prediction 3: Predictive Modeling"
 date: 2019-06-19
-description: "Performing hyperparameter optimization, and creating ensemble and stacking models to predict customer loyalty"
+description: "Performing hyperparameter optimization, and creating ensemble and stacking models to predict customer loyalty."
 img_url: /assets/img/loyalty-prediction-3-modeling/output_57_1.svg
 github_url: https://github.com/brendanhasz/loyalty-prediction
 kaggle_url: https://www.kaggle.com/brendanhasz/elo-modeling
@@ -198,7 +198,8 @@ And around 1% of the samples have these outlier values:
 
 
 ```python
-print('Percent of targets which are outliers:', 100*np.mean(y_train<-20))
+print('Percent of targets which are outliers:',
+      100*np.mean(y_train<-20))
 ```
 
     Percent of targets which are outliers: 1.09
@@ -218,11 +219,11 @@ def cross_val_metric(model, X, y, cv=3,
     Parameters
     ----------
     model : sklearn estimator or callable
-        Model to use for prediction.  Either an sklearn estimator (e.g. a 
-        Pipeline), or a function which takes 3 arguments: 
-        (X_train, y_train, X_test), and returns y_pred.  X_train and X_test
-        should be pandas DataFrames, and y_train and y_pred should be 
-        pandas Series.
+        Model to use for prediction.  Either an sklearn estimator 
+        (e.g. a Pipeline), or a function which takes 3 arguments: 
+        (X_train, y_train, X_test), and returns y_pred.
+        X_train and X_test should be pandas DataFrames, and
+        y_train and y_pred should be pandas Series.
     X : pandas DataFrame
         Features.
     y : pandas Series
@@ -267,7 +268,7 @@ def cross_val_metric(model, X, y, cv=3,
     kf = KFold(n_splits=cv, shuffle=shuffle)
     for train_ix, test_ix in kf.split(X):
         
-        # Indexes for samples in training fold and in train_subset
+        # Indexes for samples in training fold and train_subset
         TRix[:] = False
         TRix.iloc[train_ix] = True
         TRix = TRix & train_subset
@@ -356,8 +357,8 @@ In order to evaluate our model with cross-fold validation, we'll create a functi
 
 ```python
 def classifier_regressor(X_tr, y_tr, X_te):
-    """Classify outliers, and set to outlier value if a predicted outlier
-    else use a regressor trained on non-outliers
+    """Classify outliers, and set to outlier value if a predicted
+    outlier, else use a regressor trained on non-outliers
     
     Parameters
     ----------
@@ -394,7 +395,7 @@ def classifier_regressor(X_tr, y_tr, X_te):
     # Estimate number of outliers in test data
     outlier_num = int(X_te.shape[0]*np.mean(outliers))
 
-    # Set that proportion of top estimated outliers to outlier value
+    # Set that proportion of estimated outliers to outlier value
     thresh = np.sort(pred_outlier)[-outlier_num]
     y_pred[pred_outlier>thresh] = -33.21928024
     
@@ -793,7 +794,7 @@ mean_preds = pdf.mean(axis=1)
 root_mean_squared_error(y_train, mean_preds)
 ```
 
-    3.672874152416571
+    3.673
 
 
 And if we only use the tree-based models?
@@ -807,7 +808,7 @@ mean_preds = pdf[['XGB', 'LGBM', 'CatBoost']].mean(axis=1)
 root_mean_squared_error(y_train, mean_preds)
 ```
 
-    3.662652694070959
+    3.663
 
 
 Looks like adding the ridge regression doesn't really help the performance of the model when ensembling.

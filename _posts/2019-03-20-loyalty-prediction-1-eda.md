@@ -4,7 +4,8 @@ title: "Customer Loyalty Prediction 1: Data Cleaning and EDA"
 date: 2019-03-20
 description: "Data loading, cleaning, and exploratory data analysis for the Elo customer loyalty prediction challenge."
 img_url: /assets/img/loyalty-prediction-1-eda/output_146_0.svg
-github_url: https://github.com/brendanhasz/loyalty-prediction
+github_url: http://github.com/brendanhasz/loyalty-prediction
+kaggle_url: http://www.kaggle.com/brendanhasz/elo-data-cleaning-and-eda
 tags: [python, eda]
 comments: true
 ---
@@ -12,7 +13,7 @@ comments: true
 
 [Elo](https://elo.com.br/) is a Brazillian debit and credit card brand.  They offer credit and prepaid transactions, and have paired up with merchants in order offer promotions to cardholders.  In order to offer more relevant and personalized promotions, in a [recent Kaggle competition](https://www.kaggle.com/c/elo-merchant-category-recommendation), Elo challenged Kagglers to predict customer loyalty based on transaction history.  Presumably they plan to use a loyalty-predicting model in order to determine what promotions to offer to customers based on how certain offers are predicted to effect card owners' card loyalty.
 
-In this post, we'll load, clean, and explore the raw data from the [Elo Merchant Category Recommendation](https://www.kaggle.com/c/elo-merchant-category-recommendation) challenge.  The name of the challenge is a bit misleading, seeing as the immediate goal is to predict customer loyalty - not to recommend merchants to card owners.  In future posts, we'll work on feature engineering, feature selection, modelling, and understanding our model's predictions.
+In this post, we'll load, clean, and explore the raw data from the [Elo Merchant Category Recommendation](https://www.kaggle.com/c/elo-merchant-category-recommendation) challenge.  The name of the challenge is a bit misleading, seeing as the immediate goal is to predict customer loyalty - not to recommend merchants to card owners.  In future posts, we'll work on [feature engineering, feature selection](http://brendanhasz.github.io/2019/04/04/loyalty-prediction-2-features.html), [modeling](http://brendanhasz.github.io/2019/06/19/loyalty-prediction-3-modeling.html), and understanding our model's predictions.
 
 
 **Outline**

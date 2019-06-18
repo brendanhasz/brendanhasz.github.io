@@ -5,6 +5,7 @@ date: 2019-04-04
 description: "Engineering features, performing aggregations with transaction information, and using mutual information and permutation-based feature importance to select features."
 img_url: /assets/img/loyalty-prediction-2-features/mutual_info.svg
 github_url: https://github.com/brendanhasz/loyalty-prediction
+kaggle_url: https://www.kaggle.com/brendanhasz/elo-feature-engineering-and-feature-selection
 tags: [python, feature engineering, feature selection]
 comments: true
 ---
@@ -949,7 +950,7 @@ We can measure how heavily the model depends on various features by using permut
 
 The advantage of permutation-based feature importance is that it gives a super-clear view and a single score as to how important each feature is.  The downside is that this score is intrinsically linked to the model.  Whereas computing the mutual information between the features and the target only depends on the data, permutation-based feature importance scores depend on the data, the model being used, and the interaction between the two.  If your model can't fit the data very well, your permutation scores will be garbage!
 
-Luckily CatBoost nearly always does a pretty good job of prediction, even in the face of lots of features!  So, let's compute the permutation-based feature importance for each feature (the complete code is [on my GitHub](https://github.com/brendanhasz/dsutils/blob/master/src/dsutils/evaluation.py#L103)).
+Luckily CatBoost nearly always does a pretty good job of prediction, even in the face of lots of features!  So, let's compute the permutation-based feature importance for each feature (the complete code is [on my GitHub](https://github.com/brendanhasz/dsutils/blob/master/src/dsutils/evaluation.py#L126)).
 
 
 ```python
