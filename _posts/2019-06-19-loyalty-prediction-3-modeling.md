@@ -5,9 +5,9 @@ date: 2019-06-19
 description: "Performing hyperparameter optimization, and creating ensemble and stacking models to predict customer loyalty"
 img_url: /assets/img/loyalty-prediction-3-modeling/output_57_1.svg
 github_url: https://github.com/brendanhasz/loyalty-prediction
+kaggle_url: https://www.kaggle.com/brendanhasz/elo-modeling
 tags: [python, prediction]
 comments: true
-published: false
 ---
 
 
@@ -27,13 +27,10 @@ In previous posts, we performed some [exploratory data analysis](http://brendanh
 - [Performance of Individual Models](#performance-of-individual-models)
 - [Ensemble Model](#ensemble-model)
 - [Stacking Model](#stacking-model)
-- [Conclusion](#conclusion)
 
 
 
 ```python
-import gc
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -65,7 +62,7 @@ First, let's load the data which includes the features we engineered in the [las
 
 ```python
 # Load data containing all the features
-fname = '../input/elo-feature-selection/card_features_top100.feather'
+fname = 'card_features_top100.feather'
 cards = pd.read_feather(fname)
 cards.set_index('card_id', inplace=True)
 ```
@@ -756,17 +753,9 @@ rmse_cb, preds_cb = cross_val_metric(
 
 ## Ensemble Model
 
-TODO: explain ensembling
+Often a way to get better predictions is to combine the predictions from multiple models, a technique known as [ensembling](https://en.wikipedia.org/wiki/Ensemble_learning).  This is because combining predictions from multiple models can reduce overfitting.  The simplest way to do this is to just average the predictions of several base learners (the models which are a part of the ensemble).
 
-Model w/ an average of the predictions of 4 models:
-
-* BayesianRidge
-* XGBoost
-* LightGBM
-* CatBoost
-
-
-TODO: talk about how ensembles do better when predictions of base learners aren't that correlated
+However, ensembles tend to perform better when the predictions of their base learners aren't highly correlated.  How correlated are the predictions of our four individual models?
 
 
 ```python
@@ -790,9 +779,8 @@ sns.heatmap(corr, mask=mask, annot=True,
 
 ![svg](/assets/img/loyalty-prediction-3-modeling/output_57_1.svg)
 
-TODO: replace svg above w/ one w/ colorbar label
 
-On one hand, as we saw in the previous section the performance of the tree-based models is far better than the ridge regression.  On the other hand, the ridge regression's predictions aren't very highly correlated with the tree models', and including models whose predictions are not highly correlated in an ensemble usually leads to better performance.
+On one hand, as we saw in the previous section the performance of the tree-based models is far better than the ridge regression.  On the other hand, the ridge regression's predictions aren't very highly correlated with the tree models', and since including models whose predictions are not highly correlated in an ensemble usually leads to better performance, we might get better performance by including the ridge regression in the ensemble.
 
 How well can we predict customer loyalty if we average the predictions from all 4 models?
 
@@ -822,23 +810,16 @@ root_mean_squared_error(y_train, mean_preds)
     3.662652694070959
 
 
-TODO: compare performance.
+Looks like adding the ridge regression doesn't really help the performance of the model when ensembling.
 
 
 ## Stacking Model
 
-TODO: explain stacking
+Another ensembling method is called [stacking](https://en.wikipedia.org/wiki/Ensemble_learning#Stacking), which often performs even better than just averaging the predictions of the base learners.  With stacking, we first make predictions with the base learners.  Then, we use a separate "meta" model to make predictions for the target based of the predictions of the base learners.  That is, we train the meta learner with the features being the predictions of the base learners (and the target still being the target).
 
-Model w/ 4 base models:
+When stacking it's important to ensure you train the meta-learner on out-of-fold predictions of the base learners (i.e. make cross-fold predictions with the base learners and train the meta learner on those).  The `StackedRegressor` model we'll use below handles this for us (see the code for it [on my github](http://github.com/brendanhasz/dsutils/blob/master/src/dsutils/ensembling.py#L144)).
 
-* BayesianRidge
-* XGBoost
-* CatBoost
-* LightGBM
-
-and then for the meta-learner: 
-
-* BayesianRidge
+First let's try using all four models as base learners, and then a Bayesian ridge regression as the meta-learner:
 
 
 ```python
@@ -854,11 +835,11 @@ cross_val_metric(model, X_train, y_train,
                  cv=3, display='RMSE')
 ```
 
-    Cross-validated RMSE: 3.662 +/- 0.019
-    Wall time: 2h 9min 37s
+    Cross-validated RMSE: 3.661 +/- 0.019
+    Wall time: 2h 53min 36s
 
 
-TODO: and how well do we do if we just use the tree models?
+And how well do we do if we just use the tree models?
 
 
 ```python
@@ -875,10 +856,12 @@ cross_val_metric(model, X_train, y_train,
 ```
 
     Cross-validated RMSE: 3.661 +/- 0.019
-    Wall time: 2h 3min 55s
+    Wall time: 2h 11min 49s
     
 
-TODO: since it's a bit faster and a bit better, we'll just go w/ the stacking model which uses only the tree models.  Note that the ensemble model in this case is just barely better than the tree-based models by themselves.  Then just need to save to file:
+Again, adding the ridge regression to the stacking ensemble didn't really seem to help either.  Since it's a bit faster, we'll use the stacking model which uses only the tree models.  Note that the ensemble model in this case is just barely better than the tree-based models by themselves!  
+
+Finally, we just need to save our predictions to file:
 
 
 ```python
@@ -894,8 +877,3 @@ df_out['card_id'] = X_test.index
 df_out['target'] = predictions
 df_out.to_csv('predictions.csv', index=False)
 ```
-
-
-## Conclusion
-
-TODO
