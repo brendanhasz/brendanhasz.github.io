@@ -71,7 +71,7 @@ layout: default
   <h2> All Posts </h2>
   {% for post in site.posts %}
     <strong> <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a> </strong> <br />
-    <span><strong>{{ post.date | date_to_string }}</strong> - {{ post.tags | array_to_sentence_string }}</span>
+    <span><strong>{{ post.date | date_to_string }}</strong> - {{ post.language | concat: post.tags | array_to_sentence_string }}</span>
     {% if post.description %} 
       <p> {{ post.description }} </p>
     {% endif %}
@@ -86,11 +86,11 @@ layout: default
 
   {% for lang in langs %}
     <div id="{{ lang | slugify }}" class="by_tag">
-    <h2 id="{{ lang | slugify }}">Posts in "{{ lang }}"</h2>
+    <h2 id="{{ lang | slugify }}">Posts in {{ lang }}</h2>
      {% for post in site.posts %}
        {% if post.language contains lang %}
          <strong> <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a> </strong> <br />
-         <span><strong>{{ post.date | date_to_string }}</strong> - {{ post.tags | array_to_sentence_string }}</span>
+         <span><strong>{{ post.date | date_to_string }}</strong> - {{ post.language | concat: post.tags | array_to_sentence_string }}</span>
          {% if post.description %} 
            <p> {{ post.description }} </p>
          {% endif %}
@@ -111,7 +111,7 @@ layout: default
      {% for post in site.posts %}
        {% if post.tags contains tag %}
          <strong> <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a> </strong> <br />
-         <span><strong>{{ post.date | date_to_string }}</strong> - {{ post.tags | array_to_sentence_string }}</span>
+         <span><strong>{{ post.date | date_to_string }}</strong> - {{ post.language | concat: post.tags | array_to_sentence_string }}</span>
          {% if post.description %} 
            <p> {{ post.description }} </p>
          {% endif %}
