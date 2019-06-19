@@ -998,4 +998,4 @@ cards.to_feather('card_features_top100.feather')
 
 ## Conclusion
 
-Now that we've engineered features for each card account, the next thing to do is create models to predict the target value from those features.  In a future post, we'll try different modeling techniques to see which gives the best predictions.
+Now that we've engineered features for each card account, the next thing to do is create models to predict the target value from those features.  In [the next post](http://brendanhasz.github.io/2019/06/19/loyalty-prediction-3-modeling.html), we'll try different modeling techniques to see which gives the best predictions.
