@@ -107,7 +107,7 @@ section {
 .post_lang {
   display: inline-block;
   background: rgba(100,180,100,0.15);
-  color: rgba(100,180,100,0.15);
+  color: rgb(100,180,100);
   padding: 0.3rem 0.5rem;
   margin: 0.25rem;
   border-radius: 5px;
@@ -116,7 +116,7 @@ section {
 .post_all {
   display: inline-block;
   background: rgba(100,180,100,0.15);
-  color: rgba(100,180,100,0.15);
+  color: rgb(100,180,100);
   padding: 0.3rem 0.5rem;
   margin: 0.25rem;
   border-radius: 5px;
