@@ -5,7 +5,8 @@ date: 2019-03-04
 description: "Representing categorical variables with high cardinality using target encoding, and mitigating overfitting often seen with target encoding by using cross-fold and leave-one-out schemes."
 img_url: /assets/img/target-encoding/cross-fold.gif
 github_url: https://github.com/brendanhasz/target-encoding
-tags: [python, prediction]
+tags: [prediction]
+language: [python]
 comments: true
 ---
 

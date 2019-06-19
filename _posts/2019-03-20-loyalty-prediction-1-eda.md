@@ -6,7 +6,8 @@ description: "Data loading, cleaning, and exploratory data analysis for the Elo 
 img_url: /assets/img/loyalty-prediction-1-eda/output_146_0.svg
 github_url: http://github.com/brendanhasz/loyalty-prediction
 kaggle_url: http://www.kaggle.com/brendanhasz/elo-data-cleaning-and-eda
-tags: [python, eda]
+tags: [data cleaning, eda]
+language: [python]
 comments: true
 ---
 

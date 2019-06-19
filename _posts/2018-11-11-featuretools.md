@@ -4,7 +4,8 @@ title: "Automated Feature Engineering with Featuretools"
 date: 2018-11-11
 description: "Running deep feature synthesis for automated feature engineering, using the Featuretools package for Python."
 img_url: /assets/img/featuretools/DataframeTree.svg
-tags: [feature engineering, featuretools, python]
+tags: [feature engineering, featuretools]
+language: [python]
 comments: true
 ---
 

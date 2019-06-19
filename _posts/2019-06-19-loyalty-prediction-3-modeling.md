@@ -6,7 +6,8 @@ description: "Performing hyperparameter optimization, and creating ensemble and 
 img_url: /assets/img/loyalty-prediction-3-modeling/output_57_1.svg
 github_url: https://github.com/brendanhasz/loyalty-prediction
 kaggle_url: https://www.kaggle.com/brendanhasz/elo-modeling
-tags: [python, prediction]
+tags: [prediction]
+language: [python]
 comments: true
 ---
 

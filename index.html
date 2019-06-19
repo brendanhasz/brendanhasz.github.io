@@ -31,9 +31,37 @@ layout: default
     {% endif %}
   {% endfor %}
 
+  {% comment %} 
+  Get languages from all posts
+  {% endcomment %}
+  {% assign rawlangs = "" %}
+  {% for post in site.posts %}
+    {% assign tlangs = post.language | join:'|' | append:'|' %}
+    {% assign rawlangs = rawlangs | append:tlangs %}
+  {% endfor %}
+  {% assign rawlangs = rawlangs | split:'|' | sort %}
+
+  {% comment %}
+  Remove duplicate languages
+  {% endcomment %}
+  {% assign langs = "" %}
+  {% for lang in rawlangs %}
+    {% if lang != "" %}
+      {% if langs == "" %}
+        {% assign langs = lang | split:'|' %}
+      {% endif %}
+      {% unless langs contains lang %}
+        {% assign langs = langs | join:'|' | append:'|' | append:lang | split:'|' %}
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+
   <p>
   <h2> Tags </h2>
-  <a onclick="show_tag_section('all_posts')" style="cursor: pointer;" class="post_tag"> All Posts </a>
+  <a onclick="show_tag_section('all_posts')" style="cursor: pointer;" class="post_all"> All Posts </a>
+  {% for lang in langs %}
+    <a onclick="show_tag_section('{{ lang | slugify }}')" style="cursor: pointer;" class="post_lang"> {{ lang }} </a>
+  {% endfor %}
   {% for tag in tags %}
     <a onclick="show_tag_section('{{ tag | slugify }}')" style="cursor: pointer;" class="post_tag"> {{ tag }} </a>
   {% endfor %}
@@ -55,6 +83,27 @@ layout: default
     <br />
   {% endfor %}
   </div>
+
+  {% for lang in langs %}
+    <div id="{{ lang | slugify }}" class="by_tag">
+    <h2 id="{{ lang | slugify }}">Posts in "{{ lang }}"</h2>
+     {% for post in site.posts %}
+       {% if post.language contains lang %}
+         <strong> <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a> </strong> <br />
+         <span><strong>{{ post.date | date_to_string }}</strong> - {{ post.tags | array_to_sentence_string }}</span>
+         {% if post.description %} 
+           <p> {{ post.description }} </p>
+         {% endif %}
+         {% if post.img_url %} 
+           <a href="{{ post.url }}" title="{{ post.title }}">
+             <img src="{{ post.img_url }}" class="center_img">
+           </a>
+         {% endif %}
+         <br />
+       {% endif %}
+     {% endfor %}
+    </div>
+  {% endfor %}
 
   {% for tag in tags %}
     <div id="{{ tag | slugify }}" class="by_tag">

@@ -6,7 +6,8 @@ description: "Engineering features, performing aggregations with transaction inf
 img_url: /assets/img/loyalty-prediction-2-features/mutual_info.svg
 github_url: https://github.com/brendanhasz/loyalty-prediction
 kaggle_url: https://www.kaggle.com/brendanhasz/elo-feature-engineering-and-feature-selection
-tags: [python, feature engineering, feature selection]
+tags: [feature engineering, feature selection]
+language: [python]
 comments: true
 ---
 

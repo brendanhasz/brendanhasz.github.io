@@ -7,7 +7,8 @@ github_url: https://github.com/brendanhasz/police-shootings-eda
 kaggle_url: https://www.kaggle.com/brendanhasz/police-shootings-eda
 zip_url: /assets/zips/police-shootings-eda.zip
 img_url: /assets/img/police-shootings/output_33_0.svg
-tags: [eda, python, bokeh]
+tags: [eda, bokeh]
+language: [python]
 comments: true
 ---
 

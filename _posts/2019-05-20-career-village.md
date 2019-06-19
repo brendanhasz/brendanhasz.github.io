@@ -6,7 +6,8 @@ description: "Joining and aggregating data across multiple tables, and building 
 img_url: /assets/img/career-village/table_relationships.svg
 github_url: https://github.com/brendanhasz/career-village/blob/master/CareerVillageQuestionRecommender.ipynb
 kaggle_url: https://www.kaggle.com/brendanhasz/career-village-question-recommender
-tags: [python, feature engineering, recommendation]
+tags: [feature engineering, recommendation]
+language: [python]
 comments: true
 ---
 

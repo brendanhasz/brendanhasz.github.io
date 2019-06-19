@@ -4,7 +4,8 @@ title: "Bayesian Regressions with MCMC or Variational Bayes using TensorFlow Pro
 date: 2018-12-03
 description: "Bayesian regressions via MCMC sampling or variational inference using TensorFlow Probability, a new package for probabilistic model-building and inference."
 img_url: /assets/img/tfp-regression/output_79_1.svg
-tags: [bayesian, python, tensorflow, uncertainty]
+tags: [bayesian, tensorflow, uncertainty]
+language: [python]
 comments: true
 ---
 

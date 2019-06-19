@@ -104,6 +104,22 @@ section {
   border-radius: 5px;
 }
 
+.post_lang {
+  display: inline-block;
+  background: rgba(100,180,100,0.15);
+  padding: 0.3rem 0.5rem;
+  margin: 0.25rem;
+  border-radius: 5px;
+}
+
+.post_all {
+  display: inline-block;
+  background: rgba(150,150,150,0.15);
+  padding: 0.3rem 0.5rem;
+  margin: 0.25rem;
+  border-radius: 5px;
+}
+
 @media print, screen and (min-width: 1160px) {
   header {
     display:block;
