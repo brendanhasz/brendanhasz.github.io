@@ -7,7 +7,7 @@ github_url: https://github.com/brendanhasz/nice-ride
 kaggle_url: https://www.kaggle.com/brendanhasz/nice-ride-mn-eda
 zip_url: /assets/zips/nice-ride-eda.zip
 img_url: /assets/img/nice-ride-eda/demand-diff-gif.gif
-tags: [eda, bokeh]
+tags: [eda, visualization]
 language: [python]
 comments: true
 ---

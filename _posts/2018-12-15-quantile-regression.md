@@ -5,7 +5,7 @@ date: 2018-12-15
 description: "Training gradient boosted decision trees with a quantile loss to predict taxi fares, in python using catboost and vaex."
 img_url: /assets/img/quantile-regression/output_28_0.svg
 github_url: https://github.com/brendanhasz/tfp-taxi
-tags: [uncertainty, prediction, eda]
+tags: [eda, prediction, uncertainty, visualization]
 language: [python]
 comments: true
 ---
