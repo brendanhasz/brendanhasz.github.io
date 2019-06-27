@@ -58,7 +58,7 @@ layout: default
 
   <p>
   <h2> Tags </h2>
-  <a onclick="show_tag_section('all_posts')" style="cursor: pointer;" class="post_all"> All Posts </a>
+  <a onclick="show_tag_section('all_posts')" style="cursor: pointer;" class="post_lang"> All Posts </a>
   {% for lang in langs %}
     <a onclick="show_tag_section('{{ lang | slugify }}')" style="cursor: pointer;" class="post_lang"> {{ lang }} </a>
   {% endfor %}
