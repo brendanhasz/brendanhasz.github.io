@@ -5,7 +5,7 @@ date: 2019-03-28
 description: "Finding the best hyperparameters for a predictive model in an automated way using Bayesian optimization."
 img_url: /assets/img/hyperparameter-optimization/gp1d.gif
 github_url: https://github.com/brendanhasz/dsutils
-tags: [bayesian, prediction]
+tags: [bayesian, prediction, optimization]
 language: [python]
 comments: true
 ---
