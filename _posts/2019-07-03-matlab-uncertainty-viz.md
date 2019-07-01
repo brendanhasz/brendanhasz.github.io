@@ -3,7 +3,7 @@ layout: post
 title: "Visualizing multiple sources of uncertainty with semitransparent confidence intervals"
 date: 2019-07-03
 description: "Performing hyperparameter optimization, and creating ensemble and stacking models to predict customer loyalty."
-img_url: /assets/img/uncertainty-viz-matlab/output_57_1.svg
+img_url: /assets/img/uncertainty-viz-matlab/ksc2.svg
 github_url: http://github.com/brendanhasz/matlab-uncertainty-viz
 tags: [visualization]
 language: [matlab]
@@ -12,8 +12,7 @@ published: false
 ---
 
 
-TODO: image of the egg splat plot
-![svg](/assets/img/uncertainty-viz-matlab/histogram1.svg)
+![svg](/assets/img/uncertainty-viz-matlab/ksc2.svg)
 
 
 Matlab comes with several built-in functions for visualizing undertainty: [histogram](https://www.mathworks.com/help/matlab/ref/matlab.graphics.chart.primitive.histogram.html) for static 1D distributions, [errorbar](http://www.mathworks.com/help/matlab/ref/errorbar.html) for visualizing 1D uncertainty in time series data, and [contour](https://www.mathworks.com/help/matlab/ref/contour.html).  Unfortunately sometimes these default functions for make things a bit... more uncertain than they need to be.  Here I've written some functions which make visualizing multiple sources of uncertainty more clear, and perhaps even aesthetically pleasing!
@@ -172,16 +171,165 @@ end
 
 ![svg](/assets/img/uncertainty-viz-matlab/rainbow.svg)
 
-There's a bunch of other features too, including support for categorical X variables, and the option to set colors in several different ways, control the line style, the transparency level, plotting percentiles instead of std/sem, etc, etc.  It's up on [my GitHub](https://github.com/brendanhasz/matlab-uncertainty-viz/blob/master/ploterr.m).
+There's a bunch of other features too, including support for categorical X variables, and the option to set colors in several different ways, control the line style, the transparency level, plotting percentiles instead of std/sem, etc, etc.  The code is up on [my GitHub](https://github.com/brendanhasz/matlab-uncertainty-viz/blob/master/ploterr.m).
 
 
 ## Contour plots
 
-TODO
+Similarly, creating contour plots of 2D distributions can be a pain using Matlab's built-ins.  Supposing we have two sets of points drawn from two distributions:
 
-    2D (kscontour)
-        e.g. contour only shows 1
-        tho we could show 2 by setting the color
-        but if you have 2 peaks, this is ambiguous (does it go up or down?)
-        can fix by adding 'ShowText','on'
-        introduce kscontour, for density plots after KDE smoothing
+```matlab
+% Generate samples from 2D distributions
+X1 = randn(100, 2);
+X2 = 2+randn(1000, 2);
+
+% Show the points
+figure
+plot(X1(:, 1), X1(:, 2), '.')
+hold on
+plot(X2(:, 1), X2(:, 2), '.')
+```
+
+![svg](/assets/img/uncertainty-viz-matlab/con1_scatter.svg)
+
+Then we can plot two separate histograms of their densities:
+
+```matlab
+% Plot 2 histograms
+figure
+edges = {linspace(-4, 4, 11), linspace(-4, 4, 11)};
+subplot(1, 2, 1)
+    [N1, c] = hist3(X1, 'Edges', edges);
+    imagesc(c{1}, c{2}, N1)
+    set(gca, 'YDir', 'normal')
+    title('X1')
+subplot(1, 2, 2)
+    [N2, c] = hist3(X2, 'Edges', edges);
+    imagesc(c{1}, c{2}, N2)
+    set(gca, 'YDir', 'normal')
+    title('X2')
+```
+
+![svg](/assets/img/uncertainty-viz-matlab/con2_hist.svg)
+
+Unfortunately we can't superimpose the two histograms to get a better idea of how well they overlap.  We can use contour plots, however, to visualize the overlapping distributions.  Though by default Matlab's [`contour`](https://www.mathworks.com/help/matlab/ref/contour.html) function uses the same colormap for both...
+
+```matlab
+% Plot 2 contours
+figure
+subplot(1, 2, 1)
+    [N1, c] = hist3(X1, 'Edges', edges);
+    contour(c{1}, c{2}, N1, 5)
+    title('X1')
+subplot(1, 2, 2)
+    [N2, c] = hist3(X2, 'Edges', edges);
+    contour(c{1}, c{2}, N2, 5)
+    title('X2')
+```
+
+![svg](/assets/img/uncertainty-viz-matlab/con3_1contour.svg)
+
+We can manually set the color of the lines for both plots, but then we loose information about in what direction the contours are going.  For example, in the plot below, are the two small contour lines at the top of X2 peaks, or are they valleys?
+
+```matlab
+% Plot 2 contours
+figure
+subplot(1, 2, 1)
+    [N1, c] = hist3(X1, 'Edges', edges);
+    contour(c{1}, c{2}, N1, 5)
+    title('X1')
+subplot(1, 2, 2)
+    [N2, c] = hist3(X2, 'Edges', edges);
+    contour(c{1}, c{2}, N2, 5)
+    title('X2')
+```
+
+![svg](/assets/img/uncertainty-viz-matlab/con3_2color.svg)
+
+To get each contour to have its own colormap, we need to create two separate axes for each contour, and then assign the colormap for each independently.  This gets a bit messy, because we then have to set one or the other to be invisible, make custom colormaps (because Matlab doesn't really come with different categories of continuous colormaps...), etc.
+
+```matlab
+% Plot the contours on two separate axes
+figure
+ax1 = axes;
+[N1, c] = hist3(X1, 'Edges', edges);
+[~, h1] = contour(c{1}, c{2}, N1, 5);
+view(2)
+hold on
+ax2 = axes;
+[N2, c] = hist3(X2, 'Edges', edges);
+[~, h2] = contour(c{1}, c{2}, N2, 5);
+linkaxes([ax1,ax2])
+legend([h1 h2], {'X1', 'X2'})
+ax2.Visible = 'off';
+ax2.XTick = [];
+ax2.YTick = [];
+
+% Custom color maps
+reds = [linspace(0.87, 0.9, 64)', ...
+        linspace(0.17, 0.8, 64)', ...
+        linspace(0.15, 0.75, 64)'];
+blues = [linspace(0.19, 0.80, 64)', ...
+         linspace(0.51, 0.85, 64)', ...
+         linspace(0.74, 0.90, 64)'];
+
+% Set different colormaps for the two axes
+colormap(ax1, reds)
+colormap(ax2, blues)
+```
+
+![svg](/assets/img/uncertainty-viz-matlab/con3_2cmap.svg)
+
+What I've found to be the least visually painful, and the most interperatable, is to use semi-transparent filled contours.  I wrote a Matlab script which uses kernel density estimation to smooth the inupt datapoints, and then computes the [contour matrix](https://www.mathworks.com/help/matlab/ref/contour.html#mw_6bc1813f-47cf-4c44-a454-f937ea210ab6) as output by `contour` to generate the contours with [`patch`](https://www.mathworks.com/help/matlab/ref/patch.html).  This results in much nicer-looking contour plots which require less boilerplate code (well, once you have the function...):
+
+```matlab
+figure
+h1 = kscontour(X1);
+h2 = kscontour(X2, 'Color', 'orange');
+legend([h1 h2], {'X1', 'X2'})
+```
+
+![svg](/assets/img/uncertainty-viz-matlab/ksc1.svg)
+
+Ths makes it easy to see what's going on even when you have a bunch of different distributions:
+
+```matlab
+X3 = mvnrnd([3, 0], eye(2), 100);
+
+figure
+kscontour(X1, 'Color', 'blue');
+kscontour(X2, 'Color', 'orange');
+kscontour(X3, 'Color', 'green');
+```
+
+![svg](/assets/img/uncertainty-viz-matlab/ksc2.svg)
+
+It'll take a cell array of matrixes, and auto-color the resulting contours, which makes things even easier when you have many distributions:
+
+```matlab
+figure
+kscontour({X1, X2, X3});
+```
+
+![svg](/assets/img/uncertainty-viz-matlab/ksc2.svg)
+
+You can view all the datapoints which went into the kernel density estimation:
+
+```matlab
+figure
+kscontour(X1, 'Color', 'blue',   'ShowPoints', true);
+kscontour(X2, 'Color', 'orange', 'ShowPoints', true);
+```
+
+![svg](/assets/img/uncertainty-viz-matlab/ksc3.svg)
+
+And you can also control the number of contours:
+
+```matlab
+figure
+kscontour(X1, 'Nlevels', 8);
+```
+
+![svg](/assets/img/uncertainty-viz-matlab/ksc4.svg)
+
+`kscontour` is also available [on my GitHub](https://github.com/brendanhasz/matlab-uncertainty-viz/blob/master/kscontour.m).
