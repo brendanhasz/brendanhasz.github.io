@@ -8,7 +8,7 @@ github_url: http://github.com/brendanhasz/matlab-uncertainty-viz
 tags: [visualization]
 language: [matlab]
 comments: true
-published: false
+published: true
 ---
 
 
