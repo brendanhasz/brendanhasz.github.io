@@ -58,14 +58,16 @@ import vaex
 from sklearn.dummy import DummyRegressor
 from sklearn.isotonic import IsotonicRegression
 from sklearn.metrics import mean_absolute_error, make_scorer
-from sklearn.model_selection import cross_val_score, cross_val_predict
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_val_predict
 
 import tensorflow as tf
 import tensorflow_probability as tfp
 tfd = tfp.distributions
 from tensorflow_probability.python.math import random_rademacher
 from tensorflow.keras import Sequential
-from tensorflow.keras.layers import Dense, BatchNormalization, ReLU, Dropout
+from tensorflow.keras.layers import Dense, BatchNormalization
+from tensorflow.keras.layers import ReLU, Dropout
 from tensorflow.keras.optimizers import Adam
 
 from catboost import CatBoostRegressor
@@ -111,7 +113,8 @@ Now we can clean and process the data for modeling.  I've done a more comprehens
 data.dropna(inplace=True)
 
 # Compute trip duration in seconds
-data['trip_duration'] = (data['dropoff_datetime'] - data['pickup_datetime']).dt.seconds
+data['trip_duration'] = (data['dropoff_datetime'] -
+                         data['pickup_datetime']).dt.seconds
 
 # Extract useful time information
 data['min_of_day'] = (60*data['pickup_datetime'].dt.hour + 
@@ -162,8 +165,7 @@ x_taxi.head()
 
 
 
-
-<div>
+<div class="scroll_box">
 <style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
@@ -714,7 +716,7 @@ We'll also add a method which returns samples from the predictive distribution g
 
 ```python
 class BayesianDenseRegression(tf.keras.Model):
-    """A multilayer fully-connected Bayesian neural network regression
+    """A multilayer Bayesian neural network regression
     
     Parameters
     ----------
@@ -755,7 +757,7 @@ class BayesianDenseRegression(tf.keras.Model):
 
     
     def call(self, x, sampling=True):
-        """Perform the forward pass, predicting both means and stds"""
+        """Perform forward pass, predicting both means + stds"""
         
         # Predict means
         loc_preds = self.loc_net(x, sampling=sampling)
@@ -951,9 +953,10 @@ class BayesianDensityNetwork(tf.keras.Model):
         x : tf.Tensor
             Input data
         sampling : bool
-            Whether to sample parameter values from their variational
-            distributions (if True, the default), or just use the
-            Maximum a Posteriori parameter value estimates (if False).
+            Whether to sample parameter values from their 
+            variational distributions (if True, the default), or
+            just use the Maximum a Posteriori parameter value
+            estimates (if False).
             
         Returns
         -------
@@ -994,7 +997,7 @@ class BayesianDensityNetwork(tf.keras.Model):
     
     
     def samples(self, x, n_samples=1):
-        """Draw multiple samples from the predictive distribution"""
+        """Draw multiple samples from predictive distributions"""
         samples = np.zeros((x.shape[0], n_samples))
         for i in range(n_samples):
             samples[:,i] = self.sample(x)
@@ -1188,7 +1191,7 @@ Let's make a function to compute the coverage of a given predictive interval, an
 
 ```python
 def covered(samples, y_true, prc=95.0):
-    """Whether each sample was covered by its predictive interval"""
+    """Whether each sample was covered by predictive interval"""
     q0 = (100.0-prc)/2.0 #lower percentile 
     q1 = 100.0-q0        #upper percentile
     within_conf_int = np.zeros(len(y_true))
@@ -1199,7 +1202,7 @@ def covered(samples, y_true, prc=95.0):
             within_conf_int[i] = 1
     return within_conf_int
 
-# Compute what samples are covered by their 95% predictive intervals
+# Compute what samples are covered by  95% predictive intervals
 covered1 = covered(samples1, y_data)
 covered2 = covered(samples2, y_data)
 ```

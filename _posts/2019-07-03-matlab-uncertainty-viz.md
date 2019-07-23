@@ -2,7 +2,7 @@
 layout: post
 title: "Visualizing multiple sources of uncertainty with semitransparent confidence intervals"
 date: 2019-07-03
-description: "Performing hyperparameter optimization, and creating ensemble and stacking models to predict customer loyalty."
+description: "Improving on Matlab's default plotting tools for uncertainty visualization."
 img_url: /assets/img/uncertainty-viz-matlab/ksc2.svg
 github_url: http://github.com/brendanhasz/matlab-uncertainty-viz
 tags: [visualization]
