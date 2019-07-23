@@ -6,7 +6,7 @@ description: "Using a dual-headed Bayesian density network to predict taxi trip 
 img_url: /assets/img/dual-headed/TwoHeadedNet.svg
 github_url: http://github.com/brendanhasz/tfp-taxi
 kaggle_url: http://www.kaggle.com/brendanhasz/bayesian-density-network
-tags: [bayesian, neural networks, uncertainty]
+tags: [bayesian, neural networks, uncertainty, tensorflow, prediction]
 language: [python, SQL]
 comments: true
 published: true
