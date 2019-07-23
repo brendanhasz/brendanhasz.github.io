@@ -1179,7 +1179,7 @@ for i in range(8):
 ![svg](/assets/img/dual-headed/output_77_0.svg)
 
 
-Notice how the dual-headed density network (orange) varies its uncertainty estimates, unlike the model which doesn't estimate uncertainty (blue).  For example, in the upper-left panel, the density network is much more certain of its estimate than the other model, and its predictive distribution is much sharper.  Though for other datapoints, like that in panel 5, the density network is *less* certain of its estimate, and the predictive distribution is wider.  And sometimes both models have similar levels of uncertainty, like in the lower-right panel.
+Notice how the dual-headed density network (orange) varies its uncertainty estimates, unlike the model which doesn't estimate uncertainty (blue).  For example, in the lower two panels, the density network is much more certain of its estimate than the other model, and its predictive distribution is much sharper.  Though for other datapoints (e.g. the panel in the right column, 2nd from the bottom) the density network is *less* certain of its estimate, and the predictive distribution is wider.  And sometimes both models have similar levels of uncertainty (e.g. in the panel in the left column, 2nd from the top).
 
 
 ### Coverage of the 95% Confidence Interval
