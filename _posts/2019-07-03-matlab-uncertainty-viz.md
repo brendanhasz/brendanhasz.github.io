@@ -227,24 +227,24 @@ subplot(1, 2, 2)
     title('X2')
 ```
 
-![svg](/assets/img/uncertainty-viz-matlab/con3_1contour.svg)
+![svg](/assets/img/uncertainty-viz-matlab/con3_2contour.svg)
 
 We can manually set the color of the lines for both plots, but then we loose information about in what direction the contours are going.  For example, in the plot below, are the two small contour lines at the top of X2 peaks, or are they valleys?
 
 ```matlab
 % Plot 2 contours
 figure
-subplot(1, 2, 1)
-    [N1, c] = hist3(X1, 'Edges', edges);
-    contour(c{1}, c{2}, N1, 5)
-    title('X1')
-subplot(1, 2, 2)
-    [N2, c] = hist3(X2, 'Edges', edges);
-    contour(c{1}, c{2}, N2, 5)
-    title('X2')
+
+[N1, c] = hist3(X1, 'Edges', edges);
+contour(c{1}, c{2}, N1, 5, 'r')
+title('X1')
+
+[N2, c] = hist3(X2, 'Edges', edges);
+contour(c{1}, c{2}, N2, 5), 'b'
+title('X2')
 ```
 
-![svg](/assets/img/uncertainty-viz-matlab/con3_2color.svg)
+![svg](/assets/img/uncertainty-viz-matlab/con5_2color.svg)
 
 To get each contour to have its own colormap, we need to create two separate axes for each contour, and then assign the colormap for each independently.  This gets a bit messy, because we then have to set one or the other to be invisible, make custom colormaps (because Matlab doesn't really come with different categories of continuous colormaps...), etc.
 
@@ -278,7 +278,7 @@ colormap(ax1, reds)
 colormap(ax2, blues)
 ```
 
-![svg](/assets/img/uncertainty-viz-matlab/con3_2cmap.svg)
+![svg](/assets/img/uncertainty-viz-matlab/con6_2cmap.svg)
 
 What I've found to be the least visually painful, and the most interperatable, is to use semi-transparent filled contours.  I wrote a Matlab script which uses kernel density estimation to smooth the inupt datapoints, and then computes the [contour matrix](https://www.mathworks.com/help/matlab/ref/contour.html#mw_6bc1813f-47cf-4c44-a454-f937ea210ab6) as output by `contour` to generate the contours with [`patch`](https://www.mathworks.com/help/matlab/ref/patch.html).  This results in much nicer-looking contour plots which require less boilerplate code (well, once you have the function...):
 
