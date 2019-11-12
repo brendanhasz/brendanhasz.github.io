@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if post.img_url %}
+    <meta property="og:image" content="{{ post.img_url }}"/>
+    {% else %}
+    <meta property="og:image" content="/assets/img/dual-headed/TwoHeadedNet.svg"/>
+    {% endif %}
+
     <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
