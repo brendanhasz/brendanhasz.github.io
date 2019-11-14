@@ -863,7 +863,7 @@ for epoch in range(EPOCHS):
     
     # Update weights each batch
     for x_data, y_data in data_train:
-        elbo1[epoch] = train_step(x_data, y_data)
+        elbo1[epoch] += train_step(x_data, y_data)
         
     # Evaluate performance on validation data
     for x_data, y_data in data_val:
@@ -1056,7 +1056,7 @@ for epoch in range(EPOCHS):
     
     # Update weights each batch
     for x_data, y_data in data_train:
-        elbo2[epoch] = train_step(x_data, y_data)
+        elbo2[epoch] += train_step(x_data, y_data)
         
     # Evaluate performance on validation data
     for x_data, y_data in data_val:
