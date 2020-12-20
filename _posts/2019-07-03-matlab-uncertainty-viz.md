@@ -72,7 +72,7 @@ errorbar(X, Y2, E2)
 
 ![svg](/assets/img/uncertainty-viz-matlab/errorbar1.svg)
 
-Oh ew.  My eyes.  Though it does at least choose different colors for subsequent lines by default, which is nice.  But the error bars are often ovrlapping, which makes it slightly difficult to see what's going on.  What would be better if we could display uncertainty in the form of shaded, semitransparent bounds.  We can do that using the [fill]() plotting function, which plots a function given x,y coordinates of the vertexes.  Therefore, we'll have to plot the upper error bounds from left to right, and then the lower bounds from right to left.  Then we can layer the mean line on top, like this:
+Oh ew.  My eyes.  Though it does at least choose different colors for subsequent lines by default, which is nice.  But the error bars are often overlapping, which makes it slightly difficult to see what's going on.  What would be better if we could display uncertainty in the form of shaded, semitransparent bounds.  We can do that using the [fill]() plotting function, which plots a function given x,y coordinates of the vertexes.  Therefore, we'll have to plot the upper error bounds from left to right, and then the lower bounds from right to left.  Then we can layer the mean line on top, like this:
 
 ```matlab
 % Plot shaded, semitransparent error bounds
@@ -159,7 +159,7 @@ legend([h1 h2], {'Thing 1', 'Thing 2'})
 
 ![svg](/assets/img/uncertainty-viz-matlab/ploterr_legends.svg)
 
-It'll even auto-generate numbers given an index!
+It'll even auto-generate colors given an index!
 
 ```matlab
 x = linspace(0, 1, 30);
