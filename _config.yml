@@ -21,9 +21,9 @@ social:
     - https://github.com/brendanhasz
 
 # Images + files
-logo: assets/img/headshot.png
-cv_url: assets/files/BrendanHasz_CV.pdf
-resume_url: assets/files/BrendanHasz_Resume.pdf
+logo: /assets/img/headshot.png
+cv_url: /assets/files/BrendanHasz_CV.pdf
+resume_url: /assets/files/BrendanHasz_Resume.pdf
 
 # Blog settings
 markdown: kramdown
