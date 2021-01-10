@@ -4,22 +4,22 @@ layout: feed
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-	<title>Brendan Hasz's Github.io</title>
-	<link href="http://brendanhasz.github.io/atom.xml" rel="self"/>
-	<link href="http://brendanhasz.github.io"/>
+	<title>{{ site.title }}</title>
+	<link href="{{ site.url }}/atom.xml" rel="self"/>
+	<link href="{{ site.url }}"/>
 	<updated>{{ site.time | date_to_xmlschema }}</updated>
-	<id>http://brendanhasz.github.io/blog</id>
+	<id>{{ site.url }}/blog</id>
 	<author>
-		<name>Brendan Hasz</name>
-		<email>winsto99@gmail.com</email>
+		<name>{{ site.name }}</name>
+		<email>{{ site.email }}</email>
 	</author>
 
 	{% for post in site.posts %}
 		<entry>
 			<title>{{ post.title }}</title>
-			<link href="http://brendanhasz.github.io{{ post.url }}"/>
+			<link href="{{ site.url }}{{ post.url }}"/>
 			<updated>{{ post.date | date_to_xmlschema }}</updated>
-			<id>http://brendanhasz.github.io{{ post.id }}</id>
+			<id>{{ site.url }}{{ post.id }}</id>
 			<content type="html">{{ post.content | xml_escape }}</content>
 		</entry>
 	{% endfor %}

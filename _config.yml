@@ -1,25 +1,60 @@
-theme: jekyll-theme-minimal
-markdown: kramdown
+# Info about you
 name: Brendan Hasz
 position: Data Scientist
-github_url: https://github.com/brendanhasz
-kaggle_url: https://www.kaggle.com/brendanhasz
-linkedin_url: http://www.linkedin.com/in/brendan-hasz
-email_url: mailto:winsto99@gmail.com
-cv_url: /assets/files/BrendanHasz_CV.pdf
-resume_url: /assets/files/BrendanHasz_Resume.pdf
+email: winsto99@gmail.com
 company_name: C.H. Robinson
-company_url: https://www.chrobinson.com
+company_url: https://www.chrobinson.com/
 place_name: Minneapolis, MN
+
+# Blog info
 title: Brendan Hasz
 description: Blog
-url: https://brendanhasz.github.io/
-logo: /assets/img/headshot.jpg
+url: http://brendanhasz.github.io/
+
+# Social links
+github_url: https://github.com/brendanhasz
+linkedin_url: http://www.linkedin.com/in/brendan-hasz
 social:
   links:
     - http://www.linkedin.com/in/brendan-hasz
-    - https://github.com/brendanhasz
     - https://www.kaggle.com/brendanhasz
+    - https://github.com/brendanhasz
+
+# Images + files
+logo: assets/img/headshot.png
+cv_url: assets/files/BrendanHasz_CV.pdf
+resume_url: assets/files/BrendanHasz_Resume.pdf
+
+# Blog settings
+markdown: kramdown
 plugins:
   - jekyll-seo-tag
 highlighter: rouge
+color_mode: auto  # auto, light, or dark
+comments: true
+disqus_shortname: brendanhasz-github-io
+syntax_highlight_stylesheet: syntax_highlight.css
+
+# Colors - light mode
+colors:
+  text: 282828
+  tag: dbefdc
+  tag_hover: 93cf95
+  header_background: 2b422b
+  header_text: dbefdc
+  header_link_hover: 93cf95
+  links: 459c48
+  links_visited: 357a38
+
+# Colors - dark mode
+colors_dark:
+  background: 333
+  text: ccc
+  tag: 2e6830
+  tag_hover: 93cf95
+  header_background: 232
+  header_text: 93cf95
+  header_link: 93cf95
+  header_link_hover: 459c48
+  links: 459c48
+  links_visited: 357a38
