@@ -88,7 +88,7 @@
         <div class="scroll">
           <header class="page-header">
             <button class="back-button" id="back-button" type="button">&larr; Back</button>
-            <h1>Create new workout</h1>
+            <h1 id="create-title">Create new workout</h1>
           </header>
 
           <form id="workout-form" novalidate>
@@ -98,18 +98,6 @@
             </label>
 
             <ol class="exercise-list" id="exercise-list"></ol>
-
-            <div class="add-exercise">
-              <button class="add-exercise-button" id="add-exercise-button" type="button"
-                aria-label="Add exercise" aria-expanded="false">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-              </button>
-              <div class="type-picker" id="type-picker" hidden>
-                <button type="button" data-type="rest">Rest</button>
-                <button type="button" data-type="static">Static</button>
-                <button type="button" data-type="reps">Reps</button>
-              </div>
-            </div>
 
             <p class="form-error" id="form-error" role="alert" hidden></p>
           </form>
