@@ -75,7 +75,10 @@ let history = loadList('history');
 let editingIndex = null;
 
 function updateAddButton() {
-  $('add-workout-button').hidden = !$('workouts-tab').classList.contains('is-active');
+  const onWorkouts = $('workouts-tab').classList.contains('is-active');
+  $('workouts-file-actions').hidden = !onWorkouts;
+  $('history-file-actions').hidden = onWorkouts;
+  $('add-workout-button').hidden = !onWorkouts;
 }
 
 function formatDuration(totalSeconds) {

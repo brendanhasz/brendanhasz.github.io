@@ -50,11 +50,6 @@
         aria-labelledby="workouts-tab"
         tabindex="0"
       >
-        <div class="file-actions">
-          <button type="button" data-action="export" data-store="workouts">Export</button>
-          <button type="button" data-action="import" data-store="workouts">Import</button>
-          <button type="button" data-action="clear" data-store="workouts">Clear</button>
-        </div>
         <p class="empty-message" id="workouts-status" role="status" hidden></p>
         <p class="empty-message" id="workouts-message" hidden></p>
         <ul class="workout-list" id="workout-list"></ul>
@@ -68,20 +63,27 @@
         tabindex="0"
         hidden
       >
-        <div class="file-actions">
-          <button type="button" data-action="export" data-store="history">Export</button>
-          <button type="button" data-action="import" data-store="history">Import</button>
-          <button type="button" data-action="clear" data-store="history">Clear</button>
-        </div>
         <p class="empty-message" id="history-status" role="status" hidden></p>
         <p class="empty-message" id="history-message" hidden></p>
         <ul class="workout-list" id="history-list"></ul>
       </section>
       </div>
 
-      <button class="fab" id="add-workout-button" type="button" aria-label="Create new workout">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-      </button>
+      <footer class="main-footer">
+        <div class="file-actions" id="workouts-file-actions">
+          <button type="button" data-action="export" data-store="workouts">Export</button>
+          <button type="button" data-action="import" data-store="workouts">Import</button>
+          <button type="button" data-action="clear" data-store="workouts">Clear</button>
+        </div>
+        <div class="file-actions" id="history-file-actions" hidden>
+          <button type="button" data-action="export" data-store="history">Export</button>
+          <button type="button" data-action="import" data-store="history">Import</button>
+          <button type="button" data-action="clear" data-store="history">Clear</button>
+        </div>
+        <button class="fab" id="add-workout-button" type="button" aria-label="Create new workout">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </footer>
       </div>
 
       <div class="view" id="create-view" hidden>
