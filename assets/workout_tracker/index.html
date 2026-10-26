@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0d0e10">
+    <title>Workout Tracker</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <div class="view" id="main-view">
+      <div class="scroll">
+      <header class="page-header">
+        <h1>Workout Tracker</h1>
+      </header>
+
+      <div class="tabs" role="tablist" aria-label="Workout tracker pages">
+        <button
+          class="tab is-active"
+          id="workouts-tab"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="workouts-panel"
+          tabindex="0"
+        >
+          Workouts
+        </button>
+        <button
+          class="tab"
+          id="history-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="history-panel"
+          tabindex="-1"
+        >
+          History
+        </button>
+      </div>
+
+      <section
+        class="page-content"
+        id="workouts-panel"
+        role="tabpanel"
+        aria-labelledby="workouts-tab"
+        tabindex="0"
+      >
+        <div class="file-actions">
+          <button type="button" data-action="export" data-store="workouts">Export</button>
+          <button type="button" data-action="import" data-store="workouts">Import</button>
+        </div>
+        <p class="empty-message" id="workouts-status" role="status" hidden></p>
+        <p class="empty-message" id="workouts-message" hidden></p>
+        <ul class="workout-list" id="workout-list"></ul>
+      </section>
+
+      <section
+        class="page-content"
+        id="history-panel"
+        role="tabpanel"
+        aria-labelledby="history-tab"
+        tabindex="0"
+        hidden
+      >
+        <div class="file-actions">
+          <button type="button" data-action="export" data-store="history">Export</button>
+          <button type="button" data-action="import" data-store="history">Import</button>
+        </div>
+        <p class="empty-message" id="history-status" role="status" hidden></p>
+        <p class="empty-message" id="history-message" hidden></p>
+        <ul class="workout-list" id="history-list"></ul>
+      </section>
+      </div>
+
+      <button class="fab" id="add-workout-button" type="button" aria-label="Create new workout">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      </div>
+
+      <div class="view" id="create-view" hidden>
+        <div class="scroll">
+          <header class="page-header">
+            <button class="back-button" id="back-button" type="button">&larr; Back</button>
+            <h1>Create new workout</h1>
+          </header>
+
+          <form id="workout-form" novalidate>
+            <label class="field">
+              <span>Workout name</span>
+              <input type="text" id="workout-name" autocomplete="off" maxlength="80">
+            </label>
+
+            <ol class="exercise-list" id="exercise-list"></ol>
+
+            <div class="add-exercise">
+              <button class="add-exercise-button" id="add-exercise-button" type="button"
+                aria-label="Add exercise" aria-expanded="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+              <div class="type-picker" id="type-picker" hidden>
+                <button type="button" data-type="rest">Rest</button>
+                <button type="button" data-type="static">Static</button>
+                <button type="button" data-type="reps">Reps</button>
+              </div>
+            </div>
+
+            <p class="form-error" id="form-error" role="alert" hidden></p>
+          </form>
+        </div>
+
+        <button class="fab" id="save-button" type="button" aria-label="Save workout">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 3h11l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/>
+            <path d="M8 3v5h8V3M7 21v-7h10v7"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="view" id="workout-view" hidden>
+        <div class="scroll workout-scroll">
+          <header class="page-header">
+            <button class="back-button" id="workout-back-button" type="button">&larr; Back</button>
+            <h1 id="workout-title"></h1>
+            <p class="form-error" id="workout-error" role="alert" hidden></p>
+          </header>
+
+          <div class="exercise-stack">
+            <section class="exercise-slot" id="slot-previous" aria-label="Previous exercise"></section>
+            <section class="exercise-slot is-current" id="slot-current" aria-label="Current exercise"></section>
+            <section class="exercise-slot" id="slot-next" aria-label="Next exercise"></section>
+          </div>
+        </div>
+
+        <button class="fab" id="pause-button" type="button" aria-label="Pause workout">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path class="icon-pause" d="M9 5v14M15 5v14"/>
+            <path class="icon-play" d="M8 5l11 7-11 7z"/>
+          </svg>
+        </button>
+      </div>
+    </main>
+  </body>
+</html>

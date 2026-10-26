@@ -1,0 +1,576 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+
+:root {
+  color-scheme: dark;
+  font-family: 'DM Sans', sans-serif;
+  color: #edf0e9;
+  background: #0d0e10;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --ink: #edf0e9;
+  --muted: #a1ada2;
+  --accent: #f07b5b;
+  --line: #354139;
+  --surface: #1e2124;
+  --red: #d92d2d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: grid;
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: 0;
+  place-items: center;
+  background: #0d0e10;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.app-shell {
+  position: relative;
+  width: min(100vw, 1080px, calc(100svh * 1080 / 2424));
+  aspect-ratio: 1080 / 2424;
+  margin: 0 auto;
+  overflow: hidden;
+  background-color: #151719;
+  background-image: radial-gradient(#26292c 0.65px, transparent 0.65px);
+  background-size: 20px 20px;
+}
+
+.view {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.view[hidden],
+.fab[hidden] {
+  display: none;
+}
+
+.scroll {
+  flex: 1;
+  padding: clamp(32px, 7svh, 76px) clamp(20px, 6%, 64px) 120px;
+  overflow-y: auto;
+}
+
+.page-header {
+  padding-bottom: clamp(24px, 4svh, 36px);
+}
+
+.section-label {
+  margin: 0;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+h1,
+h2 {
+  font-family: 'Manrope', sans-serif;
+}
+
+h1 {
+  margin: 9px 0 0;
+  font-size: clamp(28px, 7vw, 40px);
+  line-height: 1.12;
+}
+
+.tabs {
+  display: flex;
+  gap: 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tab {
+  position: relative;
+  min-height: 48px;
+  padding: 0 2px 13px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.tab::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 3px;
+  background: transparent;
+  content: '';
+}
+
+.tab:hover,
+.tab.is-active {
+  color: var(--ink);
+}
+
+.tab.is-active::after {
+  background: var(--accent);
+}
+
+.tab:focus-visible,
+.page-content:focus-visible,
+.fab:focus-visible,
+.back-button:focus-visible,
+.workout-row:focus-visible,
+.step-button:focus-visible,
+.add-exercise-button:focus-visible,
+.type-picker button:focus-visible,
+.field input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.page-content {
+  padding-top: clamp(24px, 4svh, 36px);
+  animation: appear 220ms ease-out;
+}
+
+.page-content[hidden] {
+  display: none;
+}
+
+.page-content h2 {
+  margin: 15px 0 14px;
+  font-size: clamp(25px, 5vw, 34px);
+  line-height: 1.2;
+}
+
+.page-content > p:not(.section-label) {
+  color: #c0c9c0;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.page-content .placeholder-note,
+.empty-message {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.empty-message.is-error {
+  color: #ff8a80;
+}
+
+.file-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.fatal-error {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 10;
+  padding: 10px 14px;
+  background: #7a1f1a;
+  color: #fff;
+  font-size: 13px;
+}
+
+.file-actions button {
+  min-height: 40px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.file-actions button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.workout-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.workout-list li {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.workout-row,
+.history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 18px 20px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.history-row {
+  cursor: default;
+}
+
+.history-info {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.history-date {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.workout-name {
+  min-width: 0;
+  font-size: 17px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.workout-time {
+  flex: none;
+  color: var(--muted);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.fab {
+  position: absolute;
+  right: clamp(16px, 6%, 32px);
+  bottom: clamp(16px, 3svh, 32px);
+  display: grid;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 6px 16px rgb(0 0 0 / 45%);
+  cursor: pointer;
+  place-items: center;
+}
+
+.fab svg,
+.add-exercise-button svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.4;
+}
+
+.back-button {
+  margin-bottom: 18px;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.field span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.field input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #0f1113;
+  color: var(--ink);
+}
+
+.exercise-list {
+  display: grid;
+  gap: 14px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.exercise-card {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.exercise-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.exercise-card-header strong {
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.remove-exercise {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.exercise-card .field:last-child {
+  margin-bottom: 0;
+}
+
+.add-exercise {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.add-exercise-button {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  cursor: pointer;
+  place-items: center;
+}
+
+.add-exercise-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.type-picker {
+  display: flex;
+  gap: 8px;
+}
+
+.type-picker[hidden] {
+  display: none;
+}
+
+.type-picker button {
+  min-height: 40px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.workout-scroll {
+  display: flex;
+  flex-direction: column;
+}
+
+.exercise-stack {
+  display: grid;
+  flex: 1;
+  grid-template-rows: repeat(3, minmax(120px, 1fr));
+  gap: 14px;
+}
+
+.exercise-slot {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  opacity: 0.7;
+}
+
+.exercise-slot.is-current {
+  border-color: var(--red);
+  background: #23272b;
+  opacity: 1;
+}
+
+.exercise-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.exercise-main {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.exercise-name {
+  font-size: 19px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.exercise-variation {
+  color: #ff5a4f;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.exercise-time {
+  color: var(--muted);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.is-current .exercise-name {
+  font-size: 22px;
+}
+
+.is-current .exercise-time {
+  color: var(--ink);
+  font-size: 30px;
+}
+
+.exercise-stats {
+  display: grid;
+  gap: 10px;
+}
+
+.stepper {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+}
+
+.stepper-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stepper-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stepper-value {
+  min-width: 30px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  text-align: center;
+}
+
+.step-button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #0f1113;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.slot-empty {
+  width: 100%;
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  text-align: center;
+}
+
+.fab .icon-pause {
+  stroke-width: 3.5;
+}
+
+.fab .icon-play {
+  display: none;
+  fill: #fff;
+}
+
+.fab.is-paused .icon-pause {
+  display: none;
+}
+
+.fab.is-paused .icon-play {
+  display: inline;
+}
+
+.form-error {
+  margin: 18px 0 0;
+  color: #ff8a80;
+  font-size: 14px;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
