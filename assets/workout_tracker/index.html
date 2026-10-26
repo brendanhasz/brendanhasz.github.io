@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0d0e10">
+    <meta name="theme-color" content="#151719">
     <title>Workout Tracker</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icons/icon-192.png">
@@ -53,6 +53,7 @@
         <div class="file-actions">
           <button type="button" data-action="export" data-store="workouts">Export</button>
           <button type="button" data-action="import" data-store="workouts">Import</button>
+          <button type="button" data-action="clear" data-store="workouts">Clear</button>
         </div>
         <p class="empty-message" id="workouts-status" role="status" hidden></p>
         <p class="empty-message" id="workouts-message" hidden></p>
@@ -70,6 +71,7 @@
         <div class="file-actions">
           <button type="button" data-action="export" data-store="history">Export</button>
           <button type="button" data-action="import" data-store="history">Import</button>
+          <button type="button" data-action="clear" data-store="history">Clear</button>
         </div>
         <p class="empty-message" id="history-status" role="status" hidden></p>
         <p class="empty-message" id="history-message" hidden></p>
@@ -142,6 +144,25 @@
             <path class="icon-play" d="M8 5l11 7-11 7z"/>
           </svg>
         </button>
+      </div>
+
+      <div
+        class="view confirm-view"
+        id="confirm-view"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+        aria-describedby="confirm-text"
+        hidden
+      >
+        <div class="confirm-card">
+          <h2 id="confirm-title">Are you sure?</h2>
+          <p id="confirm-text"></p>
+          <div class="confirm-actions">
+            <button type="button" id="confirm-no">No</button>
+            <button type="button" id="confirm-yes" class="confirm-yes">Yes</button>
+          </div>
+        </div>
       </div>
     </main>
   </body>

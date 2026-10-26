@@ -4,7 +4,7 @@
   color-scheme: dark;
   font-family: 'DM Sans', sans-serif;
   color: #edf0e9;
-  background: #0d0e10;
+  background: #151719;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --ink: #edf0e9;
@@ -26,7 +26,7 @@ body {
   min-height: 100svh;
   margin: 0;
   place-items: center;
-  background: #0d0e10;
+  background: #151719;
 }
 
 button,
@@ -36,13 +36,11 @@ input {
 
 .app-shell {
   position: relative;
-  width: min(100vw, 1080px, calc(100svh * 1080 / 2424));
+  width: min(100vw, 1080px, calc(95svh * 1080 / 2424));
   aspect-ratio: 1080 / 2424;
   margin: 0 auto;
   overflow: hidden;
   background-color: #151719;
-  background-image: radial-gradient(#26292c 0.65px, transparent 0.65px);
-  background-size: 20px 20px;
 }
 
 .view {
@@ -198,6 +196,67 @@ h1 {
 }
 
 .file-actions button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.file-actions button[data-action="clear"] {
+  color: #ff8a80;
+}
+
+.confirm-view {
+  z-index: 5;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgb(21 23 25 / 96%);
+}
+
+.confirm-card {
+  width: 100%;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  text-align: center;
+}
+
+.confirm-card h2 {
+  margin: 0 0 10px;
+  font-size: 24px;
+}
+
+.confirm-card p {
+  margin: 0 0 22px;
+  color: #c0c9c0;
+  line-height: 1.5;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.confirm-actions button {
+  min-width: 96px;
+  min-height: 46px;
+  padding: 0 24px;
+  border: 1px solid var(--line);
+  border-radius: 23px;
+  background: #0f1113;
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.confirm-actions .confirm-yes {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fff;
+}
+
+.confirm-actions button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
