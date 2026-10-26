@@ -914,7 +914,7 @@ function saveWorkout() {
   showView('main');
 }
 
-$('add-workout-button').addEventListener('click', openCreateScreen);
+$('add-workout-button').addEventListener('click', () => openCreateScreen());
 $('back-button').addEventListener('click', () => showView('main'));
 $('workout-back-button').addEventListener('click', () => {
   stopWorkout();

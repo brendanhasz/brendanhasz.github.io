@@ -57,7 +57,7 @@ input {
 
 .scroll {
   flex: 1;
-  padding: clamp(32px, 7svh, 76px) clamp(20px, 6%, 64px) 120px;
+  padding: clamp(32px, 7svh, 76px) clamp(16px, 6%, 32px) 120px;
   overflow-y: auto;
 }
 
