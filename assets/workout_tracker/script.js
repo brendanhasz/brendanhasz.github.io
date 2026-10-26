@@ -283,6 +283,37 @@ function importList(name) {
   input.click();
 }
 
+let pendingClear = null;
+
+function closeConfirm() {
+  pendingClear = null;
+  $('confirm-view').hidden = true;
+}
+
+function askClear(name) {
+  if (!getList(name).length) {
+    setStatus(name, 'Nothing to clear.');
+    return;
+  }
+  pendingClear = name;
+  $('confirm-text').textContent = `This will permanently delete all your ${name}. It can't be undone.`;
+  $('confirm-view').hidden = false;
+  $('confirm-no').focus();
+}
+
+function confirmClear() {
+  const name = pendingClear;
+  closeConfirm();
+  if (!name) return;
+  try {
+    saveList(name, []);
+    applyList(name, []);
+    setStatus(name, 'Cleared.');
+  } catch {
+    setStatus(name, 'Could not clear. Browser storage may be blocked.', true);
+  }
+}
+
 let session = null;
 
 function setWorkoutError(text) {
@@ -708,6 +739,14 @@ document.querySelectorAll('[data-action="export"]').forEach((button) => {
 });
 document.querySelectorAll('[data-action="import"]').forEach((button) => {
   button.addEventListener('click', () => importList(button.dataset.store));
+});
+document.querySelectorAll('[data-action="clear"]').forEach((button) => {
+  button.addEventListener('click', () => askClear(button.dataset.store));
+});
+$('confirm-no').addEventListener('click', closeConfirm);
+$('confirm-yes').addEventListener('click', confirmClear);
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !$('confirm-view').hidden) closeConfirm();
 });
 
 renderWorkouts();
