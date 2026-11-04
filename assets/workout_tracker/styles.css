@@ -62,7 +62,18 @@ input {
 }
 
 #main-view .scroll {
+  padding-top: clamp(20px, 4svh, 44px);
   padding-bottom: 24px;
+}
+
+#main-view .page-header {
+  padding-bottom: clamp(16px, 2.5svh, 24px);
+}
+
+#main-view h1 {
+  margin-top: 0;
+  font-size: clamp(22px, 5.6vw, 32px);
+  white-space: nowrap;
 }
 
 .main-footer {
@@ -367,7 +378,37 @@ h1 {
 }
 
 .history-row {
-  cursor: default;
+  cursor: pointer;
+}
+
+.details-meta {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.detail-fields {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.detail-fields div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.detail-fields dt {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.detail-fields dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
 }
 
 .history-info {
@@ -446,6 +487,10 @@ h1 {
   margin-bottom: 14px;
 }
 
+.field[hidden] {
+  display: none;
+}
+
 .field span {
   color: var(--muted);
   font-size: 13px;
@@ -460,6 +505,49 @@ h1 {
   border-radius: 10px;
   background: #0f1113;
   color: var(--ink);
+}
+
+.field select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #0f1113;
+  color: var(--ink);
+}
+
+.chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.chart text {
+  fill: var(--muted);
+  font-size: 11px;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chart-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.chart-legend i {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
 }
 
 .exercise-list {

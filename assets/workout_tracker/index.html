@@ -41,6 +41,17 @@
         >
           History
         </button>
+        <button
+          class="tab"
+          id="progress-tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="progress-panel"
+          tabindex="-1"
+        >
+          Progress
+        </button>
       </div>
 
       <section
@@ -66,6 +77,18 @@
         <p class="empty-message" id="history-status" role="status" hidden></p>
         <p class="empty-message" id="history-message" hidden></p>
         <ul class="workout-list" id="history-list"></ul>
+      </section>
+
+      <section
+        class="page-content"
+        id="progress-panel"
+        role="tabpanel"
+        aria-labelledby="progress-tab"
+        tabindex="0"
+        hidden
+      >
+        <p class="empty-message" id="progress-message" hidden></p>
+        <ul class="workout-list" id="progress-list"></ul>
       </section>
       </div>
 
@@ -111,6 +134,36 @@
             <path d="M8 3v5h8V3M7 21v-7h10v7"/>
           </svg>
         </button>
+      </div>
+
+      <div class="view" id="progress-view" hidden>
+        <div class="scroll">
+          <header class="page-header">
+            <button class="back-button" id="progress-back-button" type="button">&larr; Back</button>
+            <h1 id="progress-title"></h1>
+          </header>
+          <label class="field" id="progress-metric-field">
+            <span>Value</span>
+            <select id="progress-metric">
+              <option value="reps">Reps</option>
+              <option value="weight">Weight</option>
+              <option value="effort">Effort (weight &times; reps)</option>
+            </select>
+          </label>
+          <div class="chart" id="progress-chart"></div>
+          <ul class="chart-legend" id="progress-legend"></ul>
+        </div>
+      </div>
+
+      <div class="view" id="details-view" hidden>
+        <div class="scroll">
+          <header class="page-header">
+            <button class="back-button" id="details-back-button" type="button">&larr; Back</button>
+            <h1 id="details-title"></h1>
+            <p class="details-meta" id="details-meta"></p>
+          </header>
+          <ol class="exercise-list" id="details-list"></ol>
+        </div>
       </div>
 
       <div class="view" id="workout-view" hidden>
