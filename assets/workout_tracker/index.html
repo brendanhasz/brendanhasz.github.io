@@ -52,6 +52,9 @@
         >
           Progress
         </button>
+        <button class="tab settings-tab" id="settings-tab" type="button" role="tab" aria-label="Settings" title="Settings" aria-selected="false" aria-controls="settings-panel" tabindex="-1">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.5a2 2 0 0 1-1 1.74l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.73v-.5a2 2 0 0 1 1-1.74l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
       </div>
 
       <section
@@ -61,7 +64,6 @@
         aria-labelledby="workouts-tab"
         tabindex="0"
       >
-        <p class="empty-message" id="workouts-status" role="status" hidden></p>
         <p class="empty-message" id="workouts-message" hidden></p>
         <ul class="workout-list" id="workout-list"></ul>
       </section>
@@ -74,7 +76,6 @@
         tabindex="0"
         hidden
       >
-        <p class="empty-message" id="history-status" role="status" hidden></p>
         <p class="empty-message" id="history-message" hidden></p>
         <ul class="workout-list" id="history-list"></ul>
       </section>
@@ -90,19 +91,42 @@
         <p class="empty-message" id="progress-message" hidden></p>
         <ul class="workout-list" id="progress-list"></ul>
       </section>
+
+      <section class="page-content" id="settings-panel" role="tabpanel" aria-labelledby="settings-tab" tabindex="0" hidden>
+        <label class="field">
+          <span>Weight units</span>
+          <select id="weight-unit">
+            <option value="lb">Pounds (lb)</option>
+            <option value="kg">Kilograms (kg)</option>
+          </select>
+        </label>
+        <label class="field">
+          <span id="bodyweight-label">Bodyweight (lb)</span>
+          <input id="bodyweight" type="number" min="0" step="any" inputmode="decimal">
+        </label>
+        <p class="form-error" id="settings-error" role="alert" hidden></p>
+        <section class="settings-data" aria-labelledby="settings-workouts-title">
+          <h2 id="settings-workouts-title">Workouts</h2>
+          <div class="file-actions" id="workouts-file-actions">
+            <button type="button" data-action="export" data-store="workouts">Export</button>
+            <button type="button" data-action="import" data-store="workouts">Import</button>
+            <button type="button" data-action="clear" data-store="workouts">Clear</button>
+          </div>
+          <p class="empty-message" id="workouts-status" role="status" hidden></p>
+        </section>
+        <section class="settings-data" aria-labelledby="settings-history-title">
+          <h2 id="settings-history-title">History</h2>
+          <div class="file-actions" id="history-file-actions">
+            <button type="button" data-action="export" data-store="history">Export</button>
+            <button type="button" data-action="import" data-store="history">Import</button>
+            <button type="button" data-action="clear" data-store="history">Clear</button>
+          </div>
+          <p class="empty-message" id="history-status" role="status" hidden></p>
+        </section>
+      </section>
       </div>
 
-      <footer class="main-footer">
-        <div class="file-actions" id="workouts-file-actions">
-          <button type="button" data-action="export" data-store="workouts">Export</button>
-          <button type="button" data-action="import" data-store="workouts">Import</button>
-          <button type="button" data-action="clear" data-store="workouts">Clear</button>
-        </div>
-        <div class="file-actions" id="history-file-actions" hidden>
-          <button type="button" data-action="export" data-store="history">Export</button>
-          <button type="button" data-action="import" data-store="history">Import</button>
-          <button type="button" data-action="clear" data-store="history">Clear</button>
-        </div>
+      <footer class="main-footer" id="main-footer">
         <button class="fab" id="add-workout-button" type="button" aria-label="Create new workout">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
         </button>
@@ -150,6 +174,15 @@
               <option value="effort">Effort (weight &times; reps)</option>
             </select>
           </label>
+          <label class="checkbox-field" id="progress-bodyweight-field" hidden>
+            <input id="progress-bodyweight" type="checkbox">
+            <span>Bodyweight Exercise</span>
+          </label>
+          <label class="field" id="progress-proportion-field" hidden>
+            <span>Bodyweight Proportion</span>
+            <input id="progress-proportion" type="number" min="0" step="any" inputmode="decimal" value="1.0">
+          </label>
+          <p class="form-error" id="progress-error" role="alert" hidden></p>
           <div class="chart" id="progress-chart"></div>
           <ul class="chart-legend" id="progress-legend"></ul>
         </div>

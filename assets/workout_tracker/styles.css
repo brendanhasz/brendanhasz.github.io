@@ -80,14 +80,14 @@ input {
   display: flex;
   flex: none;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 8px;
   min-height: 78px;
   padding: 10px clamp(16px, 6%, 32px);
-  border-top: 1px solid var(--line);
   background: #151719;
 }
 
+.main-footer[hidden],
 .main-footer [hidden] {
   display: none;
 }
@@ -117,7 +117,8 @@ h1 {
 
 .tabs {
   display: flex;
-  gap: 28px;
+  justify-content: space-between;
+  gap: 8px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -131,6 +132,17 @@ h1 {
   cursor: pointer;
   font-size: 15px;
   font-weight: 600;
+}
+
+.settings-tab svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .tab::after {
@@ -201,6 +213,21 @@ h1 {
   flex-wrap: wrap;
   gap: 6px;
   margin: 0;
+}
+
+.settings-data {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.settings-data h2 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+
+.settings-data .empty-message {
+  margin: 10px 0 0;
 }
 
 .fatal-error {
@@ -489,6 +516,26 @@ h1 {
 
 .field[hidden] {
   display: none;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.checkbox-field[hidden] {
+  display: none;
+}
+
+.checkbox-field input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent);
 }
 
 .field span {

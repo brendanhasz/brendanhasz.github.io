@@ -18,6 +18,8 @@ window.addEventListener('unhandledrejection', (event) =>
 const STORAGE_KEYS = {
   workouts: 'workout-tracker:workouts',
   history: 'workout-tracker:history',
+  settings: 'workout-tracker:settings',
+  progress: 'workout-tracker:progress:',
 };
 
 const EXERCISE_FIELDS = {
@@ -74,12 +76,69 @@ let workouts = loadList('workouts');
 let history = loadList('history');
 let editingIndex = null;
 
+const KG_PER_LB = 0.45359237;
+let settings = { weightUnit: 'lb', bodyweight: 200 };
+try {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings) || '{}');
+  settings.weightUnit = saved.weightUnit === 'kg' ? 'kg' : 'lb';
+  if (saved.bodyweight === null || (Number.isFinite(saved.bodyweight) && saved.bodyweight >= 0)) {
+    settings.bodyweight = saved.bodyweight;
+  }
+} catch {
+  showFatal('Could not load settings.');
+}
+
+function convertWeight(pounds) {
+  const value = Number(pounds) || 0;
+  return settings.weightUnit === 'kg' ? value * KG_PER_LB : value;
+}
+
+function displayWeight(pounds) {
+  return Number(convertWeight(pounds).toFixed(2));
+}
+
+function storeWeight(value) {
+  return settings.weightUnit === 'kg' ? value / KG_PER_LB : value;
+}
+
+function renderSettings() {
+  $('weight-unit').value = settings.weightUnit;
+  $('bodyweight-label').textContent = `Bodyweight (${settings.weightUnit})`;
+  $('bodyweight').value = settings.bodyweight === null ? '' : displayWeight(settings.bodyweight);
+}
+
+function saveSettings(updated) {
+  const error = $('settings-error');
+  try {
+    localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(updated));
+    settings = updated;
+    error.hidden = true;
+    renderSettings();
+  } catch {
+    error.textContent = 'Could not save settings. Browser storage may be full or blocked.';
+    error.hidden = false;
+    renderSettings();
+  }
+}
+
+$('weight-unit').addEventListener('change', (event) => {
+  saveSettings({ ...settings, weightUnit: event.target.value });
+});
+$('bodyweight').addEventListener('change', (event) => {
+  const input = event.target;
+  if (!input.validity.valid || (input.value !== '' && !Number.isFinite(input.valueAsNumber))) {
+    $('settings-error').textContent = 'Enter a valid bodyweight of zero or more.';
+    $('settings-error').hidden = false;
+    return;
+  }
+  saveSettings({ ...settings, bodyweight: input.value === '' ? null : storeWeight(input.valueAsNumber) });
+});
+renderSettings();
+
 function updateAddButton() {
   const active = tabs.find((tab) => tab.classList.contains('is-active'));
   const onWorkouts = active === $('workouts-tab');
-  const onHistory = active === $('history-tab');
-  $('workouts-file-actions').hidden = !onWorkouts;
-  $('history-file-actions').hidden = !onHistory;
+  $('main-footer').hidden = !onWorkouts;
   $('add-workout-button').hidden = !onWorkouts;
 }
 
@@ -302,6 +361,44 @@ function renderProgress() {
 
 const CHART_COLORS = ['#f07b5b', '#4fb3e8', '#7bd88f', '#f2c14e', '#b58cf0', '#ef6fa8', '#5fd1c4', '#c9c9c9'];
 let progressName = null;
+let progressOptions = { bodyweightExercise: false, proportion: 1 };
+
+function progressError(text) {
+  $('progress-error').textContent = text;
+  $('progress-error').hidden = !text;
+}
+
+function renderProgressProportion() {
+  $('progress-proportion').value = progressOptions.proportion === 1 ? '1.0' : progressOptions.proportion;
+}
+
+function renderProgressControls() {
+  const effort = !$('progress-metric-field').hidden && $('progress-metric').value === 'effort';
+  $('progress-bodyweight-field').hidden = !effort;
+  $('progress-proportion-field').hidden = !effort || !progressOptions.bodyweightExercise;
+}
+
+function saveProgressOptions(updated) {
+  try {
+    localStorage.setItem(STORAGE_KEYS.progress + progressName, JSON.stringify(updated));
+    progressOptions = updated;
+    progressError('');
+    return true;
+  } catch {
+    progressError('Could not save exercise settings. Browser storage may be full or blocked.');
+    return false;
+  }
+}
+
+function setColor(variationIndex, setNumber) {
+  const base = CHART_COLORS[variationIndex % CHART_COLORS.length];
+  const amount = 0.65 * (1 - 1 / setNumber);
+  const channels = [1, 3, 5].map((offset) => {
+    const channel = parseInt(base.slice(offset, offset + 2), 16);
+    return Math.round(channel + (255 - channel) * amount).toString(16).padStart(2, '0');
+  });
+  return `#${channels.join('')}`;
+}
 
 function svgEl(tag, attrs = {}, text = '') {
   const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
@@ -319,37 +416,70 @@ function niceMax(value) {
 
 function openProgressScreen(name) {
   progressName = name;
+  progressOptions = { bodyweightExercise: false, proportion: 1 };
+  let loadError = '';
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.progress + name) || '{}');
+    progressOptions.bodyweightExercise = saved.bodyweightExercise === true;
+    if (Number.isFinite(saved.proportion) && saved.proportion >= 0) progressOptions.proportion = saved.proportion;
+  } catch {
+    loadError = 'Could not load exercise settings.';
+  }
   $('progress-title').textContent = name;
   const isReps = (collectProgress().get(name) || []).some(({ exercise }) => exercise.type === 'reps');
   $('progress-metric-field').hidden = !isReps;
+  $('progress-bodyweight').checked = progressOptions.bodyweightExercise;
+  renderProgressProportion();
+  $('progress-metric').querySelector('[value="weight"]').textContent = `Weight (${settings.weightUnit})`;
+  $('progress-metric').querySelector('[value="effort"]').textContent = `Effort (${settings.weightUnit} \u00d7 reps)`;
+  renderProgressControls();
   showView('progress');
   renderProgressChart();
+  if (loadError) progressError(loadError);
 }
 
 function renderProgressChart() {
   const records = (collectProgress().get(progressName) || []);
   const isReps = records.some(({ exercise }) => exercise.type === 'reps');
   const metric = $('progress-metric').value;
+  if (isReps && metric === 'effort' && progressOptions.bodyweightExercise && settings.bodyweight === null) {
+    progressError('Enter your bodyweight in Settings to calculate effort.');
+    $('progress-chart').replaceChildren();
+    $('progress-legend').replaceChildren();
+    return;
+  }
+  progressError('');
   const valueOf = ({ exercise }) => {
     if (!isReps) return Number(exercise.duration) || 0;
     const reps = Number(exercise.reps) || 0;
-    const weight = Number(exercise.weight) || 0;
-    return metric === 'reps' ? reps : metric === 'weight' ? weight : reps * weight;
+    const weight = convertWeight(exercise.weight);
+    const bodyweight = progressOptions.bodyweightExercise ? convertWeight(settings.bodyweight) * progressOptions.proportion : 0;
+    return metric === 'reps' ? reps : metric === 'weight' ? weight : reps * (weight + bodyweight);
   };
   const formatValue = (value) => (isReps ? String(Math.round(value * 100) / 100) : formatDuration(value));
 
-  // One point per workout entry and variation, using the best value when it was done several times.
   const entries = [];
-  const variations = [];
-  const points = new Map();
+  const variations = new Map();
+  const counts = new Map();
+  const series = [];
   records
     .filter(({ exercise }) => exercise.type === (isReps ? 'reps' : 'static'))
     .forEach((record) => {
       if (!entries.includes(record.entry)) entries.push(record.entry);
-      const variation = record.exercise.variation || 'Default';
-      if (!variations.includes(variation)) variations.push(variation);
-      const key = `${variation}\u0000${entries.indexOf(record.entry)}`;
-      points.set(key, Math.max(points.get(key) ?? 0, valueOf(record)));
+      const variation = record.exercise.variation || '';
+      if (!variations.has(variation)) variations.set(variation, { index: variations.size, lines: [] });
+      if (!counts.has(record.entry)) counts.set(record.entry, new Map());
+      const entryCounts = counts.get(record.entry);
+      const setNumber = (entryCounts.get(variation) || 0) + 1;
+      entryCounts.set(variation, setNumber);
+      const { index, lines: variationSeries } = variations.get(variation);
+      if (!variationSeries[setNumber - 1]) {
+        const label = `${variation || 'Default'} - Set ${setNumber}`;
+        const color = setColor(index, setNumber);
+        variationSeries[setNumber - 1] = { label, color, points: new Map() };
+        series.push(variationSeries[setNumber - 1]);
+      }
+      variationSeries[setNumber - 1].points.set(record.entry, valueOf(record));
     });
 
   const width = 360;
@@ -358,7 +488,7 @@ function renderProgressChart() {
   const plotHeight = Math.max(1, entries.length - 1) * rowGap + 20;
   const height = margin.top + plotHeight + margin.bottom;
   const plotWidth = width - margin.left - margin.right;
-  const max = niceMax(Math.max(0, ...points.values()));
+  const max = niceMax(Math.max(0, ...series.flatMap((line) => Array.from(line.points.values()))));
   const x = (value) => margin.left + (value / max) * plotWidth;
   const y = (index) => margin.top + 10 + index * rowGap;
 
@@ -378,10 +508,9 @@ function renderProgressChart() {
     svg.append(svgEl('text', { x: margin.left - 8, y: y(index) + 4, 'text-anchor': 'end' }, label));
   });
 
-  variations.forEach((variation, vIndex) => {
-    const color = CHART_COLORS[vIndex % CHART_COLORS.length];
+  series.forEach(({ label, color, points }) => {
     const coords = entries
-      .map((_, index) => ({ index, value: points.get(`${variation}\u0000${index}`) }))
+      .map((entry, index) => ({ index, value: points.get(entry) }))
       .filter((point) => point.value !== undefined)
       .map((point) => [x(point.value), y(point.index), point.value]);
     if (coords.length > 1) {
@@ -394,18 +523,18 @@ function renderProgressChart() {
     }
     coords.forEach(([px, py, value]) => {
       const dot = svgEl('circle', { cx: px, cy: py, r: 4, fill: color });
-      dot.append(svgEl('title', {}, `${variation}: ${formatValue(value)}`));
+      dot.append(svgEl('title', {}, `${label}: ${formatValue(value)}`));
       svg.append(dot);
     });
   });
   $('progress-chart').replaceChildren(svg);
 
   $('progress-legend').replaceChildren(
-    ...(variations.length > 1 ? variations : []).map((variation, vIndex) => {
+    ...(series.length > 1 ? series : []).map(({ label, color }) => {
       const item = document.createElement('li');
       const swatch = document.createElement('i');
-      swatch.style.background = CHART_COLORS[vIndex % CHART_COLORS.length];
-      item.append(swatch, variation);
+      swatch.style.background = color;
+      item.append(swatch, label);
       return item;
     })
   );
@@ -600,11 +729,13 @@ function stepper(label, exercise, key, step) {
   caption.textContent = label;
   const value = document.createElement('span');
   value.className = 'stepper-value';
-  value.textContent = exercise[key];
+  value.textContent = key === 'weight' ? displayWeight(exercise[key]) : exercise[key];
 
   const change = (delta) => {
-    exercise[key] = Math.max(0, Number(((Number(exercise[key]) || 0) + delta).toFixed(2)));
-    value.textContent = exercise[key];
+    const adjustment = key === 'weight' ? storeWeight(delta) : delta;
+    const next = Math.max(0, (Number(exercise[key]) || 0) + adjustment);
+    exercise[key] = key === 'weight' ? next : Number(next.toFixed(2));
+    value.textContent = key === 'weight' ? displayWeight(exercise[key]) : exercise[key];
     persistEdits();
   };
 
@@ -650,7 +781,7 @@ function buildExercise(exercise, context) {
   if (exercise.type === 'reps') {
     const stats = document.createElement('div');
     stats.className = 'exercise-stats';
-    stats.append(stepper('Reps', exercise, 'reps', 1), stepper('Weight', exercise, 'weight', 1));
+    stats.append(stepper('Reps', exercise, 'reps', 1), stepper(`Weight (${settings.weightUnit})`, exercise, 'weight', 1));
     row.append(stats);
   }
   return { row, time };
@@ -765,8 +896,9 @@ function announceTimedExercise(index) {
     if (session.announcedIndex !== index) {
       session.announcedIndex = index;
       const weight = Number(exercise.weight) || 0;
-      const pounds = weight > 0 ? `, ${plural(weight, 'pound')}` : '';
-      speak(`${exercise.name}, ${plural(Number(exercise.reps) || 0, 'rep')}${pounds}`);
+      const unit = settings.weightUnit === 'kg' ? 'kilogram' : 'pound';
+      const spokenWeight = weight > 0 ? `, ${plural(displayWeight(weight), unit)}` : '';
+      speak(`${exercise.name}, ${plural(Number(exercise.reps) || 0, 'rep')}${spokenWeight}`);
     }
     return;
   }
@@ -931,7 +1063,7 @@ function buildDetailCard(exercise) {
     term.textContent = DETAIL_LABELS[key];
     const value = document.createElement('dd');
     if (key === 'duration') value.textContent = formatDuration(Number(exercise[key]) || 0);
-    else if (key === 'weight') value.textContent = `${exercise[key]} lb`;
+    else if (key === 'weight') value.textContent = `${displayWeight(exercise[key])} ${settings.weightUnit}`;
     else value.textContent = exercise[key];
     line.append(term, value);
     fields.append(line);
@@ -967,7 +1099,7 @@ function buildField(key) {
   const label = document.createElement('label');
   label.className = 'field';
   const caption = document.createElement('span');
-  caption.textContent = def.label;
+  caption.textContent = key === 'weight' ? `${def.label} (${settings.weightUnit})` : def.label;
   const input = document.createElement('input');
   input.type = def.type;
   input.dataset.field = key;
@@ -1046,7 +1178,14 @@ function addExerciseCard(type, list, slot, values = null) {
   const keys = type === 'superset' ? SUPERSET_FIELDS : EXERCISE_FIELDS[type];
   keys.forEach((key) => {
     const field = buildField(key);
-    if (values && values[key] !== undefined) field.querySelector('input').value = values[key];
+    if (values && values[key] !== undefined) {
+      const input = field.querySelector('input');
+      input.value = key === 'weight' ? displayWeight(values[key]) : values[key];
+      if (key === 'weight') {
+        input.dataset.originalWeight = values[key];
+        input.dataset.originalDisplay = input.value;
+      }
+    }
     card.append(field);
   });
 
@@ -1072,7 +1211,13 @@ function populateExerciseList(list, exercises) {
 
 function readInput(input, exercise) {
   const key = input.dataset.field;
-  exercise[key] = input.type === 'number' ? Number(input.value) || 0 : input.value.trim();
+  if (key === 'weight') {
+    exercise[key] = input.dataset.originalDisplay === input.value
+      ? Number(input.dataset.originalWeight)
+      : storeWeight(Number(input.value) || 0);
+  } else {
+    exercise[key] = input.type === 'number' ? Number(input.value) || 0 : input.value.trim();
+  }
 }
 
 const cardsIn = (list) => Array.from(list.querySelectorAll(':scope > .exercise-card'));
@@ -1154,7 +1299,29 @@ $('add-workout-button').addEventListener('click', () => openCreateScreen());
 $('back-button').addEventListener('click', () => showView('main'));
 $('details-back-button').addEventListener('click', () => showView('main'));
 $('progress-back-button').addEventListener('click', () => showView('main'));
-$('progress-metric').addEventListener('change', renderProgressChart);
+$('progress-metric').addEventListener('change', () => {
+  renderProgressProportion();
+  renderProgressControls();
+  renderProgressChart();
+});
+$('progress-bodyweight').addEventListener('change', (event) => {
+  if (!saveProgressOptions({ ...progressOptions, bodyweightExercise: event.target.checked })) {
+    event.target.checked = progressOptions.bodyweightExercise;
+    return;
+  }
+  renderProgressProportion();
+  renderProgressControls();
+  renderProgressChart();
+});
+$('progress-proportion').addEventListener('input', (event) => {
+  const input = event.target;
+  if (!input.validity.valid || input.value === '' || !Number.isFinite(input.valueAsNumber)) {
+    progressError('Enter a bodyweight proportion of zero or more.');
+    return;
+  }
+  if (saveProgressOptions({ ...progressOptions, proportion: input.valueAsNumber })) renderProgressChart();
+  else renderProgressProportion();
+});
 $('workout-back-button').addEventListener('click', () => {
   stopWorkout();
   showView('main');
