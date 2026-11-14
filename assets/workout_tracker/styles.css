@@ -36,8 +36,10 @@ input {
 
 .app-shell {
   position: relative;
-  width: min(100vw, 1080px, calc(95svh * 1080 / 2424));
-  aspect-ratio: 1080 / 2424;
+  width: min(100%, 480px);
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
   margin: 0 auto;
   overflow: hidden;
   background-color: #151719;
@@ -57,12 +59,15 @@ input {
 
 .scroll {
   flex: 1;
-  padding: clamp(32px, 7svh, 76px) clamp(16px, 6%, 32px) 120px;
+  min-height: 0;
+  padding: max(clamp(32px, 7svh, 76px), env(safe-area-inset-top, 0px))
+    max(clamp(16px, 6%, 32px), env(safe-area-inset-right, 0px)) 120px
+    max(clamp(16px, 6%, 32px), env(safe-area-inset-left, 0px));
   overflow-y: auto;
 }
 
 #main-view .scroll {
-  padding-top: clamp(20px, 4svh, 44px);
+  padding-top: max(clamp(20px, 4svh, 44px), env(safe-area-inset-top, 0px));
   padding-bottom: 24px;
 }
 
@@ -83,7 +88,9 @@ input {
   justify-content: flex-end;
   gap: 8px;
   min-height: 78px;
-  padding: 10px clamp(16px, 6%, 32px);
+  padding: 10px max(clamp(16px, 6%, 32px), env(safe-area-inset-right, 0px))
+    max(10px, env(safe-area-inset-bottom, 0px))
+    max(clamp(16px, 6%, 32px), env(safe-area-inset-left, 0px));
   background: #151719;
 }
 
@@ -116,9 +123,8 @@ h1 {
 }
 
 .tabs {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 44px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -130,8 +136,19 @@ h1 {
   background: transparent;
   color: var(--muted);
   cursor: pointer;
-  font-size: 15px;
+  min-width: 0;
+  font-size: 14px;
   font-weight: 600;
+}
+
+@media (max-width: 300px) {
+  .tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .tab {
+    font-size: 12px;
+  }
 }
 
 .settings-tab svg {
@@ -465,8 +482,8 @@ h1 {
 
 .fab {
   position: absolute;
-  right: clamp(16px, 6%, 32px);
-  bottom: clamp(16px, 3svh, 32px);
+  right: max(clamp(16px, 6%, 32px), env(safe-area-inset-right, 0px));
+  bottom: max(clamp(16px, 3svh, 32px), env(safe-area-inset-bottom, 0px));
   display: grid;
   width: 60px;
   height: 60px;
@@ -482,6 +499,7 @@ h1 {
 .main-footer > .fab {
   position: static;
   flex: none;
+  margin-left: auto;
   width: 54px;
   height: 54px;
 }
