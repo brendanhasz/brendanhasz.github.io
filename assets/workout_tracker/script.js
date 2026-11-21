@@ -721,7 +721,7 @@ function stepButton(text, label, onClick) {
   return button;
 }
 
-function stepper(label, exercise, key, step) {
+function stepper(label, exercise, key, step, savedExercise) {
   const group = document.createElement('div');
   group.className = 'stepper';
   const caption = document.createElement('span');
@@ -736,7 +736,16 @@ function stepper(label, exercise, key, step) {
     const next = Math.max(0, (Number(exercise[key]) || 0) + adjustment);
     exercise[key] = key === 'weight' ? next : Number(next.toFixed(2));
     value.textContent = key === 'weight' ? displayWeight(exercise[key]) : exercise[key];
-    persistEdits();
+
+    if (key === 'reps') {
+      if (adjustment > 0 && savedExercise) {
+        savedExercise.reps = exercise.reps;
+        persistEdits();
+      }
+    } else {
+      if (savedExercise) savedExercise[key] = exercise[key];
+      persistEdits();
+    }
   };
 
   const controls = document.createElement('div');
@@ -750,7 +759,7 @@ function stepper(label, exercise, key, step) {
   return group;
 }
 
-function buildExercise(exercise, context) {
+function buildExercise(exercise, context, savedExercise) {
   const row = document.createElement('div');
   row.className = 'exercise-row';
 
@@ -781,7 +790,7 @@ function buildExercise(exercise, context) {
   if (exercise.type === 'reps') {
     const stats = document.createElement('div');
     stats.className = 'exercise-stats';
-    stats.append(stepper('Reps', exercise, 'reps', 1), stepper(`Weight (${settings.weightUnit})`, exercise, 'weight', 1));
+    stats.append(stepper('Reps', exercise, 'reps', 1, savedExercise), stepper(`Weight (${settings.weightUnit})`, exercise, 'weight', 1, savedExercise));
     row.append(stats);
   }
   return { row, time };
@@ -813,7 +822,7 @@ function renderSlots() {
       $(id).replaceChildren(empty);
       return;
     }
-    const { row, time } = buildExercise(exercise, session.contexts[position]);
+    const { row, time } = buildExercise(exercise, session.contexts[position], session.savedExercises[position]);
     if (offset === 0) session.timeEl = time;
     $(id).replaceChildren(row);
   });
@@ -982,15 +991,19 @@ function tick() {
 
 function startWorkout(workout) {
   stopWorkout();
-  const flat = flattenExercises(workout.exercises || []);
+  const source = JSON.parse(JSON.stringify(workout.exercises || []));
+  const flat = flattenExercises(source);
+  const savedFlat = flattenExercises(workout.exercises || []);
   const exercises = flat.map((item) => item.exercise);
+  const savedExercises = savedFlat.map((item) => item.exercise);
   let total = 0;
   const ends = exercises.map((exercise) => (total += Number(exercise.duration) || 0));
 
   session = {
     name: workout.name,
-    source: workout.exercises || [],
+    source,
     exercises,
+    savedExercises,
     contexts: flat.map((item) => item.context),
     ends,
     elapsed: -10,
